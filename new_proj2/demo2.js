@@ -1,6 +1,7 @@
 var constantize = (obj) => {
 	Object.freeze(obj);
-	Object.keys(obj).forEach((key, value) => {
+	Object.keys(obj).forEach((key, index) => {
+		console.log(value);
 		if (typeof obj[key] === 'object') {
 			Object.freeze(obj[key]);
 		}
@@ -14,6 +15,6 @@ var obj = {
 };
 
 constantize(obj);
- obj.b.c = 'xxx'
+//obj.b.c = 'xxx'
 console.log(obj);
 
