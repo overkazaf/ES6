@@ -26,6 +26,12 @@
 			border-radius: 5px;
 			max-height: 500px;
 			overflow-y: auto;
+			display: none;
+		}
+
+		#pie, #bar {
+			height: 400px;
+			border: 1px solid #ccc;
 		}
 	</style>
 </head>
@@ -51,6 +57,8 @@
 	<div class="container">
 		<h1>详情</h1>
 		<div class="col-md-12" id="lastInfo"></div>
+		<div class="col-md-6" id="pie"></div>
+		<div class="col-md-6" id="bar"></div>
 	</div>
 	<hr>
 	<div id="mask"></div>

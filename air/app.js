@@ -1,4 +1,128 @@
 $(function (){
+	var OptionGroup = {
+		"pie" : function () {
+			var option = {
+			    tooltip: {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b}: {c} ({d}%)"
+			    },
+			    legend: {
+			        orient: 'vertical',
+			        x: 'left',
+			        data:['二氧化硫','二氧化氮','氮氧化物','二氧化硫','一氧化氮']
+			    },
+			    series: [
+			        {
+			            name:'空气质量',
+			            type:'pie',
+			            radius: ['50%', '70%'],
+			            avoidLabelOverlap: false,
+			            label: {
+			                normal: {
+			                    show: false,
+			                    position: 'center'
+			                },
+			                emphasis: {
+			                    show: true,
+			                    textStyle: {
+			                        fontSize: '30',
+			                        fontWeight: 'bold'
+			                    }
+			                }
+			            },
+			            labelLine: {
+			                normal: {
+			                    show: false
+			                }
+			            },
+			            data:[
+			                {value:0.335, name:'二氧化硫'},
+			                {value:0.310, name:'二氧化氮'},
+			                {value:0.234, name:'氮氧化物'},
+			                {value:0.135, name:'二氧化硫'},
+			                {value:0.1548, name:'一氧化氮'}
+			            ]
+			        }
+			    ]
+			};
+
+				return option;
+		},
+		"bar" : function () {
+			var option = {
+			    tooltip : {
+			        trigger: 'axis',
+			        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+			            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+			        }
+			    },
+			    legend: {
+			        data:['二氧化硫','二氧化氮','氮氧化物','二氧化硫','一氧化氮']
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis : [
+			        {
+			            type : 'category',
+			            data : ['0:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value'
+			        }
+			    ],
+			    series : [
+			        {
+			            name:'二氧化硫',
+			            type:'bar',
+			            data:[0.320, 0.332, 0.301, 0.334, 0.390, 0.330,0.320, 0.332, 0.301, 0.334, 0.390, 0.330,0.320, 0.332, 0.301, 0.334, 0.390, 0.330,0.320, 0.332, 0.301, 0.334, 0.390, 0.330]
+			        },
+			        {
+			            name:'二氧化氮',
+			            type:'bar',
+			            stack: '广告',
+			            data:[0.120, 0.132, 0.101, 0.134, 0.90, 0.230, 0.120, 0.132, 0.101, 0.134, 0.90, 0.230, 0.120, 0.132, 0.101, 0.134, 0.90, 0.230, 0.120, 0.132, 0.101, 0.134, 0.90, 0.230]
+			        },
+			        {
+			            name:'氮氧化物',
+			            type:'bar',
+			            stack: '广告',
+			            data:[0.220, 0.182, 0.191, 0.234, 0.290, 0.330,0.220, 0.182, 0.191, 0.234, 0.290, 0.330,0.220, 0.182, 0.191, 0.234, 0.290, 0.330,0.220, 0.182, 0.191, 0.234, 0.290, 0.330]
+			        },
+			        {
+			            name:'二氧化硫',
+			            type:'bar',
+			            stack: '广告',
+			            data:[0.150, 0.232, 0.201, 0.154, 0.190, 0.330,0.150, 0.232, 0.201, 0.154, 0.190, 0.330,0.150, 0.232, 0.201, 0.154, 0.190, 0.330,0.150, 0.232, 0.201, 0.154, 0.190, 0.330]
+			        },
+			        {
+			            name:'一氧化氮',
+			            type:'bar',
+			            data:[0.862, 0.1018, 0.964, 0.1026, 0.1679, 0.1600,0.862, 0.1018, 0.964, 0.1026, 0.1679, 0.1600,0.862, 0.1018, 0.964, 0.1026, 0.1679, 0.1600,0.862, 0.1018, 0.964, 0.1026, 0.1679, 0.1600],
+			            markLine : {
+			                lineStyle: {
+			                    normal: {
+			                        type: 'dashed'
+			                    }
+			                },
+			                data : [
+			                    [{type : 'min'}, {type : 'max'}]
+			                ]
+			            }
+			        }
+			    ]
+			};
+
+			return option;
+		}
+	};
+
+
 	var APP = {
 		TITLE : "山东省空气质量检测数据",// 图表标题
 		SUB_TITLE : "", // 图表副标题
@@ -168,7 +292,24 @@ $(function (){
 				});
 			});
 		},
-		buildMap : function () {
+		buildSubCharts : function () {
+			var $info = $(APP.info);
+			var siteName = $info.find('.siteName').first().text();
+			var detail = $info.find('.detail').first().text();
+			var sum = $info.find('.sum').first().text();
+			console.log('siteName', siteName);
+			console.log('detail', detail);
+			console.log('sum', sum);
+
+			var $pie = echarts.init($('#pie')[0]);
+			var pieOption = OptionGroup["pie"]();
+			$pie.setOption(pieOption);
+
+			var $bar = echarts.init($('#bar')[0]);
+			var barOption = OptionGroup['bar']();
+			$bar.setOption(barOption);
+		},
+		buildMap : function (callback) {
 			// 提示用户正在处理数据，禁止用户的操作
 			APP.Waiting['show']("数据处理中,请耐心等待...");
 
@@ -201,6 +342,8 @@ $(function (){
 				setTimeout(function (){
 					// 重绘图表
 					APP.chartEl.setOption(option);
+
+					callback && callback();
 				}, 500)
 			});
 		},
@@ -229,6 +372,8 @@ $(function (){
 			}
 		}
 	};
+
+    
 
 
 	function buildVOList (list) {
@@ -397,7 +542,7 @@ $(function (){
                             simple.push('所含项目：');
 
                             ret.push('时间：' + item.dateTime.split(' ')[0]);
-                            ret.push('<h3>站点名称:    ' + item.siteName + '</h3>');
+                            ret.push('<h3>站点名称:    <span class="siteName">' + item.siteName + '</span></h3>');
                             ret.push('小时均值（00:00 - 23:00）:');
                             
                             var tpl = "";
@@ -406,7 +551,7 @@ $(function (){
                             	var dataItem = dataList[i];
                             	if (dataItem.projName != lastProj) {
                             		lastProj = dataItem.projName;
-                            		ret.push('项目名称:    ' + dataItem.projName);
+                            		ret.push('项目名称:    ' + "<span class='projName'>"+ dataItem.projName +"</span>");
 
                             		simple.push(dataItem.projName);
                             	}
@@ -417,7 +562,7 @@ $(function (){
 
                             	if ((i + 1) % 24 == 0) {
                             		var sumArray = tpl.split(',');
-                            		ret.push(tpl.substring(0, tpl.length - 1));
+                            		ret.push("<span class='detail'>" + tpl.substring(0, tpl.length - 1)+"</span>");
                             		tpl = "";
                             		var sum = 0,cnt = 0;
 
@@ -428,6 +573,8 @@ $(function (){
                             				cnt++;
                             			}
                             		});
+
+                            		ret.push("<span class='sum'>"+ sum +"</span");
 
                             		ret.push('当日均值：' + (cnt > 0 ? sum/cnt:sum));
                             		ret.push('<br />');
@@ -444,6 +591,10 @@ $(function (){
                             	$(APP.info).html(ret.join('<br />'));
 
                             	$(APP.info).attr('currentItem', item.siteName);
+
+
+
+                            	APP.buildSubCharts();
                             }
                             
                             return simple.join('<br />');
