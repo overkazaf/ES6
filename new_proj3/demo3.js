@@ -60,6 +60,8 @@ console.log('tpl', tpl);
 
 
 let tplCompiler = (tpl , dataModel) => {
+	var reExec = /{{=(.*?)}}/gi;
+	var reExpress = /{{(.*?)}}/gi;
 	return undefined
 }
 
