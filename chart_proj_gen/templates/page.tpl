@@ -14,8 +14,8 @@
 </head>
 <body>
 	<div id="main"></div>
-	<script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="./node_modules/{{CHART_LIB_PATH}}"></script>
-	<script type="text/javascript" src="./app.js"></script>
+	<script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="../node_modules/{{CHART_LIB_PATH}}"></script>
+	<script type="text/javascript" src="../js/app.js"></script>
 </body>
 </html>

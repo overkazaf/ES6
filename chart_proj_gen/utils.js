@@ -10,7 +10,6 @@ const info = function () {
 	console.info.apply(this, [].slice.call(arguments));
 };
 
-
 const printUsage = function () {
 	log('USAGE:');
 	log('\tnode app.js -d xxx -p yyy -n zzz');
@@ -73,8 +72,8 @@ const parseParams = function (args) {
 			'd' : './',
 			'n' : 'new_chart_project',
 			't' : 'echarts',
-			'l' : 'jquery echarts',
-			'p' : 1,
+			'l' : 'jquery echarts zrender',
+			'p' : 3
 		};
 	
 
@@ -82,9 +81,13 @@ const parseParams = function (args) {
 		return Object.keys(commands).indexOf(param) !== -1;
 	};
 
-
+	var errorFlag = false;
 	for (var i = args.length - 1; i >= 0; i--) {
-		var errorFlag = false;
+		if (args[i] == '-h' || args[i] == '--help') {
+			printUsage();
+			break;
+		};
+
 		if (isValidCommand(args[i])) {
 			if ((i+1) < args.length && !isValidCommand(args[i+1])) {
 				if (args[i] == '-l' || args[i] == '--lib') {
@@ -101,7 +104,7 @@ const parseParams = function (args) {
 			} else {
 				errorFlag = true;
 			}
-		} else if (args[i].indexOf('-' >= 0)) {
+		} else if (args[i].indexOf('-') >= 0) {
 			errorFlag = true;
 		}
 
@@ -111,7 +114,7 @@ const parseParams = function (args) {
 		}
 	}
 
-	return p;
+	return errorFlag?null:p;
 };
 
 module.exports = {
