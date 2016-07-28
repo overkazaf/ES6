@@ -8,6 +8,7 @@
 			margin: 0 auto;
 			width: 960px;
 			height: 600px;
+			border: 1px solid #ccc;
 		}
 	</style>
 </head>
