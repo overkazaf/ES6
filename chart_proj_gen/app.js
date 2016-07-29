@@ -65,6 +65,7 @@ const buildProject = function(p) {
         const nodeModules = projPath + '/node_modules';
         const jsPath = projPath + '/js';
     	const pagePath = projPath + '/page';
+        
     	cp.spawn('mkdir', [nodeModules, jsPath, pagePath]);
 
         u.log('Project root directory has been generated successfully...');
@@ -85,13 +86,12 @@ const buildProject = function(p) {
         }, function(stdout, stderr) {
 
             var fnParseTemplates = function () {
-            	if (!templatesReady || !scriptReady) setTimeout(fn, 500);
+            	if (!templatesReady || !scriptReady) setTimeout(fn, 50);
 
-            	// 4. replace chart libs
-		        u.log('tpl:' + cache['page']);
-		        u.log('script:' + cache['script']);
+		        //u.log('tpl:' + cache['page']);
+		        //u.log('script:' + cache['script']);
 
-		        // 5. create page(s)
+		        // 4. replace chart libs and create page(s)
 		        
                 var page = cache['page'].toString();
                     page = page.replace(/{{(.+?)}}/g, function (match, cmd) {
@@ -156,6 +156,10 @@ const buildProject = function(p) {
                 }
 
                 async.parallel(tasks, function (err, results) {
+                    if (err) {
+                        u.err(err);
+                        return;
+                    }
                     u.log('taskResults:' + results);
                 });
 

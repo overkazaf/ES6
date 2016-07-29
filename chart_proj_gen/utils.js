@@ -73,7 +73,7 @@ const parseParams = function (args) {
 			'n' : 'new_chart_project',
 			't' : 'echarts',
 			'l' : 'jquery echarts zrender',
-			'p' : 3
+			'p' : 1
 		};
 	
 
