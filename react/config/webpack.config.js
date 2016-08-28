@@ -20,13 +20,13 @@ var webpackConfig = {
     extensions: ['', '.js', '.jsx'],
     alias: {
       'components': path.join(__dirname, '../src/javascript/components'),
-      'extend': path.join(__dirname, '../src/javascript/extend'),
+      'lib': path.join(__dirname, '../src/javascript/lib'),
       'page': path.join(__dirname, '../src/javascript/page'),
       'scss': path.join(__dirname, '../src/scss'),
-      //'pages': path.join(__dirname, '../src/yougouPages'),
+      //'pages': path.join(__dirname, '../src/wxPages'),
       'images': path.join(__dirname, '../res/images'),
-      'data': path.join(__dirname, '../src/javascript/data'),
-      'font': path.join(__dirname, '../res/font'),
+      'mock': path.join(__dirname, '../src/javascript/mock'),
+      'fonts': path.join(__dirname, '../res/fonts'),
       'jquery': path.join(__dirname, '../node_modules/jquery/dist/jquery.min.js')
     }
   },
@@ -81,6 +81,8 @@ function injectEntry() {
       item.entry
     ];
   });
+
+  console.log('webpackConfig.entry', webpackConfig.entry);
 }
 
 function injectHtmlWebpack() {
