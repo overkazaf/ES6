@@ -11,9 +11,12 @@ class Entry extends Component {
   }
 
   handleClick () {
-    this.setState({
-      clicked : !this.state.clicked
-    });
+    if (this.props.handleClick) {
+      this.props.handleClick();
+    }
+    // this.setState({
+    //   clicked : !this.state.clicked
+    // });
   };
   render() {
     let styleObj = {background: this.state.clicked? '#09f':'#ccc'};

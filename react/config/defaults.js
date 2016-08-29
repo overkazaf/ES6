@@ -12,6 +12,10 @@ var pages = [{
     name: 'Entry/index',
     entry: 'Entry/index.jsx',
     ftl: 'wxPages/Entry/index.html'
+},{
+    name: 'Test/index',
+    entry: 'Test/index.jsx',
+    ftl: 'wxPages/Test/index.html'
 }];
 
 var pagesToPath = function() {

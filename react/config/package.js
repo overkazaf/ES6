@@ -7,7 +7,7 @@ var precss = require('precss');
 var autoprefixer = require('autoprefixer');
 var filePath = defaultSettings.filePath;
 var pagePaths = defaultSettings.pagesToPath();
-var curIndex = 0;
+var curIndex = 1;
 var curPage = pagePaths[curIndex];
 
 var webpackConfig = {
