@@ -1,0 +1,21 @@
+.m-tab {
+	margin: 0;
+	display: flex;
+	transition: all .3s ease-in-out;
+	-webkit-transition: all .3s ease-in-out;
+
+	.tab-item {
+		height: 0.44rem;
+		line-height: 0.44rem;
+		background: #aaa;
+		color: #fff;
+		flex: 1;
+		text-align: center;
+	
+		&.active {
+			background: #999;
+			border-bottom: 2px solid #09f;
+		}
+	}
+
+}
