@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import RouteItem from 'components/RouteItem/RouteItem'
-import './BaseList.scss'
+import './RouteItemList.scss'
 
 export default 
-class BaseList extends Component {
+class RouteItemList extends Component {
 	constructor (props) {
 		super(props);
 	}
@@ -11,8 +11,8 @@ class BaseList extends Component {
 	render () {
 		let items = !this.props.items ? null : this.props.items.map(function (item) {
 			return (
-				<li className="base-list-item">
-					{item.name}
+				<li class="route-list-item">
+					<RouteItem item={item} />
 				</li>
 			)
 		});

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Hammer from 'lib/hammer.min.js'
 import Util from 'lib/util'
 import Header from 'components/Header/Header'
-import BaseList from 'components/BaseList/BaseList'
+import RouteItemList from 'components/RouteItemList/RouteItemList'
 import Tab from 'components/Tab/Tab'
 import 'scss/base.scss'
 import 'scss/RouteList/index.scss'
@@ -89,7 +89,7 @@ class MyComponent extends Component {
 						context={that}
 						handleItemClick={this.handleTabChange}
 						/>
-					<BaseList items={currentTabItems} />
+					<RouteItemList items={currentTabItems} />
 				</div>
 			</div>
 		)

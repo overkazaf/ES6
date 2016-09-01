@@ -1,5 +1,5 @@
 
-let mockUrlPrefix = 'http://localhost:8089/src/mock';
+let mockUrlPrefix = 'http://localhost:8088/src/mock';
 
 export default class Util {
 

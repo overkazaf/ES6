@@ -1,2 +1,69 @@
 @import '../../../scss/_config.scss';
 
+.m-route-item {
+	display: flex;
+	border-bottom: 1px solid #ccc;
+	padding: 0.04rem;
+
+	.column {
+		position: relative;
+	}
+
+	.item-detail {
+		flex: 1;
+        display:flex;
+        flex-direction: column;
+        -webkit-flex-direction: column;
+        padding-left: 0.1rem;
+		
+		.item-desc {
+			display: flex;
+			line-height: 0.20rem;
+		}
+
+        .item-name,
+        .item-start-date,
+        .item-group-members,
+        .item-source-place
+        {
+            margin: 0.02rem 0 0.04rem;
+            color: #41444e;
+            line-height: 0.16rem;
+            display: -webkit-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+		.item-name {
+			font-size: 0.14rem;
+			font-weight: bold;
+		}
+
+		.item-price {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			font-size: 0.16rem;
+			font-weight: bold;
+		}
+
+		.item-seal {
+			position: absolute;
+			left: 0.1rem;
+			top: 0;
+			display: none;
+			width: 0.9rem;
+			height: 0.9rem;
+			opacity: 0.5;
+			filter: alpha(opacity=50);
+		}
+        
+	}
+
+	.item-image {
+		width: 1.4rem;
+        height: 1.0rem;
+	}
+}
