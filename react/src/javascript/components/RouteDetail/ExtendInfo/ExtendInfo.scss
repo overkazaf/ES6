@@ -1,0 +1,64 @@
+@import '../../../../scss/_config.scss';
+.extra-info-list-item {
+	position: relative;
+	padding: 0.05rem;
+	margin-top: 0.1rem;
+	background: #fff;
+
+	.day-section {
+		margin-bottom: 0.2rem;
+		color: #000;
+	}
+
+	.head-image {
+		height: 0.44rem;
+		line-height: 0.44rem;
+		text-align: center;
+		font-size: 0.16rem;
+		font-weight: bold;
+		color: #000;
+	}
+
+	.day-icon {
+		position: absolute;
+		left: 0.1rem;
+		width: 0.5rem;
+		height: 0.3rem;
+		background: #222;
+	}
+
+	.day-name {
+		line-height: 0.3rem;
+		padding-left: 0.6rem;
+		font-size: 0.16rem;
+	}
+
+	.place-info {
+		border-bottom: 1px solid #ccc;
+		padding: 0.1rem 0.05rem 0.1rem 0.05rem;
+		text-indent: 0.3rem;
+		margin-bottom: 0.01rem;
+
+		.place-icon {
+			position: absolute;
+			width: 0.2rem;
+			height: 0.2rem;
+			background: #000;
+		}
+
+		.place-name {
+			font-size: 0.16rem;
+			line-height: 0.20rem;
+			height: 0.20rem;
+			font-weight: bold;
+		}
+
+		.place-desc {
+			color: #9B9BA5;
+			font-size: 0.14rem;
+			line-height: 0.16rem;
+			margin-left: 0.12rem;
+			font-weight: 300;
+		}
+	}
+}

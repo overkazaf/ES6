@@ -1,9 +1,50 @@
 @import '../../../scss/_config.scss';
 
 .m-route-detail-info {
-  
+  position: relative;
+  width: 100%;
+  padding: 0.05rem 0.2rem 0.5rem 0.2rem;
 
+  .detail-title {
+    margin: 0.15rem auto 0.12rem;
+    font-size: 0.16rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .detail-desc {
+    line-height: 0.2rem;
+  }
+
+  .detail-price {
+    margin-top: 0.2rem;
+
+    .price-single,
+    .price-intro,
+    .price-line-through {
+      margin-right: 0.1rem;
+    }
+
+    .price-single {
+      color: #FF3C16;
+      font-size: 0.16rem;
+      font-weight: bold;
+    }
+
+    .price-intro {
+      color: #8C909C;
+      font-size: 0.13rem;
+      font-weight: bold;
+    }
+
+    .price-line-through {
+      text-decoration: line-through;
+      color: #BEBEBE;
+      font-size: 0.13rem;
+    }
+  }
 }
+
 
 
 

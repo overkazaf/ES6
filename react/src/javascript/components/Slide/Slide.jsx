@@ -77,17 +77,22 @@ class Dot extends React.Component {
   }
 
   render() {
-    var len = this.props.slideslength;
+    let len = this.props.slideslength;
     if(len<=1){
       return null;
     }
-    var activeIndex = this.props.activeIndex;
-    var arr = [];
+    
+    let activeIndex = this.props.activeIndex;
+    let arr = [];
     for (let i = 0; i < len; i++) {
       arr.push(<span key={i} className={i === activeIndex ? 'active' : 'inactive'}></span>)
     }
-    var style = {
-      width: (len * 0.15) + 'rem'
+
+    let spanWidth = (len * 0.15);
+    let leftMargin = -(spanWidth/2) + 'rem';
+    let style = {
+      width: spanWidth + 'rem',
+      marginLeft: leftMargin
     }
     return (
       <div className='dots' style={style}>

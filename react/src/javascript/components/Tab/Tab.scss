@@ -1,20 +1,37 @@
 .m-tab {
 	margin: 0;
 	display: flex;
-	transition: all .3s ease-in-out;
-	-webkit-transition: all .3s ease-in-out;
+	background: #fff;
 
 	.tab-item {
+		position: relative;
 		height: 0.44rem;
 		line-height: 0.44rem;
-		background: #aaa;
-		color: #fff;
+		font-size: 0.14rem;
+		color: #44444c;
 		flex: 1;
 		text-align: center;
+
+		transition: all .3s ease-in-out;
+		-webkit-transition: all .3s ease-in-out;
 	
 		&.active {
-			background: #999;
-			border-bottom: 2px solid #09f;
+			color: #2ac1bc;
+			border-bottom: 3px solid #2ac1bc;
+		}
+
+		&:after {
+			position: absolute;
+			right: 0;
+			color: #ccc;
+			content:'|';
+		}
+
+
+		&:last-child{
+			&:after {
+				content: '';
+			}
 		}
 	}
 

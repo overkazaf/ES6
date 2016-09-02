@@ -4,6 +4,8 @@ import Gallery from 'components/Gallery/Gallery'
 import Header from 'components/Header/Header'
 import RouteDetailHeader from 'components/RouteDetail/RouteDetailHeader'
 import RouteDetailInfo from 'components/RouteDetail/RouteDetailInfo'
+import RouteDetailFooter from 'components/RouteDetail/RouteDetailFooter'
+import RouteDetailExtendInfo from 'components/RouteDetail/RouteDetailExtendInfo'
 import 'scss/base.scss'
 
 
@@ -20,6 +22,20 @@ class MyComponent extends Component {
 				]
 			}
 		};
+	}
+
+	handleBuyStretagy (buyType) {
+		let stretagy = {
+			'single' () {
+				alert('aaa');
+			},
+
+			'group' () {
+				alert('bbb');
+			}
+		};
+
+		stretagy[buyType]();
 	}
 
 	render () {
@@ -41,9 +57,8 @@ class MyComponent extends Component {
 					<RouteDetailHeader imageList={this.state.routeDetail.imageList}/>
 					<RouteDetailInfo info={this.state.routeDetail}/>
 				</div>
-				<div className="route-extra-info">
-					<Gallery pics={items} />
-				</div>
+				<RouteDetailExtendInfo info={items} />
+				<RouteDetailFooter handleBuy={this.handleBuyStretagy}/>
 			</div>
 		)
 	}

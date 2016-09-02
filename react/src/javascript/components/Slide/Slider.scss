@@ -1,7 +1,7 @@
 .m-slider {
   position: relative;
   width: 100%;
-  height: 3.55rem;
+  height: 2.55rem;
   overflow: hidden;
   .slide {
     position: absolute;
@@ -20,8 +20,9 @@
   }
   .dots {
     position: absolute;
-    right: 0.07rem;
+    left: 50%;
     bottom: 0.15rem;
+    
     span {
       display: inline-block;
       width: 0.07rem;

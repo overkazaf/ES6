@@ -1,0 +1,49 @@
+.m-route-footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+
+	.footer-buttons {
+		display: flex;
+		justify-content: center;
+		flex-direction: row;
+		align-items:center;
+
+		.btn-buy-single,
+		.btn-buy-group {
+			display: flex;
+			flex-direction: column;
+			font-size: 0.16rem;
+			height: 0.68rem;
+			padding: 0.1rem;
+			line-height: 0.24rem; 
+			text-align: center;
+			font-size: 0.16rem;
+		}
+
+		.btn-buy-single {
+			flex: 3;
+			background: #fff;
+
+			span {
+				flex:1;
+				color: #888C8F;
+			}
+		}
+
+		.btn-buy-group {
+			flex: 4;
+			background: #2bc2bd;
+
+			span {
+				flex: 1;
+				color: #FFFFFF;
+
+				&.font-sm {
+					font-size: 0.14rem;
+				}
+			}
+		}
+	}
+}

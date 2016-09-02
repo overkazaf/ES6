@@ -27,4 +27,35 @@ export default class Util {
 	        }
 	    });
 	}
+
+	static parseQueryString (url) {
+	    let reg_url =/^[^\?]+\?([\w\W]+)$/,
+	        reg_para=/([^&=]+)=([\w\W]*?)(&|$)/g, //g is very important
+	        arr_url = reg_url.exec( url ),
+			ret = {};
+	    if( arr_url && arr_url[1] ){
+	        let str_para = arr_url[1],result;
+	        while((result = reg_para.exec(str_para)) != null){
+	            ret[result[1]] = result[2];
+	        }
+	    }
+	    return ret;
+	};
+
+	/**
+	 * [isGroup 从页面跳转过来的url判断是否为拼团页面]
+	 * @Author   JohnNong
+	 * @Email    overkazaf@gmail.com
+	 * @Github   https://github.com/overkazaf
+	 * @DateTime 2016-09-02T16:21:48+0800
+	 * @return   {Boolean}                    [description]
+	 */
+	static isGroup () {
+		let paramObj = Util.parseQueryString(location.href);
+		if (!!paramObj) {
+			return (paramObj['isGroup'] && paramObj['isGroup'] == 'true');
+		} else {
+			return false;
+		}
+	}
 }

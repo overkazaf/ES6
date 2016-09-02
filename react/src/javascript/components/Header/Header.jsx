@@ -7,20 +7,20 @@ class Header extends Component {
 		super(props);
 	}
 
-	goBack () {
+	handleLeftBtnClick () {
 		alert('back');
 	}
 
-	goShare () {
+	handleRightBtnClick () {
 		alert('share');
 	}
 
 	render () {
 		return (
 			<header className="m-header">
-				<div onClick={this.goBack.bind(this)} className="fa-angle-left"></div>
+				<div onClick={this.handleLeftBtnClick.bind(this)} className="header-left-btn fa-angle-left"></div>
 				<h1 className="title">{this.props.title}</h1>
-				<div onClick={this.goShare.bind(this)} className="fa-angle-right"></div>
+				<div onClick={this.handleRightBtnClick.bind(this)} className="header-right-btn fa-angle-right"></div>
 			</header>
 		)
 	}

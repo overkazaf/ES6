@@ -80,7 +80,7 @@ class MyComponent extends Component {
 		const {headerTitle, activeIndex, tabStatus, currentTabItems} = this.state;
 
 		return (
-			<div>
+			<div className="m-route-detail">
 				<Header title={headerTitle} />
 				<div className="m-route-body">
 					<Tab 
