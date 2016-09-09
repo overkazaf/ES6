@@ -1,0 +1,31 @@
+@import '../../../scss/_config.scss';
+
+.m-counter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 0.15rem;
+  line-height: 0.2rem;
+  font-size: $font-size-lg;
+
+  .icon-less, 
+  .icon-more {
+  	width: 0.24rem;
+  	height: 0.24rem;
+  	line-height: 0.20rem;
+  	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 50%;
+	text-align: center;
+  }
+
+  .num {
+  	margin: 0 0.01rem 0 0.01rem;
+    width: 0.4rem;
+    height: 0.28rem;
+    line-height: 0.28rem;
+    border-radius: 0.02rem;
+    text-align: center;
+    border: 1px solid #000;
+  }
+}

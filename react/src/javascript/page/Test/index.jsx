@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
-import Gallery from 'components/Gallery/Gallery'
+import Modal from 'components/Modal/Modal'
 import 'scss/base.scss'
 
 
@@ -9,16 +9,14 @@ class MyComponent extends Component {
 		super(props);
 	}
 
+	closeModal () {
+		alert('closing Modal');
+	}
+
 	render () {
-		let items = [
-			'aaa.jpg',
-			'bbb.jpg',
-			'ccc.jpg',
-			'ddd.jpg',
-			'eee.jpg'
-		];
+		let modalTitle = "我的测试模态窗口";
 		return (
-			<Gallery pics={items} />
+			<Modal title={modalTitle} />
 		)
 	}
 }

@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
-import Header from 'components/Header/Header';
 import InfoForm from 'components/InfoForm/InfoForm';
-import Util from 'lib/util';
 import 'scss/base.scss'
+import 'scss/FillInfo/index.scss'
 
 
 class MyComponent extends Component {
@@ -16,12 +15,8 @@ class MyComponent extends Component {
 	}
 
 	render () {
-		
-		let title = '填写团出行信息';
-
 		return (
-			<div>
-				<Header title={title} />
+			<div className="m-fill-info">
 				<InfoForm />
 			</div>
 		)

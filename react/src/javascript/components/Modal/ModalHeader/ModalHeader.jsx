@@ -13,7 +13,7 @@ export default class ModalHeader extends Component {
 
 	render () {
 		return (
-			<div className="modal-title">
+			<div className="modal-header">
 				<h2>{this.props.modal.title || 'ModalTitle'}</h2>
 				<span onClick={this.handleClose} className="modal-close">x</span>
 			</div>

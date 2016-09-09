@@ -1,11 +1,26 @@
 @import '../../../scss/_config.scss';
 
 body {
-	background: #dddddd;
+	background: #f0eff5;
 }
 
-.info-item {
-	margin-top: 0.1rem;
-	padding: 0.1rem;
-}
+.m-fill-form {
+	margin-bottom: 0.78rem;
 
+	.m-group-info {
+		margin: 0;
+		padding: 0.05rem 0 0.05rem 0;
+	
+		.opt-header {
+		    padding: 0.05rem;
+		    margin-left: 0.1rem;
+		    font-size: 0.14rem;
+		    .ext-info {
+		        margin-left: 0.05rem;
+		        color: #ccc;
+		        font-size: 0.12rem;
+		    }
+		}
+	}
+
+}

@@ -1,1 +1,1 @@
-import from './ModalFooter'
+export default from './ModalFooter'

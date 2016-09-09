@@ -1,1 +1,1 @@
-import from './ModalBody'
+export default from './ModalBody'

@@ -58,4 +58,15 @@ export default class Util {
 			return false;
 		}
 	}
+
+	static UUIDAlgorithm () {
+		let cache = 0;
+		return function (algorithm) {
+			return !!algorithm ? algorithm() : ++cache;
+		}
+	}
+
+	static UUID () {
+		return Util.UUIDAlgorithm()();
+	}
 }

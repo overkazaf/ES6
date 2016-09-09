@@ -1,0 +1,47 @@
+.amount-group {
+	padding: 0.1rem 0.2rem 0.1rem 0.2rem;
+
+	.amount-ctrl-list {
+		display: flex;
+		width: 100%;
+
+		.amount-ctrl-list-item {
+			flex: 3;
+
+			line-height: 0.28rem;
+
+			&.adult,
+			&.child {
+				flex: 1;
+				text-align: right;
+			}
+		}
+	}
+}
+
+.u-info-item {
+	display: flex;
+	width: 100%;
+	height: 0.56rem;
+	line-height: 0.56rem;
+	margin-bottom: 0.1rem;
+	
+	.info-label,
+	.info-value {
+		border: none;
+		border-radius: 0;
+		font-size: 0.14rem;
+		padding: 0.2rem 0 0.2rem 0;
+		line-height: 0.16rem;
+		background: #f8f8f8;
+	}
+
+	.info-label {
+		text-indent: 0.04rem;
+		flex:1;
+	}
+
+	.info-value {
+		flex: 3;
+	}
+}

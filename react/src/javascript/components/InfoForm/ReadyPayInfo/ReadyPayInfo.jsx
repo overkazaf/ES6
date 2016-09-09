@@ -30,7 +30,7 @@ export default class ReadyPayInfo extends Component {
 						</div>
 					</div>
 				</div>
-				<div onClick={handleNextStep} className="next-step">下一步</div>
+				<div onClick={this.handleNextStep.bind(this)} className="next-step">下一步</div>
 			</div>
 		)
 	}
