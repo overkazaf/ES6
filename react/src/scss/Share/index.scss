@@ -1,0 +1,26 @@
+.m-group-info {
+	position: relative;
+}
+
+.invite-btn {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 0.6rem;
+	line-height: 0.6rem;
+	text-align: center;
+	font-size: 0.18rem;
+	color: #fff;
+	background: #2ac1bc;
+}
+
+.share-img {
+    background-image: url(../../../res/images/Share/share.png);
+    background-repeat: no-repeat;
+    max-width: 100%;
+    width: 350px;
+    height: 500px;
+    background-size: 100%;
+    display: inline-block;
+}

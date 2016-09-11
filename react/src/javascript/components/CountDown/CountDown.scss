@@ -1,0 +1,34 @@
+@import '../../../scss/_config.scss';
+$main-green-color: #2ac1bc;
+.u-count-down {
+	text-align: center;
+
+	.board {
+		font-size: 0.16rem;
+
+		.count-down-detail {
+			font-size: 0.14rem;
+			margin: 0.12rem;
+			.time {
+				font-size: 0.16rem;
+				margin: 0.02rem;
+				padding: 0.04rem;
+				border-radius: 0.04rem;
+				display: inline-block;
+				color: #fff;
+				background: $main-green-color;
+				display: inline-block;
+			}
+		}
+	}
+
+	.message {
+		padding: 0.12rem 0;
+		font-size: 0.16rem;
+		color: #8d919c;
+
+		.remain-counts {
+			color: $main-green-color;
+		}
+	}
+}

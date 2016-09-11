@@ -17,20 +17,9 @@ class RouteDetailHeader extends Component {
   };
 
   render() {
-    let styleShop = {};
-    let styleInfo = {}
-    let baseSize = parseInt(document.documentElement.style.fontSize, 10);
-    let heightS = (baseSize * 2.12 + 20) + "px";
-    let heightI = (baseSize * 0.35 + 20) + "px";
-      styleShop = {
-        height: heightS
-      }
-      styleInfo = {
-        marginTop: heightI
-      }
 
     return (
-      <div className='m-route-detail-header' style={styleShop}>
+      <div className='m-route-detail-header'>
         <Slide imageList={this.props.imageList} />
       </div>
     )

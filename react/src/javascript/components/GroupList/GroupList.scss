@@ -1,0 +1,57 @@
+@import '../../../scss/_config.scss';
+
+.u-group-member-list {
+	.group-member-list {
+		width: 100%;
+		.group-member-list-item {
+			display: flex;
+			height: 0.56rem;
+			line-height: 0.56rem;
+			border-bottom: 1px solid #ccc;
+			padding: 0.04rem 0;
+
+
+			span {
+				font-size: 0.16rem;
+				color: #ccc;
+
+				&.facebook,
+				&.size,
+				&.start-time,
+				&.is-leader {
+					text-align: center;
+				}
+
+				&.facebook {
+					flex: 1;
+					display: inline-block;
+					position: relative;
+				    
+				    .img {
+				    	position: absolute;
+				    	left: 50%;
+				    	top: 50%;
+				    	transform: translate(-50%, -50%);
+						border-radius: 50%;
+						background: #000;
+						opacity: 0.4;
+						width: 0.44rem;
+						height: 0.44rem;
+				    }
+				}
+
+				&.size {
+					flex: 1;
+				}
+
+				&.start-time {
+					flex: 4;
+				}
+
+				&.is-leader {
+					flex: 1;
+				}
+			}
+		}
+	}
+}

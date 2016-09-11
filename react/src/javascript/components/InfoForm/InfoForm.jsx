@@ -20,16 +20,18 @@ export default class InfoForm extends Component {
 				leaveDate: '0930', // 0930, 1002, 1003
 				leaveDays: 3,
 				personInfo: {
-					counts: {
-						adult: 1,
-						child: 0
+					adult : {
+						count: 1,
+						main: {
+							name: '',
+							id: '',
+							phone: ''
+						},
+						extra: []
 					},
-					person: {
-						name: '', //出行人姓名
-						id: '', //出行人身份证号
-						phone: '' //出行人手机号
-					},
-					appendedList: []
+					kid: {
+						count: 1
+					}
 				}
 			},
 			enter: false,
@@ -42,8 +44,22 @@ export default class InfoForm extends Component {
 		return true;
 	}
 
+	handleMemberAmountChange (state) {
+		// 1. fixed person numberCount
+		console.log('handleMemberAmountChange::state', state);
+		console.log('handleMemberAmountChange::personInfo', this.state.personInfo);
+
+		this.setState({
+			personInfo : state
+		}, () => {
+			// 2. recal price
+			this.reCalculatePrice();
+		});
+		
+	}
+
 	reCalculatePrice () {
-		alert('re calculate');
+		console.log('re calculate');
 	}
 
 	handleToPay () {
@@ -68,10 +84,10 @@ export default class InfoForm extends Component {
 	}
 
 	leave() {
-	    this.setState({
-	      enter: false
-	    });
-	  }
+		this.setState({
+		  enter: false
+		});
+	}
 
 	render () {
 		let that = this;
@@ -82,6 +98,9 @@ export default class InfoForm extends Component {
 			kid : '499.00'
 		};
 
+		let personInfo = this.state.personInfo;
+		console.log('personInfo in render', personInfo);
+
 		let reCalculatePrice = function () {
 			that.reCalculatePrice();
 		};
@@ -90,11 +109,18 @@ export default class InfoForm extends Component {
 			that.handleToPay();
 		}
 
+		let handleMemberAmountChange = function (state) {
+			that.handleMemberAmountChange(state);
+		};
+
+
 		return (
 			<div className="m-fill-form">
 				<section className="info-item">
 					<GroupInfo />
-					<PersonInfo onAmountChange={reCalculatePrice}/>
+					<PersonInfo
+					 personInfo={personInfo}
+					 handleMemberAmountChange={handleMemberAmountChange}/>
 				</section>
 				
 				<section className="info-item">

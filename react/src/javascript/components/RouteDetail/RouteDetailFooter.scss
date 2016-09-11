@@ -1,3 +1,4 @@
+@import '../../../scss/_config.scss';
 .m-route-footer {
 	position: fixed;
 	left: 0;
@@ -9,15 +10,16 @@
 		justify-content: center;
 		flex-direction: row;
 		align-items:center;
+		background: #fff;
 
 		.btn-buy-single,
 		.btn-buy-group {
 			display: flex;
 			flex-direction: column;
 			font-size: 0.16rem;
-			height: 0.68rem;
+			height: 0.6rem;
 			padding: 0.1rem;
-			line-height: 0.24rem; 
+			line-height: 0.16rem; 
 			text-align: center;
 			font-size: 0.16rem;
 		}
@@ -42,6 +44,63 @@
 
 				&.font-sm {
 					font-size: 0.14rem;
+				}
+			}
+		}
+
+
+		&.has-share {
+			
+			.btn-share
+			.btn-buy-single,
+			.btn-buy-group {
+				display: flex;
+				flex-direction: column;
+				font-size: 0.16rem;
+				height: 0.6rem;
+				padding: 0.1rem;
+				line-height: 0.16rem; 
+				text-align: center;
+				font-size: 0.16rem;
+				cursor: pointer;
+			}
+
+			.btn-share {
+				flex: 2;
+				line-height: 0.4rem;
+				text-align: center;
+				font-size: 0.16rem;
+				
+				span {
+					flex: 2;
+					background: #fff;
+					color: #93969d;
+				}
+			}
+
+			.btn-buy-single {
+				flex: 3;
+				background: $main-green-color;
+				border-right: 1px solid #fff;
+
+				span {
+					flex:1;
+					color: #fff;
+				}
+			}
+
+			.btn-buy-group {
+				flex: 2;
+				line-height: 0.4rem;
+				background: $main-green-color;
+
+				span {
+					flex: 2;
+					color: #FFFFFF;
+
+					&.font-sm {
+						font-size: 0.14rem;
+					}
 				}
 			}
 		}

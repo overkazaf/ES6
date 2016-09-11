@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import Hammer from 'lib/hammer.min.js'
 import Util from 'lib/util'
-import Header from 'components/Header/Header'
 import RouteItemList from 'components/RouteItemList/RouteItemList'
 import Tab from 'components/Tab/Tab'
 import 'scss/base.scss'
@@ -81,7 +80,6 @@ class MyComponent extends Component {
 
 		return (
 			<div className="m-route-detail">
-				<Header title={headerTitle} />
 				<div className="m-route-body">
 					<Tab 
 						tabs={tabStatus} 

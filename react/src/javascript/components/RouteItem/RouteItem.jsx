@@ -15,8 +15,9 @@ export default class RouteItem extends Component {
 				adults : 2,
 				kids : 1,
 			},
-			sourcePlace:'出发地',
-			price:'2099'
+			sourcePlace:'杭州',
+			price:'2099.00',
+			status: 1 // 0为拼团成功， 1为拼团中， 2为拼团失败
 		};
 
 		let {
@@ -24,11 +25,27 @@ export default class RouteItem extends Component {
 			startDate,
 			groupMembers,
 			sourcePlace,
-			price
+			price,
+			status
 		} = defaultObj;
 
+		let statusText = (status == 1) ? '拼团中' : '';
+		let statusDiv;
+
+		if (status == 1) {
+			// 拼团中的状态，只显示文字
+			statusDiv = (<div className="item-status-text">拼团中</div>);
+		} else {
+			if (status == 0) {
+				// 拼团成功
+				statusDiv = (<div className="item-seal success"></div>);
+			} else {
+				statusDiv = (<div className="item-seal fail"></div>);
+			}
+		}
+
 		return (
-			<div className="m-route-item">
+			<div className="u-route-item">
 				<div className="column">
 					<img className="item-image" src={this.props.src} />
 				</div>
@@ -41,17 +58,18 @@ export default class RouteItem extends Component {
 					<div className="item-desc">
 						出行人数：
 						<span className="item-group-members">
-							<i>成人 {groupMembers.adults}</i>
-							<i>儿童 {groupMembers.kids}</i>
+							<i>成人{groupMembers.adults}</i>
+							<i>儿童{groupMembers.kids}</i>
 						</span>
 					</div>
 					<div className="item-desc">
 						出发地：
 						<span className="item-source-place">{sourcePlace}</span>
 					</div>
-					<b className="item-price">￥{price}</b>
+					<b className="item-price">
+						￥{price} <i>/人</i></b>
 
-					<div className="item-seal"></div>
+					{statusDiv}
 				</div>
 			</div>
 		)

@@ -46,13 +46,9 @@ class MyComponent extends Component {
 			'ddd.jpg',
 			'eee.jpg'
 		];
-		let title = '团购行程';
-		let leftBtn = {},
-			rightBtn = {};
 
 		return (
 			<div>
-				<Header title={title} leftBtn={leftBtn} rightBtn={rightBtn} />
 				<div>
 					<RouteDetailHeader imageList={this.state.routeDetail.imageList}/>
 					<RouteDetailInfo info={this.state.routeDetail}/>

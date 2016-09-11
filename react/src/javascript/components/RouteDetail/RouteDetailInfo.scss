@@ -1,9 +1,8 @@
 @import '../../../scss/_config.scss';
 
 .m-route-detail-info {
-  position: relative;
   width: 100%;
-  padding: 0.05rem 0.2rem 0.5rem 0.2rem;
+  padding: 0.05rem 0.1rem 0.5rem 0.1rem;
 
   .detail-title {
     margin: 0.15rem auto 0.12rem;
@@ -42,6 +41,18 @@
       color: #BEBEBE;
       font-size: 0.13rem;
     }
+  }
+
+
+
+  .play-intro-img {
+    background-image: url(../../../../res/images/RouteDetail/introduce.png);
+    background-repeat: no-repeat;
+    max-width: 100%;
+    width: 350px;
+    height: 1334px;
+    background-size: 100%;
+    display: inline-block;
   }
 }
 

@@ -36,6 +36,8 @@ $swipeout-prefix-cls: rc-swipeout;
     position: relative;
     overflow: hidden;
     z-index: 99;
+    background: #f40000;
+    color: #fff;
     &-text {
       padding: 0 12px;
     }

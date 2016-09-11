@@ -8,13 +8,15 @@ export default class PlayIntro extends Component {
 	}
 
 	handleClick () {
-		alert('点击了玩法介绍');
+
+		if (this.props.handlePlayIntroClick) {
+			this.props.handlePlayIntroClick();
+		}
 	}
 
 	render () {
-
 		return (
-			<div onClick={this.handleClick} className="m-play-intro">
+			<div onClick={this.handleClick.bind(this)} className="m-play-intro">
 			</div>
 		)
 	}

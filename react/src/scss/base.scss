@@ -162,6 +162,10 @@ input::-ms-clear, input::-ms-reveal {
   float: right;
 }
 
+.hide {
+  display: none;
+}
+
 @-webkit-keyframes fa-spin {
   0% {
     -webkit-transform: rotate(0deg);

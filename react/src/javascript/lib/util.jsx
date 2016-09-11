@@ -59,6 +59,32 @@ export default class Util {
 		}
 	}
 
+	static isArray (obj) {
+		return Object.prototype.toString.call(obj) === '[object Array]';
+	}
+
+	static flatten (array) {
+		let ret = [];
+		array.forEach(function (item) {
+			if (Util.isArray(item)) {
+				ret = ret.concat(Util.flatten(item));
+			} else {
+				ret.push(item);
+			}
+			
+		});
+		return ret;
+	}
+
+	static throttle(method, context, timeout) {
+		let delay = timeout || 200;
+		clearTimeout(method.tId);
+		method.tId = setTimeout(function() {
+		    method.call(context);
+		  },
+		delay);
+	}
+
 	static UUIDAlgorithm () {
 		let cache = 0;
 		return function (algorithm) {

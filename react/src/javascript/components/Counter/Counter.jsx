@@ -28,14 +28,32 @@ class Counter extends Component {
     this.props.numChange(this.state.num);
   }
 
+  /**
+   * [componentWillReceieveProps 更新Counter组件的值]
+   * @Author   JohnNong
+   * @Email    overkazaf@gmail.com
+   * @Github   https://github.com/overkazaf
+   * @DateTime 2016-09-11T19:06:11+0800
+   * @param    {[type]}                     nextProps [description]
+   * @return   {[type]}                               [description]
+   */
+  componentWillReceieveProps (nextProps) {
+    console.log('componentWillReceieveProps', nextProps);
+    if (nextProps.curValue) {
+      this.setState({
+        num: nextProps.curValue
+      });
+    }
+  }
+
   add() {
     var num = +this.state.num + 1;
     if (num <= this.props.maxValue) {
       this.setState({
         num: num
+      }, () => {
+        this.handleNumChange(this.state.num);
       });
-
-      this.handleNumChange(this.state.num);
     }
   }
 
@@ -44,9 +62,9 @@ class Counter extends Component {
     if (num >= 1) {
       this.setState({
         num: num
+      }, () => {
+        this.handleNumChange(this.state.num);
       });
-
-      this.handleNumChange(this.state.num);
     }
   }
   render() {

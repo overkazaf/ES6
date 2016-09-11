@@ -3,3 +3,15 @@
 	height: 200px;
 	background: #09f;
 }
+
+$ration: 2;
+
+.play-intro {
+	background-image: url(../../../res/images/RouteDetail/introduce.png);
+	background-repeat: no-repeat;
+	max-width: 100%;
+	width: 350px;
+	height: 1334px;
+	background-size: 100%;
+	display: inline-block;
+}

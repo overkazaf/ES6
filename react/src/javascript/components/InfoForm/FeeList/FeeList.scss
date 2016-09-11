@@ -1,0 +1,26 @@
+.m-fee-list {
+	padding: 0.1rem;
+	.title {
+		text-indent: 0.05rem;
+		font-size: 0.16rem;
+		font-weight: bold;
+	}
+
+	.u-fee-table {
+		margin: .2rem 0 0 .2rem;
+		border: none;
+		font-size: 0.14rem;
+		tr {
+			height: 0.32rem;
+
+			td {
+				padding: 0.05rem;
+
+				&.desc {
+					color: #ccc;
+					font-size: 0.12rem;
+				}
+			}
+		}
+	}
+}

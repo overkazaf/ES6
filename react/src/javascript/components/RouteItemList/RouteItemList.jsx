@@ -17,7 +17,7 @@ class RouteItemList extends Component {
 			)
 		});
 		return (
-			<ul className="m-base-list">
+			<ul className="m-route-list">
 				{items}
 			</ul>
 		)

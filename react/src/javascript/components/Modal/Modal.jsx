@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Util from 'lib/util';
 import './Modal.scss';
 
 
@@ -7,25 +8,33 @@ import './Modal.scss';
  */
 export default class Modal extends Component {
 
-
 	constructor (props) {
 		super(props);
 
 		let modalStatus = this.props.modalStatus || {
-			header : true,
+			header : false,
 			body : true,
 			footer : false
 		};
 
 		this.state = {
-			isShown: false,
+			isShown: !!this.props.isShown || false,
+			modalTpl : this.props.modalTpl || {},
 			modalStatus: modalStatus
 		};
+	}
 
+	componentDidMount () {
 		let that = this;
-		setTimeout(function () {
-			that.show();
+		$(window).on('scroll', function () {
+			if (that.state.isShown) {
+				Util.throttle(that.show, that);
+			}
 		});
+
+		$('.m-modal-mask').on('click', function (){
+			that.hide();
+		})
 	}
 
 	show () {
@@ -40,6 +49,11 @@ export default class Modal extends Component {
 		})
 	}
 
+	componentWillReceiveProps (nextProps) {
+		this.setState({
+			isShown: nextProps.isShown
+		});
+	}
 
 	getBodyHeight () {
 		return $(document).height();
@@ -74,9 +88,11 @@ export default class Modal extends Component {
 			modalHeaderClazz = !!modalStatus.header ? 'm-modal-header' : 'm-modal-header hide',
 			modalBodyClazz = !!modalStatus.body ? 'm-modal-body' : 'm-modal-body hide',
 			modalFooterClazz = !!modalStatus.footer ? 'm-modal-footer' : 'm-modal-footer hide',
+			closeBtnClazz = !!modalStatus.hideCloseBtn ? 'modal-close hide' : 'modal-close',
 			bodyHeight = this.getBodyHeight(),
+			modalBody = modalTpl.body(),
 			maskStyleObj = {
-				position: 'absolute',
+				position: 'fixed',
 				left : 0,
 				top : 0,
 				width: '100%',
@@ -88,8 +104,8 @@ export default class Modal extends Component {
 			modalDialogStyleObj = {
 				position: 'absolute',
 				left: '50%',
-				top: '50%',
-				transform: "translate(-50%,-50%)"
+				top: '0.4rem',
+				transform: "translateX(-50%)"
 			},
 			handleClose = function () {
 				that.handleClose();
@@ -103,16 +119,13 @@ export default class Modal extends Component {
 
 		return (
 			<div>
-				<div className={maskClazz} style={maskStyleObj}></div>
 				<div className={modalDialogClazz} style={modalDialogStyleObj}>
-					<span className="modal-close" onClick={handleClose}>x</span>
+					<span className={closeBtnClazz} onClick={handleClose}>x</span>
 					<div className={modalHeaderClazz}>
 						<h2>{modalTitle}</h2>
 					</div>
 					<div className={modalBodyClazz}>
-						<p>
-							Modal Body Here
-						</p>
+						{modalBody}
 					</div>
 					<div className={modalFooterClazz}>
 						<div className="modal-button-group">
@@ -121,6 +134,7 @@ export default class Modal extends Component {
 						</div>
 					</div>
 				</div>
+				<div className={maskClazz} style={maskStyleObj}></div>
 			</div>
 		)
 	}
