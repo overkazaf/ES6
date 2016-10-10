@@ -7,9 +7,65 @@ export default
 class GroupCountDown extends Component {
 	constructor (props) {
 		super(props);
+		this.state = {
+			status: this.props.status,
+			startTime: this.props.startTime,
+			remain: this.props.remain
+		};
+	}
+
+	componentWillReceiveProps(nextProps) {
+	 //console.log('componentWillReceiveProps in GroupCountDown', nextProps);
+	 if (nextProps) {
+	 	if (nextProps.endTime) {
+	 		this.setState({
+		 		endTime: nextProps.endTime
+		 	})
+	 	}
+
+	 	if (nextProps.remain) {
+	 		this.setState({
+		 		remain: nextProps.remain
+		 	})
+	 	}
+
+	 	if (typeof nextProps.status != 'undefined') {
+	 		this.setState({
+	 			status: nextProps.status
+	 		});
+	 	}
+	 }
+	}
+
+	updateStatus (status) {
+		let that = this;
+		this.setState({
+			status: status
+		});
+		
+		setTimeout(function (){
+			that.refs['countDown'].updateStatus(status);
+		}, 50);
+	}
+
+	updateEndTime (endTime) {
+		this.setState({
+			endTime: endTime
+		});
+
+		this.refs['countDown'].updateEndTime(endTime);
+	}
+
+	updateRemain (remain) {
+		this.setState({
+			remain: remain
+		});
+
+		this.refs['countDown'].updateRemain(remain);
 	}
 
 	render () {
+		let {endTime, remain, status} = this.state;
 
 		let groupList = this.props.list.map(function (item, index){
 			let tplArray = [];
@@ -19,7 +75,7 @@ class GroupCountDown extends Component {
 					let keyIndex = index + '-' + i;
 					return (
 						<li className="group-list-item" key={keyIndex}>
-							<img src={item.url} />
+							<img width="104%" src={item.url} />
 						</li>
 					)
 				};
@@ -31,15 +87,21 @@ class GroupCountDown extends Component {
 			return tplArray;
 		});
 
-		console.log('groupList1', groupList);
 		groupList = Util.flatten(groupList);
 
-		console.log('groupList2', groupList);
-
 		// 修正长度
-		groupList = groupList.length > 13 ? groupList.slice(0, 13) : groupList;
-
-		let st = this.props.startTime || new Date().getTime() - 3720; // test
+		let isOverflow = groupList.length > 13;
+		groupList = isOverflow ? groupList.slice(0, 13) : groupList;
+		if (isOverflow) {
+			groupList.push((function (){
+				let dotsLink = 'http://yougo.xinguang.com/fightgroup-web/public/res/imgs/dots@3x.png';
+				return (
+						<li className="group-list-item dot" key="index-13">
+							<img width="70%" src={dotsLink} />
+						</li>
+					)
+			})());
+		}
 
 		return (
 			<div className="u-group-count-down">
@@ -48,7 +110,11 @@ class GroupCountDown extends Component {
 				</ul>
 
 				<div className="u-count-down">
-					<CountDown startTime={st} />
+					<CountDown 
+						ref="countDown"
+						status={status}
+						remain={remain}
+						endTime={endTime} />
 				</div>
 			</div>
 		)

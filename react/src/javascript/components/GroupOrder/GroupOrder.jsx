@@ -11,18 +11,7 @@ class GroupOrder extends Component {
 
 		this.state = {
 			groupSize: 15,
-			list : this.props.list || [
-				{url: 'aaa.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: true},
-				{url: 'bbb.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ccc.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'jjj.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: false}
-			],
+			list : this.props.list || [],
 			success : true
 		}
 	}

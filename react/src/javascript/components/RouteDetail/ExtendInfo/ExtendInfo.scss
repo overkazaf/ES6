@@ -6,59 +6,109 @@
 	background: #fff;
 
 	.day-section {
-		margin-bottom: 0.2rem;
+		margin-top: 0.04rem;
+		margin-bottom: 0.20rem;
 		color: #000;
 	}
 
 	.head-image {
+		width: 100%;
 		height: 0.44rem;
 		line-height: 0.44rem;
 		text-align: center;
 		font-size: 0.16rem;
 		font-weight: bold;
 		color: #000;
+		background-image: url(../../../../../res/images/RouteDetail/schedule@3x.png);
+		background-repeat: no-repeat;
+		    background-size: 60%;
+	    background-position-y: 0.16rem;
+	    background-position-x: 50%;
 	}
 
 	.day-icon {
 		position: absolute;
 		left: 0.1rem;
-		width: 0.5rem;
-		height: 0.3rem;
-		background: #222;
+		width: 0.39rem;
+		height: 0.25rem;
+		background-image: url(../../../../../res/images/RouteDetail/day_icon@3x.png);
+    	background-repeat: no-repeat;
+    	background-size: contain;
 	}
 
 	.day-name {
+		color: #41444e;
 		line-height: 0.3rem;
-		padding-left: 0.6rem;
-		font-size: 0.16rem;
+		padding-left: 0.55rem;
+		font-size: 0.15rem;
 	}
 
 	.place-info {
-		border-bottom: 1px solid #ccc;
-		padding: 0.1rem 0.05rem 0.1rem 0.05rem;
+		border-bottom: 1px solid #e2e7ea;
+		padding: 0.13rem 0.05rem 0.1rem 0.05rem;
 		text-indent: 0.3rem;
 		margin-bottom: 0.01rem;
+		word-spacing: 0.02rem;
 
 		.place-icon {
 			position: absolute;
-			width: 0.2rem;
-			height: 0.2rem;
-			background: #000;
+			width: 0.23rem;
+			height: 0.18rem;
+			
+			&.icon-1 {
+				background-image: url(../../../../../res/images/RouteDetail/moutain@3x.png);
+    			background-repeat: no-repeat;
+    			background-size: contain;
+    			background-position-x: 50%;
+			}
+			
+			&.icon-2 {
+				background-image: url(../../../../../res/images/RouteDetail/hotel@3x.png);
+    			background-repeat: no-repeat;
+    			background-size: contain;
+    			background-position-x: 50%;
+			}
+			
+			&.icon-3 {
+				background-image: url(../../../../../res/images/RouteDetail/drink@3x.png);
+    			background-repeat: no-repeat;
+    			background-size: contain;
+    			background-position-x: 50%;
+			}
 		}
 
 		.place-name {
-			font-size: 0.16rem;
+			font-size: 0.15rem;
 			line-height: 0.20rem;
 			height: 0.20rem;
-			font-weight: bold;
+			color:#41444e;
 		}
 
 		.place-desc {
-			color: #9B9BA5;
-			font-size: 0.14rem;
+			color: #9397a1;
+			font-size: 0.12rem;
 			line-height: 0.16rem;
-			margin-left: 0.12rem;
+			margin-left: 0.10rem;
 			font-weight: 300;
+		}
+	}
+	
+	.block-anchor {
+		display: block;
+		
+		.feature-bg {
+			background-image: url(../../../../../res/images/RouteDetail/featureNew1@3x.jpg);
+			height: 12.4rem;
+	    	background-repeat: no-repeat;
+	    	background-size: contain;
+		}
+		
+		.fee-bg {
+			background-image: url(../../../../../res/images/RouteDetail/feeNew1@3x.jpg);
+			width: 100%;
+			height: 20rem;
+	    	background-repeat: no-repeat;
+	    	background-size: contain;
 		}
 	}
 }

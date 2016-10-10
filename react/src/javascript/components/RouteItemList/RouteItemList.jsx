@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+﻿import React, {Component} from 'react'
 import RouteItem from 'components/RouteItem/RouteItem'
 import './RouteItemList.scss'
 
@@ -9,10 +9,10 @@ class RouteItemList extends Component {
 	}
 
 	render () {
-		let items = !this.props.items ? null : this.props.items.map(function (item) {
+		let items = !this.props.items ? null : this.props.items.map(function (item, index) {
 			return (
-				<li class="route-list-item">
-					<RouteItem item={item} />
+				<li key={index}>
+					<RouteItem info={item} />
 				</li>
 			)
 		});

@@ -5,16 +5,25 @@ body {
 }
 
 .m-fill-form {
-	margin-bottom: 0.84rem;
-
+	margin-bottom: 0.72rem;
+	
+	.info-item {
+		padding-top: 0.1rem;
+		background: #efeff4;
+	}
+	
 	.m-group-info {
 		margin: 0;
-		padding: 0.05rem 0 0.05rem 0;
-	
+		padding: 0.05rem 0 0.02rem 0;
+		background: #fff;
 		.opt-header {
-		    padding: 0.05rem;
-		    margin-left: 0.1rem;
+		    padding: 0.05rem 0 0 0;
+		    margin-left: 0.05rem;
 		    font-size: 0.14rem;
+
+		    .title {
+		    	margin-left: 0.05rem;
+		    }
 		    .ext-info {
 		        margin-left: 0.05rem;
 		        color: #ccc;

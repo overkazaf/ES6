@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import Util from 'lib/util';
+import 'scss/base.scss';
 import './PayMethod.scss';
 
 
@@ -7,21 +9,24 @@ export default class PayMethod extends Component {
 		super(props);
 
 		this.state = {
+			detailId: Util.parseQueryString(location.href)['detailId'],
+			groupId: null,
 			payMethod: {
 				weixin: true
 			},
 			invoice: {
 				checked : false
 			},
+			invoiceTitleValue : '',
 			protocol: {
 				checked: true
 			},
-			totalPrice: '2099.00'
+			cannotPay : false,
+			payPrice: this.props.payPrice || '00.00'
 		};
 	}
 
 	changeInvoice () {
-		alert('checked::' + this.state.invoice.checked);
 
 		this.setState({
 			invoice : {
@@ -39,55 +44,227 @@ export default class PayMethod extends Component {
 	}
 
 
+
+	componentWillReceiveProps(nextProps) {
+	    if (nextProps && nextProps.payPrice) {
+	    	this.setState({
+	    		payPrice : nextProps.payPrice
+	    	});
+	    }  
+
+	    if (nextProps && nextProps.groupId) {
+	    	this.setState({
+	    		groupId: nextProps.groupId
+	    	});
+	    }
+	}
+
+	conpomentDidMount () {
+		Util.inPage();
+		Util.fixFixed();
+		Util.addUserPageInfoUploadListener();
+	}
+
+	handlePay () {
+		
+		let that = this;
+		let detailId = this.state.detailId;
+		let prePayParam = {
+			url : 'tour/pay',
+			method: 'post',
+			data :  {
+				id: +detailId,
+				userId: Util.getCurrentUserId(),
+				invoiceTitle: this.state.invoiceTitleValue,
+				payType:1,
+				agreeRule: this.state.protocol.checked
+			},
+			successFn : function (result) {
+
+				if (result.success || result.success == 'true') {
+					let json = result.data.data;
+					let onBridgeReady = function (){
+					   WeixinJSBridge.invoke(
+				       'getBrandWCPayRequest', {
+				           "appId" : json.appId,     //公众号名称，由商户传入     
+				           "timeStamp" : json.timeStamp,    //时间戳，自1970年以来的秒数     
+				           "nonceStr" : json.nonceStr, //随机串     
+				           "package" : json.packageStr,     
+				           "signType" : "MD5",         //微信签名方式：     
+				           "paySign" : json.paySign //微信签名 
+				       },
+				       function(res){
+				       	    let returnCode,
+				       	        tradeSerialId = json.tradeSerialId;
+
+				           if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+				           	  // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。 
+				           	  returnCode = 'SUCCESS';
+				           	  // alert('weixin支付成功, tradeSerialId::' + tradeSerialId);
+				           } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+				           	  returnCode = 'FAILED';
+				           }else {
+				           	  // alert('weixin支付失败');
+				           	  returnCode = 'FAILED';
+				           }
+
+				           
+							let afterPayParam = {
+								url: 'tour/paySyncCallBack',
+								method: 'post',
+								data: {
+									tradeId: tradeSerialId,
+									recordDetailId: +detailId,
+									transactionId: null,
+									returnCode: returnCode
+								},
+								successFn: function (result) {
+									if (result || result== 'true') {
+										Util.leavePage(function () {
+											if (returnCode == 'SUCCESS') {
+												// 成功后跳转到分享页
+												location.href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Share/index.html?detailId='+ detailId +'&groupId=' + that.state.groupId;
+											} else {
+												// 失败后回到填写信息的页面
+												let fillInfoUrl = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/FillInfo/index.html';
+												fillInfoUrl += '?isGroup=true&detailId=' + detailId + "&groupId=" + that.state.groupId;
+												//alert('fail, and redirect to url:' + fillInfoUrl);
+												location.href = fillInfoUrl;
+											}
+										});
+									} else {
+										alert('支付失败:' + result.errorMSG);
+										that.setState({
+											cannotPay: true
+										});
+									}
+								},
+								errorFn: function () {
+									console.error(arguments);
+								}
+							};
+
+							Util.fetchData(afterPayParam);
+
+				       })
+					}
+					
+					if (typeof WeixinJSBridge == "undefined"){
+					   if( document.addEventListener ){
+					       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+					   }else if (document.attachEvent){
+					       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+					       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+					   }
+					}else{
+					   onBridgeReady();
+					}
+				} else {
+					if (result.errorCode == 400) {
+						that.setState({
+							cannotPay: true
+						});
+						alert(result.errorMSG);
+					} else {
+						alert('支付失败:' + result.errorMSG);
+					}
+				}
+			},
+			errorFn: function () {
+				console.error(arguments);	
+			}
+		};
+
+		//console.log('prePayParam', prePayParam);
+		Util.fetchData(prePayParam);
+
+	}
+
+	handleInvoiceTitleChange (ev) {
+		console.log("ev.target.value", ev.target.value);
+		this.setState({
+			invoiceTitleValue: ev.target.value
+		}, () => {
+			console.log('invoiceTitle change', this.state);
+		});
+	}
+
 	render () {
 
-		let invoiceTitle, //发票
+		let that = this,
+			invoiceTitle, //发票
 			protocol, // 平台协议
-			totalPrice = this.state.totalPrice;
+			payPrice = this.state.payPrice,
+			isInvoiceDisabled = true,
+			payBtn,
+			invoiceTitleValue = this.state.invoiceTitleValue;
 
 		if (this.state.invoice.checked) {
-			invoiceTitle = <input className="chk-component" type="checkbox" onClick={this.changeInvoice.bind(this)} checked />;
+			isInvoiceDisabled = false;
+			invoiceTitle = <i className="chk-component checked"  onClick={this.changeInvoice.bind(this)}></i>;
 		} else {
-			invoiceTitle = <input className="chk-component" type="checkbox" onClick={this.changeInvoice.bind(this)} />;
+			invoiceTitle = <i className="chk-component unchecked" onClick={this.changeInvoice.bind(this)}></i>;
 		}
 
 
 		if (this.state.protocol.checked) {
-			protocol = <input className="chk-component" type="checkbox" onClick={this.changeProtocol.bind(this)}  checked />;
+			protocol = <i className="chk-component checked" onClick={this.changeProtocol.bind(this)}></i>;
 		} else {
-			protocol = <input className="chk-component" type="checkbox" onClick={this.changeProtocol.bind(this)} />;
+			protocol = <i className="chk-component unchecked" onClick={this.changeProtocol.bind(this)}></i>;
 		}
+
+
+		if (Util.isGroup()) {
+			if (!this.state.protocol.checked || this.state.cannotPay) {
+				payBtn = <div className="pay-btn disabled">
+							立即（开团）支付
+						 </div>
+			} else {
+				payBtn = <div onClick={that.handlePay.bind(that)} className="pay-btn">
+							立即（开团）支付
+						 </div>
+			}
+		} else {
+			if (!this.state.protocol.checked || this.state.cannotPay) {
+				payBtn = <div className="pay-btn disabled">
+							立即支付
+						 </div>
+			} else {
+				payBtn = <div onClick={that.handlePay.bind(that)} className="pay-btn">
+							立即支付
+						 </div>
+			}
+		}
+
 
 		return (
 			<div className="m-pay-method">
 				<div className="title">支付方式</div>
 				<section className="pay-info slashed">
 					<div>
-						<input type="radio" className="chk-component" checked />
-						微信支付
+						<i className="sel-component selected"></i>
+						<span className="weixin-icon"></span>微信支付
 					</div>
 				</section>
 
 				<section className="pay-info">
 					<div>
 						{invoiceTitle}
-						开具增值税发票（发票将在开团成功后5日寄出）
+						开具增值税发票 <span className="desc">（发票将在开团成功后5日寄出）</span>
 					</div>
 					<div>
-						<input type="text" className="invoiceTitle" placeholder="输入发票抬头" />
+						<input disabled={isInvoiceDisabled} value={invoiceTitleValue} onChange={that.handleInvoiceTitleChange.bind(that)} type="text" className="invoiceTitle" placeholder="输入发票抬头" />
 					</div>
 				</section>
 				<section className="pay-info gray">
 					{protocol}
-					我同意《一起逛平台服务协议》
+					<span className="aggree-desc">我同意《一起逛平台服务协议》</span>
 				</section>
-				<div className="pay-now">
+				<div className="pay-now footer-fixed">
 					<div className="total-price">
-						合计 <span className="price">￥{totalPrice}</span>
+						合计 <span className="price">￥{payPrice}</span>
 					</div>
-					<div className="pay-btn">
-						立即（开团）支付
-					</div>
+					{payBtn}
 				</div>
 			</div>
 		)

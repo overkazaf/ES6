@@ -1,6 +1,7 @@
-import React from 'react'
-import Slider from 'components/Slide/Slide.jsx'
-import className from 'classnames'
+import React from 'react';
+import Slider from 'components/Slide/Slide.jsx';
+import Util from 'lib/util';
+import className from 'classnames';
 import './Gallery.scss'
 import PinchZoom from 'components/PinchZoom/PinchZoom'
 
@@ -18,6 +19,14 @@ export default class Gallery extends React.Component {
     modal.addEventListener('touchmove', function (e) {
       e.preventDefault();
     }, false);
+
+    setTimeout(function () {
+      let $images = $('img');
+      //console.log('$images.length', $images.length);
+      // 这里的图片一般比较小， 可以加载快一些
+      // 且首屏最多能展示2.5张图片，这里懒加载的时候每批加载３张就够了
+      Util.lazyLoadImages($images, 3, 100);
+    }, 50);
   }
 
   handleClick(index) {
@@ -35,14 +44,14 @@ export default class Gallery extends React.Component {
 
   render() {
     var totallen = this.props.pics.length;
-    var length = totallen > 6 ? 6 : totallen;
+    var length = totallen > 8 ? 8 : totallen;
 
     var pics = this.props.pics.map((ele, index)=> {
-      if (index < 5) {
+      if (index < 7) {
         return (<div className='picItem' key={index} onClick={this.handleClick.bind(this, index)}>
-          <img src={ele}/>
+          <img data-src={ele}/>
         </div>)
-      } else if (index === 5) {
+      } else if (index === 7) {
         return (
           <a className='picItem more' key={index} onClick={this.handleClick.bind(this, index)}>
             <div className='more-cn'>查看更多</div>
@@ -57,7 +66,7 @@ export default class Gallery extends React.Component {
       }
     });
     var style = {
-      width: ((length) * 1.27 + (length + 1) * 0.05) + 'rem'
+      width: ((length) * 1.50 + (length + 1) * 0.05) + 'rem'
     };
     var modalstyle = {
       height: document.documentElement.clientHeight + 'px'

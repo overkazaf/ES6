@@ -19,8 +19,56 @@ export default class RouteDetailInfo extends React.Component {
             )
           }
         }
-      }
+      },
+      status: status,
+      list : this.props.list,
+      remain: 0
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps) {
+      if (nextProps.list) {
+        this.setState({
+          list : nextProps.list
+        });
+      }
+
+      if (nextProps.remain) {
+        this.setState({
+          remain : nextProps.remain
+        });
+      }
+
+      if (nextProps.endTime) {
+        this.setState({
+          endTime : nextProps.endTime
+        });
+      }
+
+      if (typeof nextProps.status != 'undefined') {
+        this.setState({
+          status: nextProps.status
+        });
+      }
+      
+    } 
+  }
+
+  updateEndTime (endTime) {
+    this.setState({
+      endTime : endTime
+    });
+
+    this.refs['groupCountDown'].updateEndTime(endTime);
+  }
+
+  updateRemain (remain) {
+    this.setState({
+      remain : remain
+    });
+
+    this.refs['groupCountDown'].updateRemain(remain);
   }
 
   handlePlayIntroClick () {
@@ -41,38 +89,33 @@ export default class RouteDetailInfo extends React.Component {
 
   render() {
     let hasCountDown = this.props.hasCountDown;
+    let {remain, endTime, status} = this.state;
     let countDownDiv;
     let that = this;
     let modalTpl = this.state.modal.modalTpl;
     let isModalShown = !!this.state.modal.isShown;
-    let demoList = [
-        {url: 'aaa.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: true},
-        {url: 'bbb.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ccc.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-        {url: 'jjj.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: false}
-      ];
+    let personList = this.props.list || this.state.list || [];
 
     if (hasCountDown) {
-      countDownDiv = <GroupCountDown list={demoList} />
+      countDownDiv = <GroupCountDown
+                      ref="groupCountDown" 
+                      status={status}
+                      remain={remain}
+                      endTime={endTime}
+                      list={personList} />
     } else {
       countDownDiv = null;
     }
 
     return (
       <div className="m-route-detail-info">
-        <div className="detail-title">千岛湖国庆家庭主题3日游</div>
+        <div className="detail-title">千岛湖3日2晚自驾休闲游</div>
         <div className="detail-desc">
-          骑行、烤鱼、水下古城，带你领略真正的千岛湖，豪华湖景房，看一看久违的星星，线路产品描述，水下古城……
+          国庆避开人群，邂逅千岛湖一处静谧之地，狮城铂瑞酒店，给你一个安静舒心的旅行度假体验。
         </div>
         <div className="detail-price">
-          <span className="price-single">¥899起/人</span>
-          <span className="price-intro">[十人起团]</span>
+          <span className="price-single">¥998起/人</span>
+          <span className="price-intro">【10人起团】</span>
           <span className="price-line-through">￥1550/人</span>
         </div>
         {countDownDiv}

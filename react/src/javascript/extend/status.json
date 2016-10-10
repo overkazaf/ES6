@@ -1,0 +1,15 @@
+{
+	"single": {
+		"ALL": 0,
+		"PENDING": 2,
+		"SUCCESS": 3,
+		"CANCEL": 4
+	},
+	"group": {
+		"ALL": 0,
+		"PENDING": 2,
+		"RUNNING": 3,
+		"SUCCESS": 4,
+		"FAIL": 5
+	}
+}

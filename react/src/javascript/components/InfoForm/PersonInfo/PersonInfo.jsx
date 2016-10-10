@@ -1,6 +1,7 @@
-import React, {Component} from 'react';
+﻿import React, {Component} from 'react';
 import Counter from 'components/Counter/Counter';
-import SwipeOut from 'components/SwipeOut/SwipeOut';
+import SwipeOut from 'components/Swipeout/Swipeout';
+import Confirm from 'components/Confirm/Confirm';
 import './PersonInfo.scss'
 
 
@@ -9,52 +10,48 @@ export default class PersonInfo extends Component {
 	constructor (props) {
 		super(props);
 
-		this.state = {
+		let adultCount = this.props.defaultAdultValue;
+		let adultExtra = adultCount == 1 ? [] : [{name:'', id:''}];
+
+		this.state = this.props.personInfo || {
 			adult : {
-				count: 1,
+				count: adultCount,
 				main: {
 					name: '',
 					id: '',
 					phone: ''
 				},
-				extra: []
+				extra: adultExtra
 			},
 			kid: {
-				count: 1
-			}
+				count: 0
+			},
+			maxAdultValue: this.props.maxAdultValue
 		};
 	}
 
 	componentWillReceieveProps (nextProps) {
-		/**
-		 *
-		 *
-		 *
-		personInfo: {
-			adult : {
-				count: 1,
-				main: {
-					name: '',
-					id: '',
-					phone: ''
-				},
-				extra: []
-			},
-			kid: {
-				count: 1
-			}
-		}
-		*/
 		if (nextProps.personInfo) {
-			this.setState(nextProps.personInfo);
+			this.setState({
+				adult: nextProps.personInfo.adult,
+				kid: nextProps.personInfo.kid
+			});
+		}
+
+		if (nextProps.maxAdultValue) {
+			
+			this.setState({
+				maxAdultValue: nextProps.maxAdultValue
+			});
 		}
 	}
+
 
 	handleAdultNumChange (n) {
 		let main = this.state.adult.main;
 		let extra = this.state.adult.extra;
 		let count = this.state.adult.count;
-
+		let that = this;
 		if (n > count) {
 			extra.push(PersonFactory.create());
 			this.setState({
@@ -67,25 +64,36 @@ export default class PersonInfo extends Component {
 				if (this.props.handleMemberAmountChange) {
 					this.props.handleMemberAmountChange(this.state)
 				}
+				return true;
 			});
 		} else if (n == count - 1) {
-			if (confirm('减少数量会删除最后一个联系人信息，确认要继续操作？')) {
-				let adult = this.state.adult;
-				
+			let adult = this.state.adult;
+
+			let confirmBox = this.refs.confirmBox;
+			confirmBox.showConfirmBox(
+			'提示', 
+			'减少数量会删除最后一个联系人信息，确认要继续操作？', 
+			function () {
 				adult.extra.pop();
 
-				this.setState({
+				that.setState({
 					adult: {
 						count: adult.count - 1,
 						main: adult.main,
 						extra: adult.extra
 					}
 				}, () => {
-					if (this.props.handleMemberAmountChange) {
-						this.props.handleMemberAmountChange(this.state);
+					
+					that.updateExtraList(adult.extra);
+
+					if (that.props.handleMemberAmountChange) {
+						that.props.handleMemberAmountChange(that.state);
 					}
 				});
-			}
+			}, 
+			function () {
+				that.refs.adultCounter.setCurrentValue(count);
+			});
 		}
 	}
 
@@ -98,41 +106,105 @@ export default class PersonInfo extends Component {
 			if (this.props.handleMemberAmountChange) {
 				this.props.handleMemberAmountChange(this.state)
 			}
+			return true;
 		});
-
-		
 	}
 
 	handleAdultDelete (index) {
-		alert('index::' + index);
-		if (confirm('确认要继续删除该联系人信息？')) {
-			let adult = this.state.adult;
+		let that = this;
+		let adult = this.state.adult;
+		let count = adult.count;
+		let confirmBox = this.refs.confirmBox;
+			confirmBox.showConfirmBox(
+			'提示', 
+			'确认要继续删除联系人信息？', 
+			function () {
+				adult.extra.splice(index, 1);
 
-			adult.extra.splice(index, 1);
+				const newExtraCount = adult.extra.length + 1;
+				let updatedState = {
+					adult: {
+						count: newExtraCount,
+						main: adult.main,
+						extra: adult.extra
+					},
+					kid: that.state.kid
+				};
+				
+				that.setState(updatedState, () => {
+					
+					that.updateExtraList(adult.extra);
 
-			const newCount = adult.extra.length + 1;
-			this.setState({
-				adult: {
-					count: newCount,
-					main: adult.main,
-					extra: adult.extra
-				},
-				kid: this.state.kid
-			}, () => {
-				if (this.props.handleMemberAmountChange) {
-					this.props.handleMemberAmountChange(this.state);
-
-					// 先这样处理，这样才能通知子组件更新自己的状态
-					this.refs.adultCounter.props.curValue = newCount;
-					this.refs.adultCounter.state.num = newCount;
-				}
+					if (that.props.handleMemberAmountChange) {
+						that.props.handleMemberAmountChange(that.state);
+						// 先这样处理，这样才能通知子组件更新自己的状态
+						that.refs.adultCounter.setCurrentValue(newExtraCount);
+					}
+				});
+			}, function () {
+				that.refs.adultCounter.setCurrentValue(count);
 			});
-
-		}
 	}
 
+
+
+	/**
+	 * [updateExtraList ]
+	 * @return {[type]} [description]
+	 */
+	updateExtraList () {
+		// let refUl = this.refs['appendedList'];
+		
+		// let $names = $(refUl).find('input.person-name');
+		// let $ids = $(refUl).find('input.person-id');
+		// let that = this;
+		// let extra = this.state.adult.extra;
+		
+		//this is a piece of hacking code, should change it!
+		// setTimeout(function (){
+		// 	$names.each(function (index, item){
+		// 		$(item).val(extra[index].name)
+		// 	});
+
+		// 	$ids.each(function (index, item){
+		// 		$(item).val(extra[index].id)
+		// 	});
+
+		// 	// 通知父级要更新列表
+		// 	that.props.noticeExtraListUpdated && that.props.noticeExtraListUpdated(extra);
+		// 	console.log('that.state', that.state);
+		// }, 500);	
+	}
+
+	updateMainInfoValue () {
+		let adult = this.state.adult;
+		let mainName = this.refs.mainName;
+		let mainID = this.refs.mainID;
+		let mainPhone = this.refs.mainPhone;
+		let phoneNumberLength = 11;
+
+		if (mainPhone.value.length > phoneNumberLength) {
+			mainPhone.value = mainPhone.value.substring(0, phoneNumberLength);
+			return;
+		}
+
+		this.setState({
+			adult: {
+				count: adult.count,
+				main:{
+					name: mainName.value,
+					id: mainID.value,
+					phone: mainPhone.value
+				},
+				extra: adult.extra
+			}
+		}, () => {
+			this.props.handleMainInfoChange(this.state);
+		});
+	}
+
+
 	updatePersonInfo (index, name, id) {
-		console.log('update PersonInfo', arguments);
 		let adult = this.state.adult;
 		let extra = adult.extra;
 
@@ -150,37 +222,51 @@ export default class PersonInfo extends Component {
 				}
 			})
 		}
-		
 	}
 
 	render () {
 		let that = this;
-		let personInfo = this.state;
-		const maxCounterValue = 15,
-			  curAdultCount = personInfo.adult.count,
-			  curKidCount = personInfo.kid.count || 0;
+		let maxAdultValue = this.state.maxAdultValue,
+			  maxKidValue = 10,
+			  maxNameLength = 4,
+			  maxPhoneLength = 11,
+			  maxIDLength = 18,
+			  adult = this.state.adult,
+			  mainPhone = adult.main.phone,
+			  mainId = adult.main.id,
+			  mainName = adult.main.name,
+			  curAdultCount = this.state.adult.count,
+			  curKidCount = this.state.kid.count || 0,
+			  keyPrefix = '' + (new Date().getTime());
+		console.log(this.state);
 
-		let appendedList = personInfo.adult.extra ? personInfo.adult.extra.map(function (item, index) {
+		let appendedList = adult.extra.map(function (item, index) {
+			let liKey = adult.extra.length + '-li-' + index;
+			let appendedPersonKey = adult.extra.length + '-ap-' + index;
 			return (
-				<li key={index} className="appended-person-list-item">
+				<li key={liKey} className="appended-person-list-item">
 					<AppendedPerson
+					key={appendedPersonKey}
 					index={index}
 					name={item.name}
 					id={item.id}
-					onUpdate={that.updatePersonInfo}
+					handleChange={that.updatePersonInfo.bind(that)}
 					onDeleteClick={that.handleAdultDelete.bind(that, index)}/>
 				</li>
 			)
-		}) : null;
+		});
 
+		console.log('appendedList', appendedList);
 
 		let handleAdultNumChange = function () {
-			that.handleAdultNumChange.apply(that, arguments);
+			that.handleAdultNumChange.apply(that, Array.prototype.slice.call(arguments));
 		};
 
 		let handleKidNumChange = function () {
-			that.handleKidNumChange.apply(that, arguments);
+			that.handleKidNumChange.apply(that, Array.prototype.slice.call(arguments));
 		};
+        
+        let personCounterContainerClazz = this.props.isGroup ? 'row' : 'row hide';
 
 		return (
 			<div className="m-group-info">
@@ -193,13 +279,18 @@ export default class PersonInfo extends Component {
 									<span>成人</span>
 								</li>
 								<li className="amount-ctrl-list-item">
-									<Counter ref="adultCounter" numChange={handleAdultNumChange} maxValue={maxCounterValue} curValue={curAdultCount}/>
+									<Counter 
+										minVal={1} 
+										ref="adultCounter" 
+										numChange={handleAdultNumChange} 
+										maxVal={maxAdultValue} 
+										curVal={curAdultCount}/>
 								</li>
 								<li className="amount-ctrl-list-item child">
 									<span>儿童</span>
 								</li>
 								<li className="amount-ctrl-list-item">
-									<Counter numChange={handleKidNumChange} maxValue={maxCounterValue} curValue={curKidCount}/>
+									<Counter minVal={0} numChange={handleKidNumChange} maxVal={maxKidValue} curVal={curKidCount}/>
 								</li>
 							</ul>
 						</div>
@@ -209,21 +300,23 @@ export default class PersonInfo extends Component {
 				<div className="row">
 					<div className="line main-person-name">
 						<div className="u-info-item">
-							<input type="text" className="info-label person-name" placeholder="填写姓名"></input>
-							<input type="text" className="info-value person-id" placeholder="请填写身份证号码"></input>
+							<input value={mainName} type="text" ref="mainName" onChange={that.updateMainInfoValue.bind(that)} maxLength={maxNameLength} className="info-label person-name" placeholder="填写姓名"></input>
+							<input value={mainId} type="text" ref="mainID" onChange={that.updateMainInfoValue.bind(that)} maxLength={maxIDLength} className="info-value person-id" placeholder="请填写身份证号码"></input>
 						</div>
 					</div>
-					<ul className="appended-person-list">
+					<ul ref="appendedList" className="appended-person-list">
 						{appendedList}
 					</ul>
 
 					<div className="main-person-phone">
 						<div className="u-info-item">
-							<span className="info-label">联系电话</span>
-							<input type="text" className="info-value" placeholder="请输入您的联系方式"></input>
+							<input className="info-label" value="联系电话" readOnly="readonly" />
+							<input value={mainPhone} type="text" ref="mainPhone" onChange={that.updateMainInfoValue.bind(that)} maxLength="11" className="info-value" placeholder="请输入您的联系方式"></input>
 						</div>
 					</div>
 				</div>
+
+				<Confirm ref="confirmBox" />
 			</div>
 		)
 	}
@@ -236,8 +329,6 @@ class AppendedPerson extends Component {
   constructor(props) {
     super(props);
 
-    console.log('constructor in AppendedPerson', props);
-
     this.state = {
     	index: this.props.index,
     	name: this.props.name || '',
@@ -249,11 +340,15 @@ class AppendedPerson extends Component {
     this.props.onDeleteClick(index);
   }
 
-  handleKeyup () {
-  	console.log('arguments in handleKeyup', this.state.index + ':' + this.state.name + ':' + this.state.id);
-  	if (this.props.onUpdate) {
-  		this.props.onUpdate(this.state.index, this.state.name, this.state.id);
+  handleChange (state) {
+  	if (this.props.handleChange) {
+  		let {index, name, id} = state;
+  		this.props.handleChange(index, name, id);
   	}
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+   	return true;     
   }
 
   render() {
@@ -281,7 +376,7 @@ class AppendedPerson extends Component {
         	index={this.state.index} 
         	name={this.state.name} 
         	id={this.state.id} 
-        	updateValue={that.handleKeyup.bind(that)}/>
+        	updateValue={that.handleChange.bind(that)}/>
       </SwipeOut>
     )
   }
@@ -304,7 +399,6 @@ class InfoItem extends Component {
 	constructor (props) {
 		super(props);
 
-		console.log('constructor in InfoItem', props);
 		this.state = {
 			index: this.props.index,
 			name: this.props.name,
@@ -312,25 +406,40 @@ class InfoItem extends Component {
 		};
 	}
 
-	updateValue () {
-		let name = this.refs.inpName;
-		let id = this.refs.inpID;
+	updateNameValue (ev) {
+		this.setState({
+			name : ev.target.value
+		}, () => {
+			if (this.props.updateValue) {
+				this.props.updateValue(this.state)
+			}
+		});
+	}
 
-		if (this.props.updateValue) {
-			this.props.updateValue(this.state.index, name.value, id.value);
-		}
+	updateIDValue (ev) {
+		this.setState({
+			id : ev.target.value
+		}, () => {
+			if (this.props.updateValue) {
+				this.props.updateValue(this.state)
+			}
+		});
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+	 	return true;     
 	}
 
 	render () {
 		const defaultPersonName = '填写姓名',
 			  defaultPersonID = '请填写身份证号码',
 			  nameVal = this.state.name,
-			  idVal = this.state.id;
-
+			  idVal = this.state.id,
+			  that = this;
 		return (
 			<div className="u-info-item">
-				<input type="text" onKeyUp={this.updateValue.bind(this)} ref="inpName" className="info-label person-name" placeholder={defaultPersonName} value={nameVal}></input>
-				<input type="text" onKeyUp={this.updateValue.bind(this)} ref="inpID" className="info-value person-id" placeholder={defaultPersonID} value={idVal}></input>
+				<input type="text" onChange={that.updateNameValue.bind(that)} className="info-label person-name" placeholder={defaultPersonName} maxLength="4" value={nameVal}></input>
+				<input type="text" onChange={that.updateIDValue.bind(that)} className="info-value person-id" placeholder={defaultPersonID} maxLength="18" value={idVal}></input>
 			</div>
 		)
 	}

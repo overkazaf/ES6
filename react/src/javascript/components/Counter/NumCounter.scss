@@ -12,11 +12,36 @@
   .icon-more {
   	width: 0.24rem;
   	height: 0.24rem;
-  	line-height: 0.20rem;
   	display: inline-block;
-	border: 1px solid #ccc;
-	border-radius: 50%;
-	text-align: center;
+  	text-align: center;
+  }
+
+  .icon-less {
+    &.enabled {
+      background-image: url(../../../../res/images/FillInfo/minus_btn_enabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &.disabled {
+      background-image: url(../../../../res/images/FillInfo/minus_btn_disabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+  }
+
+  .icon-more {
+    &.enabled {
+      background-image: url(../../../../res/images/FillInfo/plus_btn_enabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &.disabled {
+      background-image: url(../../../../res/images/FillInfo/plus_btn_disabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
   }
 
   .num {
@@ -26,6 +51,6 @@
     line-height: 0.28rem;
     border-radius: 0.02rem;
     text-align: center;
-    border: 1px solid #000;
+    border: 1px solid #41444e;
   }
 }

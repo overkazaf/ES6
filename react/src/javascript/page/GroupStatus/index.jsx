@@ -10,10 +10,6 @@ class MyComponent extends Component {
 		super(props);
 	}
 
-	componentDidMount () {
-		
-	}
-
 	render () {
 		return (
 			<div className="m-group-info">

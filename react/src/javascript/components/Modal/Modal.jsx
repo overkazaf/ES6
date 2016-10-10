@@ -61,7 +61,10 @@ export default class Modal extends Component {
 
 
 	handleClose () {
-		this.hide();
+		if (this.props.onModalClose) {
+			this.props.onModalClose();
+		}
+			this.hide();
 	}
 
 	handleCancel () {

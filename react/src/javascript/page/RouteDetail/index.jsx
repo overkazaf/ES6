@@ -1,12 +1,16 @@
-import React, {Component} from 'react'
-import ReactDOM from 'react-dom'
-import Gallery from 'components/Gallery/Gallery'
-import Header from 'components/Header/Header'
-import RouteDetailHeader from 'components/RouteDetail/RouteDetailHeader'
-import RouteDetailInfo from 'components/RouteDetail/RouteDetailInfo'
-import RouteDetailFooter from 'components/RouteDetail/RouteDetailFooter'
-import RouteDetailExtendInfo from 'components/RouteDetail/RouteDetailExtendInfo'
-import 'scss/base.scss'
+﻿import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import Gallery from 'components/Gallery/Gallery';
+import Util from 'lib/util.jsx';
+import WeixinUtil from 'lib/WeixinUtil';
+import ShareConfig from 'lib/share/config.js';
+import Header from 'components/Header/Header';
+import RouteDetailHeader from 'components/RouteDetail/RouteDetailHeader';
+import RouteDetailInfo from 'components/RouteDetail/RouteDetailInfo';
+import RouteDetailFooter from 'components/RouteDetail/RouteDetailFooter';
+import RouteDetailExtendInfo from 'components/RouteDetail/RouteDetailExtendInfo';
+import 'scss/base.scss';
+import 'scss/RouteDetail/index.scss';
 
 
 class MyComponent extends Component {
@@ -16,36 +20,89 @@ class MyComponent extends Component {
 		this.state = {
 			routeDetail : {
 				imageList : [
-					'http://img1.imgtn.bdimg.com/it/u=253167938,3006594503&fm=21&gp=0.jpg', 
-					'http://pic16.nipic.com/20111007/8520906_130119649117_2.jpg', 
-					'http://pic24.nipic.com/20121020/10653015_165154682160_2.jpg'
+					'../../../res/images/RouteDetail/places/banner/banner1@3x.jpg',
+			        '../../../res/images/RouteDetail/places/banner/banner2@3x.jpg',
+			        '../../../res/images/RouteDetail/places/banner/banner3@3x.jpg',
+			        '../../../res/images/RouteDetail/places/banner/banner4@3x.jpg',
+			        '../../../res/images/RouteDetail/places/banner/banner5@3x.jpg',
+			        '../../../res/images/RouteDetail/places/banner/banner6@3x.jpg'
 				]
 			}
 		};
 	}
 
-	handleBuyStretagy (buyType) {
-		let stretagy = {
-			'single' () {
-				alert('aaa');
-			},
+	componentDidMount() {
+     Util.inPage();
+     Util.addUserPageInfoUploadListener();
+	 let that = this;
+	 setTimeout(function (){
+	 	that.initShare();
+	 }, 50);     
+	}
 
-			'group' () {
-				alert('bbb');
+
+	initShare () {
+		let sharedNewGroupSuccParam = {
+			url: 'logger/printUserShareInfo',
+			data: {
+				userId: Util.getCurrentUserId(),
+				url: ShareConfig['newGroup']().getLink(),
+				toPlatform: '' 
+			},
+			successFn : function (result) {
+				console.log('result', result);
+			},
+			errorFn : function () {
+				console.error(Array.prototype.slice.call(arguments));
 			}
 		};
+		WeixinUtil.initWeixinJSBridge(function(config){
+			// 这里是配置成功后的回调
+			WeixinUtil.showOptionMenu();
+			//window.ShareConfig = ShareConfig;
+			
+			WeixinUtil.share2Friends({
+				title: ShareConfig['newGroup']().getTitle(),
+				link: ShareConfig['newGroup']().getLink(),
+				imgUrl: ShareConfig['newGroup']().getSharedImgUrl(),
+				desc: ShareConfig['newGroup']().getDesc(),
+				success: function () {
+					//alert('intercept share2Friends successfully');
+					Util.fetchData(sharedNewGroupSuccParam);
+				},
+				cancel: function () {
+					//alert('cancel share2Friends successfully');
+				}
+			});
 
-		stretagy[buyType]();
+			WeixinUtil.share2FriendCircle({
+				title: ShareConfig['newGroup']().getTitle(),
+				link: ShareConfig['newGroup']().getLink(),
+				imgUrl: ShareConfig['newGroup']().getSharedImgUrl(),
+				desc: ShareConfig['newGroup']().getDesc(),
+				success: function(){
+					//alert('intercept share2FriendCircle successfully');
+					Util.fetchData(sharedNewGroupSuccParam);
+				},
+				cancel: function(){
+					//alert('cancel share2FriendCircle successfully');
+				},
+				fail: function(){
+					//alert('fail to call share2FriendCircle');
+				}
+			});
+		});
+	};
+
+	handleBuyStretagy (buyType) {
+
+		Util.leavePage(function () {
+			Util.redirectPageByBuyType(buyType);
+		});
 	}
 
 	render () {
-		let items = [
-			'aaa.jpg',
-			'bbb.jpg',
-			'ccc.jpg',
-			'ddd.jpg',
-			'eee.jpg'
-		];
+		let items = [];
 
 		return (
 			<div>

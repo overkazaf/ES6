@@ -24,12 +24,37 @@ export default class RouteDetailExtendInfo extends React.Component {
                 {
                   placeName: "九龙溪漂流",
                   placeDesc: "水里“疯”个够",
+                  placeIconClazz: 'icon-1',
                   placeIcon: 'xxx.jpg',
                   placeImageList : [
-                    'aaa.jpg',
-                    'bbb.jpg',
-                    'ccc.jpg',
-                    'ddd.jpg'
+                    '../../../res/images/RouteDetail/places/drift/banner1@3x.png',
+                    '../../../res/images/RouteDetail/places/drift/banner2@3x.png',
+                    '../../../res/images/RouteDetail/places/drift/banner3@3x.png'
+                  ]
+                },
+                {
+                  placeName: "风铃驿站",
+                  placeDesc: "体验千岛民俗独特韵味",
+                  placeIconClazz: 'icon-2',
+                  placeIcon: 'yyy.jpg',
+                  placeImageList : [
+                    '../../../res/images/RouteDetail/places/station/station1@3x.jpg',
+                    '../../../res/images/RouteDetail/places/station/station2@3x.jpg',
+                    '../../../res/images/RouteDetail/places/station/station3@3x.jpg',
+                    '../../../res/images/RouteDetail/places/station/station4@3x.jpg'
+                  ]
+                },
+                {
+                  placeName: "推荐：风铃驿站农家菜",
+                  placeDesc: "千岛湖鱼头美味",
+                  placeIconClazz: 'icon-3',
+                  placeIcon: 'yyy.jpg',
+                  placeImageList : [
+
+                    '../../../res/images/RouteDetail/places/food/banner2@3x.png',
+                    '../../../res/images/RouteDetail/places/food/banner3@3x.png',
+                    '../../../res/images/RouteDetail/places/food/banner4@3x.png',
+                    '../../../res/images/RouteDetail/places/food/banner5@3x.png'
                   ]
                 }
               ]
@@ -39,14 +64,57 @@ export default class RouteDetailExtendInfo extends React.Component {
               dayName: '第二天',
               placeList : [
                 {
-                  placeName: "小院农家菜",
-                  placeDesc: "千岛湖鱼头美味",
+                  placeName: "推荐：千汾公路观光",
+                  placeDesc: "中国的濑户内海",
+                  placeIconClazz: 'icon-1',
                   placeIcon: 'yyy.jpg',
                   placeImageList : [
-                    'aaa.jpg',
-                    'bbb.jpg',
-                    'ccc.jpg',
-                    'ddd.jpg'
+                    '../../../res/images/RouteDetail/places/road/banner1@3x.png',
+                    '../../../res/images/RouteDetail/places/road/banner2@3x.png',
+                    '../../../res/images/RouteDetail/places/road/banner3@3x.png'
+                  ]
+                },
+                {
+                  placeName: "文渊狮城",
+                  placeDesc: "探寻千年水下古城",
+                  placeIconClazz: 'icon-1',
+                  placeIcon: 'yyy.jpg',
+                  placeImageList : [
+                    '../../../res/images/RouteDetail/places/city/city1@3x.jpg',
+                    '../../../res/images/RouteDetail/places/city/city2@3x.jpg',
+                    '../../../res/images/RouteDetail/places/city/city3@3x.jpg',
+                    '../../../res/images/RouteDetail/places/city/city4@3x.jpg',
+                    '../../../res/images/RouteDetail/places/city/city5@3x.jpg'
+                  ]
+                },
+                {
+                  placeName: "铂瑞酒店",
+                  placeDesc: "徽式庭院豪华别墅房　中式风格五星级酒店",
+                  placeIconClazz: 'icon-3',
+                  placeIcon: 'yyy.jpg',
+                  placeImageList : [
+                    '../../../res/images/RouteDetail/places/hotel/hotel1@3x.jpg',
+                    '../../../res/images/RouteDetail/places/hotel/hotel2@3x.jpg',
+                    '../../../res/images/RouteDetail/places/hotel/hotel3@3x.jpg',
+                    '../../../res/images/RouteDetail/places/hotel/hotel4@3x.jpg'
+                  ]
+                }
+              ]
+            },
+            {
+              id: 3,
+              dayName: '第三天',
+              placeList : [
+                
+                {
+                  placeName: "龙川湾",
+                  placeDesc: "欣赏“湖中有岛，岛中有湖”的胜景",
+                  placeIconClazz: 'icon-1',
+                  placeIcon: 'yyy.jpg',
+                  placeImageList : [
+                    '../../../res/images/RouteDetail/places/lake/banner1@3x.png',
+                    '../../../res/images/RouteDetail/places/lake/banner2@3x.png',
+                    '../../../res/images/RouteDetail/places/lake/banner3@3x.png'
                   ]
                 }
               ]
@@ -63,7 +131,7 @@ export default class RouteDetailExtendInfo extends React.Component {
           href: '#fee',
           name: '费用说明',
           headImage : 'aaa.jpg',
-          imageUrl : 'fee.jpg'
+          imageUrl : 'fee.png'
         }
       ]
     }
@@ -103,6 +171,7 @@ export default class RouteDetailExtendInfo extends React.Component {
 
 function gotoHref (href) {
   let top = $('a[id="'+href+'"]').offset().top;
-  let fixedTop = parseInt(top) - 44; // 减去头部图片的高度
+  let fixedTop = parseInt(top) - 60;
   $("html,body").animate({"scrollTop":fixedTop + 'px'});
 }
+ 

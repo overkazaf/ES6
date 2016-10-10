@@ -1,8 +1,10 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import RouteItem from 'components/RouteItem/RouteItem';
 import GroupCountDown from 'components/GroupCountDown/GroupCountDown';
 import GroupList from 'components/GroupList/GroupList';
-import './GroupStatus.scss'
+import Util from 'lib/util';
+import Status from 'lib/status';
+import './GroupStatus.scss';
 
 export default 
 class GroupStatus extends Component {
@@ -12,38 +14,117 @@ class GroupStatus extends Component {
 		this.state = {
 			status : this.props.status,
 			groupSize: 15,
-			list : this.props.list || [
-				{url: 'aaa.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: true},
-				{url: 'bbb.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ccc.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'ddd.jpg', size: 2, startTime:'2016-09-19 23:43:20', isLeader: false},
-				{url: 'jjj.jpg', size: 3, startTime:'2016-09-19 23:43:20', isLeader: false}
-			],
-			success : false
+			routeItem : this.props.routeItem,
+			list : this.props.list || [],
+			remain: this.props.remain,
+			endTime: new Date().getTime()
 		};
 
-		console.log('this.props.status', this.props.status);
 	}
 
-	calcRemainCounts (list) {
-		let sum = 0;
-		let range = 3;
-		list.map(function (item){
-			sum += parseInt(item.size);
+	componentWillReceiveProps(nextProps) {
+	 	if (nextProps) {
+	 		if (nextProps.routeItem) {
+	 			this.setState({
+		 			routeItem : nextProps.routeItem,
+		 			remain: nextProps.routeItem.remain,
+		 			startTime: nextProps.routeItem.groupStartTime
+		 		}, () => {
+		 			// console.log('update in group status', this.state);
+		 		});
+	 		}
+	 		if (nextProps.remain) {
+	 			this.setState({
+		 			remain: nextProps.routeItem.remain
+		 		}, () => {
+		 			// console.log('update in group status', this.state);
+		 		});
+	 		}
+	 	}
+
+	 	
+	}
+
+	calcRemainCounts () {
+		return this.state.remain || 0;
+	}
+
+	handleInfoChange (routeItemState) {
+		
+		let that = this;
+		let groupInfoParam = {
+			url: 'groupRecordInfo/getGroupRecordDetailByGroupId',
+			method:'POST',
+			data:{
+				id: routeItemState.groupId
+			},
+			successFn: function (result){
+				if (Util.isResultSuccessful(result)) {
+					let groupList = that.buildGroupList(result.data);
+
+					that.setState({
+						list : groupList
+					}, () => {
+						// console.log('groupList has been updated');
+					});
+				}
+			},
+			errorFn: function () {
+				console.error(arguments);
+			}
+		};
+
+		this.setState({
+			endTime: new Date(routeItemState.groupEndTime).getTime(),
+			remain: routeItemState.remainAmount,
+			status: routeItemState.status
+		}, () => {
+			// console.log('handleInfoChange   ', this.state);
+			Util.fetchData(groupInfoParam);
+		})
+	}
+
+	buildGroupList (data) {
+		let groupList = data.map(function (item, index){
+			// let arr = [];
+			// for (let i = 0; i < item.normalNum; i++) {
+			// 	arr.push({
+			// 		url: item.userDTO.headImgURL,
+			// 		size: item.normalNum, 
+			// 		startTime: Util.formatTimestamp(item.payDate), 
+			// 		isLeader: index == 0
+			// 	});
+			// }
+
+			return {
+				url: item.userDTO.headImgURL,
+				size: item.normalNum, 
+				startTime: Util.formatTimestamp(item.payDate), 
+				isLeader: index == 0
+			};
+			//return arr;
 		});
 
-		return (this.state.groupSize-range) - sum;
+		return Util.flatten(groupList);
+	}
+
+	updateStatus (status) {
+		this.setState({
+			status: status
+		});
+
+		this.refs['groupCountDown'].updateStatus(status);
+	}
+
+
+	isGroupSuccessful () {
+		return this.state.status == Status.getStatusCodes().SUCCESS;
 	}
 
 	render () {
-		let {list, success} = this.state;
-		let r = this.calcRemainCounts(list);
-		let groupMessage = this.state.success ? '拼团成功，美好行程即将到来' : '还差<span className="remain-counts">' + r + '人,等你就像干柴需要烈火</span>';
+		let {list, success, endTime, remain} = this.state;
+		let r = this.calcRemainCounts();
+		let groupMessage = this.isGroupSuccessful() ? '拼团成功，美好行程即将到来' : '还差<span className="remain-counts">' + r + '人,等你就像干柴需要烈火</span>';
 		let bottomBtn;
 
 		if (success) {
@@ -52,14 +133,23 @@ class GroupStatus extends Component {
 			bottomBtn = <section className="bottom-btn fail">再去开个团</section>;
 		}
 
+		endTime = new Date(endTime).getTime();
+
+		//console.log('endTime', endTime);
 		return (
 			<div className="m-group-status">
 				<section className="status-block">
-					<RouteItem />
+					<RouteItem 
+					handleInfoChange={this.handleInfoChange.bind(this)}
+					info={this.state.routeItem}/>
 				</section>
 
 				<section className="status-block">
-					<GroupCountDown 
+					<GroupCountDown
+						ref="groupCountDown"
+						status={status}
+						remain={remain}
+						endTime={endTime}
 						list={list}
 					/>
 				</section>

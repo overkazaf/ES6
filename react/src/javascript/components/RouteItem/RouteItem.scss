@@ -3,7 +3,7 @@
 .u-route-item {
 	display: flex;
 	border-bottom: 1px solid #ccc;
-	padding: 0.12rem 0.08rem 0.12rem 0.08rem;
+	padding: 0.12rem 0.08rem 0.10rem 0.08rem;
 	background: #fff;
 
 	.column {
@@ -17,7 +17,12 @@
         -webkit-flex-direction: column;
         padding-left: 0.1rem;
 		
+        .hide {
+        	display: none;
+        }
+
 		.item-desc {
+			color:#8d919c;
 			display: flex;
 			line-height: 0.20rem;
 		}
@@ -27,9 +32,9 @@
         .item-group-members,
         .item-source-place
         {
-            margin: 0.02rem 0 0.04rem;
-            color: #41444e;
-            line-height: 0.14rem;
+            margin: 0.02rem 0 0.02rem 0;
+            color: #8d919c;
+            line-height: 0.18rem;
             display: -webkit-box;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -38,13 +43,14 @@
         }
 
 		.item-name {
-			font-size: 0.14rem;
-			font-weight: bold;
+			font-size: 0.15rem;
+			color: #41414e;
+			text-overflow: ellipsis;
 		}
 
 		.item-group-members {
 			i {
-				margin-right: 0.08rem;
+				margin-right: 0.1rem;
 			}
 		}
 
@@ -52,9 +58,9 @@
 			position: absolute;
 			left: 0.04rem;
 			bottom: 0;
-			font-size: 0.16rem;
+			font-size: 0.13rem;
 			font-weight: bold;
-			color: #fe3200;
+			color: #fe3600;
 
 			i {
 				color: #ccc;
@@ -64,18 +70,21 @@
 
 		.item-seal {
 			position: absolute;
-			right: 0.1rem;
+			right: 0rem;
 			bottom: 0;
-			width: 0.9rem;
-			height: 0.9rem;
-			background: #000;
+			width: 0.8rem;
+			height: 0.8rem;
 
 			&.success {
-
+				background-image: url(../../../../res/images/RouteList/group_success@3x.png);
+				background-size: contain;
+				background-repeat: no-repeat;
 			}
 
 			&.fail {
-
+				background-image: url(../../../../res/images/RouteList/group_fail@3x.png);
+				background-size: contain;
+				background-repeat: no-repeat;
 			}
 		}
 
@@ -93,7 +102,11 @@
 	}
 
 	.item-image {
+		background-image: url(../../../../res/images/RouteList/my_route@3x.png);
 		width: 1.4rem;
-        height: 1.2rem;
+    	height: 1.05rem;
+		background-size: cover;
+		background-repeat: no-repeat;
+		display: block;
 	}
 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import Hammer from 'lib/hammer.min.js'
+import Hammer from 'lib/hammer.min.js';
+import Util from 'lib/util';
 import className from 'classnames'
 import "./Slider.scss"
 
@@ -38,6 +39,11 @@ export default class Slider extends React.Component {
     hammer.on('swiperight', function () {
       this.previousSlide();
     }.bind(this));
+
+    setTimeout(function (){
+      let $images = $('img');
+      Util.lazyLoadImages($images, 2, 400);
+    }, 50);     
   }
 
   render() {
@@ -49,10 +55,11 @@ export default class Slider extends React.Component {
         'slide': true,
         'active': index === activeIndex
       })
-      if (index === 0) {
+      if (index) {
+        // 次页的图片懒加载
         return (
           <div id="scaleItem" className={classes} key={index}>
-            <video src={ele}></video>
+            <img data-src={ele} />
           </div>
         )
       } else {

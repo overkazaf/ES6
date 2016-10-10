@@ -7,7 +7,9 @@ class Counter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      num: props.curValue || 1
+      minVal: this.props.minVal,
+      maxVal: this.props.maxVal,
+      curVal: this.props.curVal || 0
     }
   }
 
@@ -25,7 +27,7 @@ class Counter extends Component {
   }
 
   handleNumChange() {
-    this.props.numChange(this.state.num);
+    this.props.numChange(this.state.curVal);
   }
 
   /**
@@ -38,43 +40,65 @@ class Counter extends Component {
    * @return   {[type]}                               [description]
    */
   componentWillReceieveProps (nextProps) {
-    console.log('componentWillReceieveProps', nextProps);
-    if (nextProps.curValue) {
+    if (nextProps.curVal) {
       this.setState({
-        num: nextProps.curValue
+        curVal: nextProps.curVal
       });
     }
+
+    console.log('componentWillReceiveProps(nextProps)', nextProps.maxVal);
+    if (nextProps.maxVal) {
+      this.setState({
+        maxVal: nextProps.maxVal
+      });
+    }
+  
   }
 
   add() {
-    var num = +this.state.num + 1;
-    if (num <= this.props.maxValue) {
+    var curVal = +this.state.curVal + 1;
+    if (curVal <= this.state.maxVal) {
       this.setState({
-        num: num
+        curVal: curVal
       }, () => {
-        this.handleNumChange(this.state.num);
+        this.handleNumChange(this.state.curVal);
       });
     }
   }
 
   sub() {
-    var num = +this.state.num - 1;
-    if (num >= 1) {
+    var curVal = +this.state.curVal - 1;
+    if (curVal >= this.state.minVal) {
       this.setState({
-        num: num
+        curVal: curVal
       }, () => {
-        this.handleNumChange(this.state.num);
+        this.handleNumChange(this.state.curVal);
       });
     }
   }
+
+  updateMaxValue (val) {
+    this.setState({
+      maxVal: val
+    });
+  }
+
+  setCurrentValue (val) {
+    this.setState({
+      curVal: val
+    });
+  }
+
+
   render() {
-    var maxValue = +this.props.maxValue;
-    var curValue = +this.state.num;
+    let curValue = +this.state.curVal;
+    let lessClazz = (curValue == this.state.minVal) ? 'icon-less disabled' : 'icon-less enabled'; 
+    let moreClazz = (curValue == this.state.maxVal) ? 'icon-more disabled' : 'icon-more enabled'; 
     return (
       <div className='m-counter'>
-        <div className="icon-less" ref="sub">-</div>
-        <div className='num'>{this.state.num}</div>
-        <div className="icon-more" ref="add">+</div>
+        <div className={lessClazz} ref="sub"></div>
+        <div className='num'>{curValue}</div>
+        <div className={moreClazz} ref="add"></div>
       </div>
     )
 

@@ -163,7 +163,7 @@ input::-ms-clear, input::-ms-reveal {
 }
 
 .hide {
-  display: none;
+  display: none!important;
 }
 
 @-webkit-keyframes fa-spin {
@@ -186,4 +186,8 @@ input::-ms-clear, input::-ms-reveal {
     -webkit-transform: rotate(359deg);
     transform: rotate(359deg)
   }
+}
+
+.fixfixed {
+  position: absolute;
 }

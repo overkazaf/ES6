@@ -8,16 +8,18 @@
 	height: 0.68rem;
 	display: flex;
 	z-index: 9999;
+	background: #fff;
 
 	.ready-pay-info {
 		flex: 2;
 		line-height: 0.68rem;
 		background: #fff;
-		color: #888c8f;
+		color: #54575f;
 		
 		.price {
 			display: flex;
 			text-align: center;
+			background: #fff;
 
 			.price-tag {
 				font-size: 0.16rem;
@@ -50,5 +52,11 @@
 		color: #fff;
 		background: #2bc2bd;
 		text-align: center;
+		&.hide {
+			display: none;
+		}
+		&.disabled {
+			background: #ccc;
+		}
 	}
 }

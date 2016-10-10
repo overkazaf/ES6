@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+﻿import React, {Component} from 'react';
 import './GroupInfo.scss'
 
 
@@ -6,42 +6,62 @@ export default class GroupInfo extends Component {
 
 	constructor (props) {
 		super(props);
-
-
-		this.state = {
-			groupSizes: ['6-9人', '10-12人', '12-15人'],
-			originPlaces: ['杭州', '上海', '南京'],
-			leavedDates: ['9月30日', '10月2日', '10月3日'],
-
-			selectedGroupSizeIndex: 1,
-			selectedOriginPlaceIndex: 0,
-			selectedLeavedDateIndex: 0,
-
-			leaveDays: 3
-		};
+		this.state = this.props.info;
 	}
 
 	selectGroupSize (index) {
+		if(!this.state.canSelect) return false;
 		console.log('select group size ', index);
 
 		this.setState({
 			selectedGroupSizeIndex: index
+		}, () => {
+			this.props.handleGroupStateChange(this.state);
 		})
 	}
 
 	selectOriginPlace (index) {
+		if(!this.state.canSelect) return false;
 		console.log('select origin place ', index);
 		this.setState({
 			selectedOriginPlaceIndex: index
+		}, () => {
+			this.props.handleGroupStateChange(this.state);
 		})
 	}
 
 	selectLeaveDate (index) {
+		if(!this.state.canSelect) return false;
 		console.log('select leave date ', index);
 
 		this.setState({
 			selectedLeavedDateIndex: index
+		}, () => {
+			this.props.handleGroupStateChange(this.state);
 		})
+	}
+
+
+	componentWillReceiveProps(nextProps) {
+	      if (nextProps) {
+	      	let info = nextProps.info;
+
+	      	if (nextProps.info) {
+		      	this.setState({
+		      		canSelect: info.canSelect,
+		      		selectedGroupSizeIndex: info.selectedGroupSizeIndex,
+		      		selectedOriginPlaceIndex: info.selectedOriginPlaceIndex,
+		      		selectedLeavedDateIndex: info.selectedLeavedDateIndex
+		      	});
+	      	}
+	      	
+
+	      	if (nextProps.canSelect) {
+	      		this.setState({
+	      			canSelect : nextProps.canSelect
+	      		});
+	      	}
+	      } 
 	}
 
 
@@ -70,11 +90,12 @@ export default class GroupInfo extends Component {
 			)
 		});
 
+        let groupSizeClazz = this.props.isGroup ? 'row' : 'row hide';
 
 		return (
 			<div className="m-group-info">
-				<div className="row">
-				<div className="opt-header"><b className="title">开团人数</b><span className="ext-info">成人人数</span></div>
+				<div className={groupSizeClazz}>
+				<div className="opt-header"><b className="title">开团人数</b><span className="ext-info">(成人人数)</span></div>
 					<ul className="opt-list">
 						{optListItem}
 					</ul>
