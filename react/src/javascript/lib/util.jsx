@@ -257,6 +257,31 @@ export default class Util {
 		}
 	}
 
+	/**
+	 * [calcCountDownByLeftTime 通过剩余毫秒数返回格式化的时间]
+	 * @param  {[type]} leftTimeMills [description]
+	 * @return {[type]}               [description]
+	 */
+    static calcCountDownByLeftTime (leftTime) {
+    	let secondsPerMinute = 60;
+    	let secondsPerHour = 60 * secondsPerMinute;
+
+    	let leftHours = Math.floor(leftTime / secondsPerHour);
+    	let leftMinutes = Math.floor((leftTime - leftHours*secondsPerHour) / secondsPerMinute);
+    	let leftSeconds = Math.floor(leftTime % 60);
+
+    	if (leftHours < 10) leftHours = '0' + leftHours;
+    	if (leftMinutes < 10) leftMinutes = '0' + leftMinutes;
+    	if (leftSeconds < 10) leftSeconds = '0' + leftSeconds;
+
+
+    	return {
+    		hours: leftHours,
+    		minutes: leftMinutes,
+    		seconds: leftSeconds
+    	};
+    }
+
    static formatTimestamp (timestamp, format) {
        let  d = new Date(timestamp),
                   year = d.getFullYear(),
@@ -394,6 +419,7 @@ export default class Util {
 			"groupStartTime" : Util.formatTimestamp(item.startTime),
 			"groupEndTime" : item.endTime,
             "travelTime": item.travelTime,
+            "type": item.type, // 1为拼团购买，2为单独购买
             "travelAddress": item.travelAddress
 		} 
 	}

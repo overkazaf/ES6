@@ -22,6 +22,9 @@ export default class PayMethod extends Component {
 				checked: true
 			},
 			cannotPay : false,
+			startTime : this.props.startTime,
+			hasCountDown: !!this.props.hasCountDown,
+			countDownMessage: null,
 			payPrice: this.props.payPrice || '00.00'
 		};
 	}
@@ -43,18 +46,61 @@ export default class PayMethod extends Component {
 		})
 	}
 
-
+	noCountDown (countDown) {
+		return countDown && (parseInt(countDown.minutes) == 0 && parseInt(countDown.seconds) == 0)
+	}
 
 	componentWillReceiveProps(nextProps) {
-	    if (nextProps && nextProps.payPrice) {
+		let that = this;
+	    if (nextProps.payPrice) {
 	    	this.setState({
 	    		payPrice : nextProps.payPrice
 	    	});
 	    }  
 
-	    if (nextProps && nextProps.groupId) {
+	    if (nextProps.groupId) {
 	    	this.setState({
 	    		groupId: nextProps.groupId
+	    	});
+	    }
+
+	    if (nextProps.invoiceTitle) {
+	    	this.setState({
+	    		invoiceTitleValue: nextProps.invoiceTitle,
+	    		invoice: {
+					checked : false // 这个还要判断一下，待支付状态下是可以修改的
+				}
+	    	});
+	    }
+
+	    if (nextProps.startTime) {
+	    	this.setState({
+	    		startTime: nextProps.startTime,
+	    		hasCountDown: true,
+	    		countDownMessage: that.buildCountDownMessage(that.calcCountDown())
+	    	}, ()=>{
+	    		let fn = function(){
+	    			let countDown = that.calcCountDown();
+    				if (that.noCountDown(countDown)) {
+    					
+    					that.setState({
+		    				cannotPay: true,
+		    				countDownMessage: ''
+		    			}, ()=>{
+		    				clearInterval(that.timer);
+		    			});
+    				} else {
+    					that.setState({
+		    				countDownMessage: that.buildCountDownMessage(countDown)
+		    			});
+    				}
+	    		};
+
+	    		fn();
+	    		if (!that.timer) {
+	    			that.timer = setInterval(fn, 1000);
+	    		}
+	    		
 	    	});
 	    }
 	}
@@ -177,42 +223,43 @@ export default class PayMethod extends Component {
 
 		//console.log('prePayParam', prePayParam);
 		Util.fetchData(prePayParam);
-
 	}
 
 	handleInvoiceTitleChange (ev) {
-		console.log("ev.target.value", ev.target.value);
 		this.setState({
 			invoiceTitleValue: ev.target.value
 		}, () => {
-			console.log('invoiceTitle change', this.state);
+			//console.log('invoiceTitle change', this.state);
 		});
 	}
 
-	render () {
+	buildCountDownMessage (countDown) {
+		if(!countDown) return '';
+		else return `(还剩${countDown.minutes}分${countDown.seconds}秒)`;	
+	}
 
-		let that = this,
-			invoiceTitle, //发票
-			protocol, // 平台协议
-			payPrice = this.state.payPrice,
-			isInvoiceDisabled = true,
-			payBtn,
-			invoiceTitleValue = this.state.invoiceTitleValue;
+	calcCountDown () {
+		let startTime = this.state.startTime;
+		let countDown, countDownMessage;
 
-		if (this.state.invoice.checked) {
-			isInvoiceDisabled = false;
-			invoiceTitle = <i className="chk-component checked"  onClick={this.changeInvoice.bind(this)}></i>;
-		} else {
-			invoiceTitle = <i className="chk-component unchecked" onClick={this.changeInvoice.bind(this)}></i>;
+		if (startTime) {
+			let endTime = 1 * 60 * 60 * 1000 + new Date("2016-10-13 20:04:24").getTime();
+			let currentTime = new Date().getTime();
+			let leftTime = Math.floor((endTime - currentTime)/1000);
+			if (leftTime > 0) {
+				countDown = Util.calcCountDownByLeftTime(leftTime);
+			}
 		}
+		return countDown;
+	}
 
-
-		if (this.state.protocol.checked) {
-			protocol = <i className="chk-component checked" onClick={this.changeProtocol.bind(this)}></i>;
-		} else {
-			protocol = <i className="chk-component unchecked" onClick={this.changeProtocol.bind(this)}></i>;
-		}
-
+	/**
+	 * [buildPayButtonByCurrentStatus 根据当前的按钮状态生成支付按钮]
+	 * @return {[type]} [description]
+	 */
+	buildPayButtonByCurrentStatus () {
+		let that = this;
+		let payBtn;
 
 		if (Util.isGroup()) {
 			if (!this.state.protocol.checked || this.state.cannotPay) {
@@ -235,6 +282,38 @@ export default class PayMethod extends Component {
 						 </div>
 			}
 		}
+
+		return payBtn;
+	}
+
+	render () {
+
+		let that = this,
+			invoiceTitle, //发票
+			protocol, // 平台协议
+			payPrice = this.state.payPrice,
+			isInvoiceDisabled = true,
+			payBtn,
+			invoiceTitleValue = this.state.invoiceTitleValue,
+			countDownMessage = this.state.hasCountDown? this.state.countDownMessage : '';
+
+		if (this.state.invoice.checked) {
+			isInvoiceDisabled = false;
+			invoiceTitle = <i className="chk-component checked"  onClick={this.changeInvoice.bind(this)}></i>;
+		} else {
+			invoiceTitle = <i className="chk-component unchecked" onClick={this.changeInvoice.bind(this)}></i>;
+		}
+
+
+		if (this.state.protocol.checked) {
+			protocol = <i className="chk-component checked" onClick={this.changeProtocol.bind(this)}></i>;
+		} else {
+			protocol = <i className="chk-component unchecked" onClick={this.changeProtocol.bind(this)}></i>;
+		}
+
+
+		payBtn = this.buildPayButtonByCurrentStatus();
+
 
 
 		return (
@@ -262,7 +341,10 @@ export default class PayMethod extends Component {
 				</section>
 				<div className="pay-now footer-fixed">
 					<div className="total-price">
-						合计 <span className="price">￥{payPrice}</span>
+						<span className="price">￥{payPrice}</span>
+						<span className="count-down-msg">
+							{countDownMessage}
+						</span>
 					</div>
 					{payBtn}
 				</div>

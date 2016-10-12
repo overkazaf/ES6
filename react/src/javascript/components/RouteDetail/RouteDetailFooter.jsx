@@ -77,15 +77,15 @@ export default class RouteDetailFooter extends Component {
 		} else {
 			
 			footerBtns = <div className="footer-buttons">
-							<a href="tel:123123123" className="btn-dial">
+							<a href="4001006560" className="btn-dial hide">
 								<span>联系电话</span>
 							</a>
-							<div onClick={that.handleClick.bind(that, 'single')} className="btn-buy-single">
+							<div onClick={that.handleClick.bind(that, 'single')} className="btn-buy-single hide">
 								<span>￥1550起/人</span>
 								<span className="font-sm">单独购买</span>
 							</div>
 
-							<div onClick={that.handleClick.bind(that, 'group')} className="btn-buy-group hide">
+							<div onClick={that.handleClick.bind(that, 'group')} className="btn-buy-group">
 								<span>￥998起/人</span>
 								<span className="font-sm">10人起团</span>
 							</div>

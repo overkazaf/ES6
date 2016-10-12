@@ -1,15 +1,19 @@
 export default class Status {
 	static getStatusCodes () {
 		return {
-			'ALL': 0,　// 所有状态
-			'PENDING': 2, // 预支付
-			'RUNNING': 3, //　拼团中
-			'SUCCESS': 4, // 已成团
-			'FAIL': 5 // 已失败
-		};
-
-		/*
-			return {}
-		 */
+			'1' : {　// 拼团
+				'ALL': 0,　// 所有状态
+				'PENDING': 1, // 待支付
+				'RUNNING': 2, //　拼团中
+				'SUCCESS': 3, // 已成团
+				'FAIL': 4 // 已失败
+			},
+			'2' : { // 单独购买
+				'ALL': 0,　// 所有状态
+				'PENDING': 2, // 待支付
+				'SUCCESS': 3, //　成功
+				'CANCEL': 4 // 取消
+			}
+		}
 	}
 }

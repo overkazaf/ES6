@@ -64,58 +64,70 @@ export default class RouteItem extends Component {
 
 	/**
 	 * [getStatusDivByStatus 根据当前的行程状态生成右下角的状态块]
+	 * @param  {[type]} type [订单类型，１为拼团，２为单独购买]
 	 * @param  {[type]} status [行程状态，与Status.getStatusCodes一一对应]
 	 * @param  {[type]} statusCodes [行程状态码映射表]
 	 * @return {[type]}        [description]
 	 */
-	getStatusDivByStatus (status, statusCodes) {
+	getStatusDivByStatus (type, status, statusCodes) {
 		let statusDiv;
-		switch (status) {
-			case statusCodes.RUNNING:
-				statusDiv = (<div className="item-status-text">拼团中</div>);
-				break;
-			case statusCodes.SUCCESS:
-				statusDiv = (<div className="item-seal success"></div>);
-				break;
-			case statusCodes.FAIL:
-				statusDiv = (<div className="item-seal fail"></div>);
-				break;
-			case statusCodes.PENDING:
-				statusDiv = (<div className="item-status-text">待支付</div>);
-				break;
-			default:
-				statusDiv = (<div className="item-status-text">拼团中</div>);
-				break;
+		let codes = statusCodes[type];
+		if (type == 1) {
+			switch (status) {
+				case codes.RUNNING:
+					statusDiv = (<div className="item-status-text">拼团中</div>);
+					break;
+				case codes.SUCCESS:
+					statusDiv = (<div className="item-seal success"></div>);
+					break;
+				case codes.FAIL:
+					statusDiv = (<div className="item-seal fail"></div>);
+					break;
+				case codes.PENDING:
+					statusDiv = (<div className="item-status-text">等待支付</div>);
+					break;
+				default:
+					statusDiv = (<div className="item-status-text">拼团中</div>);
+					break;
+			}
+		} else if (type == 2) {
+			//　单独购买
+			switch (status) {
+				case codes.SUCCESS:
+					statusDiv = (<div className="item-seal success"></div>);
+					break;
+				case codes.CANCEL:
+					statusDiv = (<div className="item-seal fail"></div>);
+					break;
+				case codes.PENDING:
+					statusDiv = (<div className="item-status-text">等待支付</div>);
+					break;
+			}
 		}
 		return statusDiv;
 	}
 
-	generateItemHrefByStatusInfo (status, statusCodes, groupId, detailId) {
+	generateItemHrefByStatusInfo (type, status, statusCodes, groupId, detailId) {
 		let href = '';
-		switch (status) {
-			case statusCodes.PENDING:
-			href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Pay/index.html?groupId=' + groupId+"&detailId=" + detailId;
-			break;
-			default:
-			href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Share/index.html?groupId=' + groupId+"&detailId=" + detailId;
-			break;
+		let codes = statusCodes[type];
+		if (type == 1) {
+			switch (status) {
+				case codes.PENDING:
+					href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Pay/index.html?groupId=' + groupId+"&detailId=" + detailId;
+				break;
+				default:
+					href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Share/index.html?groupId=' + groupId+"&detailId=" + detailId;
+					break;
+			}
+		} else if (type == 2) {
+			switch (status) {
+				default:
+					href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/OrderDetail/index.html?groupId=' + groupId+"&detailId=" + detailId;
+					break;
+			}
 		}
+		
 		return href;
-	}
-
-	getStatusTextByStatusCode (status, statusCodes) {
-		let text = '';
-		switch (status) {
-			case statusCodes.PENDING:
-				text = '待支付';
-				break;
-			case statusCodes.RUNNING:
-				text = '拼团中';
-				break;
-			default:
-				text = '拼团中';
-		}
-		return text;
 	}
 
 	render () {
@@ -128,18 +140,19 @@ export default class RouteItem extends Component {
             kid,
 			travelAddress,
 			price,
-			status
+			status,
+			type // 类型，１为拼团，２为单独购买
 		} = this.state;
 
+		console.log('type', type);
 		let statusCodes = Status.getStatusCodes();
-            
-		let statusText = this.getStatusTextByStatusCode(status, statusCodes);   // 2为拼团中 3为已成团 4为拼团失败
-		let statusDiv = this.getStatusDivByStatus(status, statusCodes);
+		let statusDiv = this.getStatusDivByStatus(type, status, statusCodes);
 		let detailId = id;
 
 		// 根据status, groupId, detailId生成行程链接
 		// 因为新加了预支付状态，预支付状态点击以后要跳转到相应的支付页面
-		let itemHref = this.generateItemHrefByStatusInfo(status, statusCodes, groupId, detailId);
+		let itemHref = this.generateItemHrefByStatusInfo(type, status, statusCodes, groupId, detailId);
+		// console.log('itemHref', itemHref);
 		return (
 			<a href={itemHref} className="u-route-item">
 				<div className="column">

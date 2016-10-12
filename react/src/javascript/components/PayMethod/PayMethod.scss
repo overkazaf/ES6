@@ -43,6 +43,7 @@
 			width: 3rem;
 			border-bottom: 1px solid #ccc;
 			margin-left: 0.25rem;
+			color: #2ac1bc;
 			background: #fff;
 		}
 
@@ -103,6 +104,11 @@
 
 			.price {
 				font-size: 0.16rem;
+				color: #ff310B;
+			}
+
+			.count-down-msg {
+				font-size: 0.13rem;
 				color: #ff310B;
 			}
 		}
