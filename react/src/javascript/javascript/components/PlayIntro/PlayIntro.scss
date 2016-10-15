@@ -1,0 +1,12 @@
+@import '../../../scss/_config.scss';
+
+.m-play-intro {
+    position: absolute;
+    right: 0.1rem;
+	margin-top: -0.3rem;
+    width: 0.4rem;
+    height: 0.6rem;
+    background-image: url(../../../../res/images/RouteDetail/play_intro@3x.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+}

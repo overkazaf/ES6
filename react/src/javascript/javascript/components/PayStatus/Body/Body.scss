@@ -1,0 +1,47 @@
+$main-gray-color: #e2e7ea;
+.m-body {
+	padding: 0.1rem;
+
+	.u-route-desc {
+		border-top: 1px solid $main-gray-color;
+		.title {
+			margin-top: 0.1rem;
+			color: #41444e;
+		}
+
+		.desc {
+			color: #8d919c;
+			.desc-detail {
+
+			}
+			.desc-price {
+				.price-label {
+					
+					.price-sign {
+
+					}
+					
+					.price-value {
+
+					}
+				}
+			}
+		}
+	}
+
+	.u-route-hint {
+		border-top: 1px solid $main-gray-color;
+		padding: 0.1rem;
+		color: #8d919c;
+		font-size: 0.12rem;
+
+		.title {
+			margin-top: 0.1rem;
+			margin-bottom: 0.04rem;
+		}
+
+		.desc {
+			line-height: 0.2rem;
+		}
+	}
+}

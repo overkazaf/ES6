@@ -1,43 +1,67 @@
+/**
+ * [hookAndFixUrlPrefix 临时处理的钩子函数，用于替换数据结构中的特定前缀，后期将图片往OSS中放就不需要做这个hook了]
+ * @Author   JohnNong
+ * @Email    overkazaf@gmail.com
+ * @Github   https://github.com/overkazaf
+ * @DateTime 2016-10-15T00:04:02+0800
+ * @param    {[type]}                     json [description]
+ * @return   {[type]}                          [description]
+ */
 function hookAndFixUrlPrefix (json) {
-	return dsf(json);
+	return dsf(json, fixString);
 }
 
+/**
+ * [isArray 判断是否为数据的工具方法]
+ * @Author   JohnNong
+ * @Email    overkazaf@gmail.com
+ * @Github   https://github.com/overkazaf
+ * @DateTime 2016-10-15T00:04:52+0800
+ * @param    {[type]}                     obj [description]
+ * @return   {Boolean}                        [description]
+ */
 function isArray (obj) {
 	if (typeof Array.isArray == 'function') return Array.isArray(obj);
 	return obj instanceof Array || Object.prototype.toString.call(obj) == '[object Array]';
 }
 
-function dfs (obj) {
+/**
+ * [dfs 用深度优先的递归进行处理]
+ * @Author   JohnNong
+ * @Email    overkazaf@gmail.com
+ * @Github   https://github.com/overkazaf
+ * @DateTime 2016-10-15T00:05:05+0800
+ * @param    {[type]}                     obj [description]
+ * @return   {[type]}                         [description]
+ */
+function dfs (obj, fn) {
 	if (typeof obj != 'object') {
 		// 基本数据类型
-		if (typeof obj == 'string') return fixString(obj);
+		if (typeof obj == 'string') return fn(obj);
 		else return obj;
 	}
 	
 	var ret = new obj.constructor();
 	if (isArray(obj)) {
 		for (var i = 0, l = obj.length; i<l; i++) {
-			ret[i] = dfs(obj[i]);
+			ret[i] = dfs(obj[i], fn);
 		}
 	} else {
 		for (var attr in obj) {
 			console.log(attr, typeof obj[attr]);
 			if (obj.hasOwnProperty(attr)) {
-				ret[attr] = dfs(obj[attr]);
+				ret[attr] = dfs(obj[attr], fn);
 			}
 		}
 	}
 	return ret;
 }
 
-function fixStringByPattern (str) {
+var pattern = 'fightgroup-web/public/';
+var prefix = 'http://localhost:8090/fightgroup-web/public/';
+
+function fixStringByPattern (str, pattern, prefix) {
 	var target = str;
-	var pattern = 'fightgroup-web/public/';
-	// dev
-	var prefix = 'http://localhost:8090/fightgroup-web/public/';
-	// online
-	//var prefix = 'http://localhost:8090/fightgroup-web/public/';
-	
 	if (target.indexOf(pattern) >= 0) {
 		var subfix = target.split(pattern)[1];
 		target = prefix + subfix;

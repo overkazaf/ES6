@@ -1,0 +1,28 @@
+{
+	"全部行程" : [
+		{
+			"price" : 1234.12,
+			"name" : "route1",
+			"groupMemberNumber" : "3",
+			"groupStartTime" : "2016-10-08 20:30:14"
+		},
+		{
+			"price" : 1234.12,
+			"name" : "route2",
+			"groupMemberNumber" : "2",
+			"groupStartTime" : "2016-10-08 20:34:14"
+		},
+		{
+			"price" : 1234.12,
+			"name" : "route3",
+			"groupMemberNumber" : "3",
+			"groupStartTime" : "2016-10-08 20:31:14"
+		},
+		{
+			"price" : 1234.12,
+			"name" : "route4",
+			"groupMemberNumber" : "1",
+			"groupStartTime" : "2016-10-08 20:50:14"
+		}
+	]
+}

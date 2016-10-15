@@ -1,0 +1,73 @@
+@import '../../../scss/_config.scss';
+
+.m-route-detail-info {
+  width: 100%;
+  padding: 0.05rem 0.1rem 0.05rem 0.1rem;
+
+  .detail-title {
+    margin: 0.20rem auto 0.15rem;
+    font-size: 0.15rem;
+    text-align: center;
+  }
+  
+  .detail-desc {
+    line-height: 0.18rem;
+    padding: 0 0.09rem;
+    font-size: 0.13rem;
+    color: #8d919c;
+  }
+
+  .detail-price {
+    margin-top: 0.17rem;
+    padding: 0 0.09rem;
+
+    .price-single {
+      color: #ff3600;
+      font-size: 0.16rem;
+      font-weight: bold;
+    }
+
+    .price-intro {
+      color: #8d919c;
+      font-size: 0.12rem;
+      font-weight: 200;
+    }
+
+    .price-line-through {
+      text-decoration: line-through;
+      color: #BEBEBE;
+      font-size: 0.13rem;
+    }
+  }
+
+  .u-group-count-down {
+    .group-list {
+        padding: 0.09rem 0.05rem 0.14rem 0.05rem !important;
+    }
+  }
+
+  .m-play-intro {
+    margin-top: -0.5rem;
+  }
+
+  .play-intro-img {
+    background-image: url(../../../../res/images/RouteDetail/introduceNew@3x.jpg);
+    background-repeat: no-repeat;
+    max-width: 100%;
+    width: 350px;
+    height: 1334px;
+    background-size: 100%;
+    display: inline-block;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
