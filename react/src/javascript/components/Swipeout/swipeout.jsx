@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import Hammer from 'react-hammerjs';
-import './swipeout.scss';
+import './SwipeOut.scss';
 
-class Swipeout extends React.Component {
+class SwipeOut extends React.Component {
   static propTypes = {
     prefixCls: PropTypes.string,
     additionalCls: PropTypes.string,
@@ -235,4 +235,4 @@ class Swipeout extends React.Component {
   }
 }
 
-export default Swipeout;
+export default SwipeOut;

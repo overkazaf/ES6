@@ -1,6 +1,6 @@
 ﻿import React, {Component} from 'react';
 import Counter from 'components/Counter/Counter';
-import SwipeOut from 'components/Swipeout/Swipeout';
+import SwipeOut from 'components/SwipeOut/SwipeOut';
 import Confirm from 'components/Confirm/Confirm';
 import './PersonInfo.scss'
 

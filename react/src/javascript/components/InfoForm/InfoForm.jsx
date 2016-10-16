@@ -504,28 +504,28 @@ export default class InfoForm extends Component {
 		});
    }
 
-   validateAndResetSumbitButton () {
-   	let that = this;
-   	let validResult = that.validateForm();
-   	//console.log('validResult', validResult);
-	if (validResult.success == true) {
-		that.setState({
-			canSubmit: true
-		});
-	} else {
-		//console.log('!canSubmit');
-		that.setState({
-			canSubmit: false
-		}, ()=>{
-			//console.log('!canSubmit', that.state);
-			let personInfo = that.refs['personInfo'];
-			//console.log(personInfo.refs['adultCounter']);
-			//console.log(personInfo.refs['adultCounter'].props);
+	validateAndResetSumbitButton () {
+		let that = this;
+		let validResult = that.validateForm();
+			//console.log('validResult', validResult);
+			if (validResult.success == true) {
+				that.setState({
+					canSubmit: true
+				});
+			} else {
+				//console.log('!canSubmit');
+				that.setState({
+					canSubmit: false
+				}, ()=>{
+				//console.log('!canSubmit', that.state);
+				let personInfo = that.refs['personInfo'];
+				//console.log(personInfo.refs['adultCounter']);
+				//console.log(personInfo.refs['adultCounter'].props);
 
-			personInfo.refs['adultCounter'].updateMaxValue(that.state.maxAdultValue);
-		});
+				personInfo.refs['adultCounter'].updateMaxValue(that.state.maxAdultValue);
+			});
+		}
 	}
-   }
 
 	handleMainInfoChange (state) {
 		let info = this.state.info;

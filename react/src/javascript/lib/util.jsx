@@ -28,7 +28,7 @@ export default class Util {
 
 				$(this).on('blur', function (){
 					$fixedEls.removeClass('hide');
-				})
+				});
 			});
 		});
 	}

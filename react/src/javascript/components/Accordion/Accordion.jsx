@@ -50,33 +50,33 @@ export default class Accordion extends Component {
 		return ret;
 	}
 
-	buildTableLine (item) {
+	buildInfoLine (item) {
 		return (
-			<table>
+			<div >
 				{Object.keys(item).map(function (key, index){
 					let keyValue = `key-${index}`
-					let quote = item[key] ? ':' : '';
+					let quote = item[key] == '' ? ':' : '';
 					return (
-						<tr key={keyValue}>
-							<td>
-								{key} {quote}
-							</td>
-							<td>
-								{item[key]}
-							</td>
-						</tr>
+						<div className="row" key={keyValue}>
+							<span className="row-key">
+								{key}{quote}
+							</span>
+							<span className="row-value">
+								 {item[key]}
+							</span>
+						</div>
 					)
 				})}
-			</table>
+			</div>
 		);
 	}
 
-	buildTableContent (list, name, type) {
+	buildInfoContent (list, name, type) {
 		let that = this;
 		let rawContent = list.map(function (item, index) {
-			let itemContent = that.buildTableLine(that.transformData(item, type));
+			let itemContent = that.buildInfoLine(that.transformData(item, type));
 			return (
-				<div>
+				<div className="item-body">
 					{itemContent}
 				</div>
 			)
@@ -85,7 +85,7 @@ export default class Accordion extends Component {
 		let targetContent = (function (){
 			return (
 				<div className="u-accordion-item">
-					<h2>{name}:</h2>
+					<h2 className="item-title">{name}:</h2>
 					{rawContent}
 				</div>
 			);
@@ -96,9 +96,9 @@ export default class Accordion extends Component {
 
 	getAccordionContent (info) {
 		let that = this;
-		let hotelContent = info && info.hotel ? that.buildTableContent(info.hotel,'酒店名称', 'hotel') : null;
-		let userContent = info && info.user ? that.buildTableContent(info.hotel,'出行人信息', 'user') : null;
-		let trafficContent = that.buildTableContent([{}], '交通信息', 'traffic');
+		let hotelContent = info && info.hotel ? that.buildInfoContent(info.hotel,'酒店名称', 'hotel') : null;
+		let userContent = info && info.user ? that.buildInfoContent(info.hotel,'出行人信息', 'user') : null;
+		let trafficContent = that.buildInfoContent([{}], '交通信息', 'traffic');
 
 		return (
 			<div>

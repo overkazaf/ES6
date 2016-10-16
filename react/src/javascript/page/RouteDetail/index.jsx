@@ -32,12 +32,12 @@ class MyComponent extends Component {
 	}
 
 	componentDidMount() {
-     Util.inPage();
-     Util.addUserPageInfoUploadListener();
-	 let that = this;
-	 setTimeout(function (){
-	 	that.initShare();
-	 }, 50);     
+		Util.inPage();
+		Util.addUserPageInfoUploadListener();
+		let that = this;
+		setTimeout(function (){
+			that.initShare();
+		}, 50);     
 	}
 
 
@@ -95,7 +95,6 @@ class MyComponent extends Component {
 	};
 
 	handleBuyStretagy (buyType) {
-
 		Util.leavePage(function () {
 			Util.redirectPageByBuyType(buyType);
 		});
@@ -103,7 +102,6 @@ class MyComponent extends Component {
 
 	render () {
 		let items = [];
-
 		return (
 			<div>
 				<div>

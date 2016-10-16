@@ -59,7 +59,30 @@
 		transition: all 0.3s ease-in-out;
 		overflow:hidden;
 		.u-accordion-item {
-			padding: 0.1rem;
+			padding: 0.15rem;
+
+			.item-title {
+	        	font-size: 0.15rem;
+	        	font-weight: bold;
+	        }
+
+	        .item-body {
+	        	padding: 0.15rem 0.29rem 0.15rem 0.29rem;
+	        	
+	        	div.row {
+        			span.row-key,
+        			span.row-value {
+        				font-size: 0.13rem;
+        				line-height: 0.24rem;
+        			}
+
+        			span.row-value {
+        				padding-left: 0.04rem;
+        			}
+        		}
+
+	        	border-bottom: 1px solid #e2e7ea;
+	        }
 		}
 
 		&.ht0 {

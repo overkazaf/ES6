@@ -31,7 +31,7 @@ class MyComponent extends Component {
 					detailId : detailId
 				},
 				successFn: function (result) {
-					let res = result.fightGroupResult;
+					let res = result;
 					if (Util.isResultSuccessful(res.success)) {
 						let newState = Util.rebuildItemState(res.data.data);
 						that.setState({
@@ -107,7 +107,7 @@ class MyComponent extends Component {
 		console.log('startTime', startTime);
 		
 		return (
-			<div className="m-pay-info">
+			<div className="m-orderdetail">
 				<RouteItem 
 					parentContext={that} 
 					handleInfoChange={that.handleInfoChange} 
