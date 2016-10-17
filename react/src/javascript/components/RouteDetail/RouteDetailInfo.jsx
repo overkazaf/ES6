@@ -106,18 +106,32 @@ export default class RouteDetailInfo extends React.Component {
     } else {
       countDownDiv = null;
     }
+    let priceDiv = function () {
+      let priceInfo;
+      if(0){  //团购
+        priceInfo = (
+          <div className="detail-price">
+            <span className="price-single">¥{that.props.info.fightGroupPrice}起/人</span>
+            <span className="price-intro">【10人起团】</span>
+            <span className="price-line-through">¥{that.props.info.singlePrice}/人</span>
+          </div>
+        );
+      }else{  //单独购买
+        priceInfo = (
+          <div className="detail-price">
+            <span className="price-single">¥{that.props.info.singlePrice}/人</span>
+          </div>
+        );
+      }
+
+      return priceInfo;
+    }
 
     return (
       <div className="m-route-detail-info">
-        <div className="detail-title">千岛湖3日2晚自驾休闲游</div>
-        <div className="detail-desc">
-          国庆避开人群，邂逅千岛湖一处静谧之地，狮城铂瑞酒店，给你一个安静舒心的旅行度假体验。
-        </div>
-        <div className="detail-price">
-          <span className="price-single">¥998起/人</span>
-          <span className="price-intro">【10人起团】</span>
-          <span className="price-line-through">￥1550/人</span>
-        </div>
+        <div className="detail-title">{this.props.info.name}</div>
+        <div className="detail-desc">{this.props.info.description}</div>
+        {priceDiv()}
         {countDownDiv}
         <PlayIntro 
           handlePlayIntroClick={this.handlePlayIntroClick.bind(that)}

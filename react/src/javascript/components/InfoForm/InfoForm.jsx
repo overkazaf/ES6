@@ -1,53 +1,25 @@
 ﻿import React, {Component} from 'react';
-import GroupInfo from './GroupInfo';
+import BasicInfo from './BasicInfo';
 import PersonInfo from './PersonInfo';
 import FeeList from './FeeList';
 import DistServices from './DistServices';
 import ReadyPayInfo from './ReadyPayInfo';
 import Notification from 'components/Notification/Notification';
-import InfoValidator from 'lib/validator/InfoValidator';
-import Util from 'lib/util';
-import WeixinUtil from 'lib/WeixinUtil';
+import InfoValidator from 'extend/validator/InfoValidator';
+import InfoAdaptor from 'extend/adaptor/InfoAdaptor';
+import Util from 'extend/util';
+import DateUtil from 'extend/DateUtil';
+import WeixinUtil from 'extend/WeixinUtil';
 import './InfoForm.scss';
 import 'scss/base.scss';
 
-let selectedIndexMap = {
-	'groupSize' : {
-		'6' : 0,
-		'10' : 1,
-		'12' : 2
-	},
-	'travelAddress' : {
-		'杭州' : 0,
-		'上海' : 1,
-		'南京' : 2
-	},
-	'travelTime' : {
-		'1475251200000' : 0,
-		'1475337600000' : 1,
-		'1475424000000' : 2
-	}
-};
-
-let adultMaxValueLimitArray = [9,12,15];
 export default class InfoForm extends Component {
 
 	constructor (props) {
 		super(props);
 		let defaults = {
-			info: {
-				group: {
-					groupSizes: ['6-9人', '10-12人', '12-15人'],
-					originPlaces: ['杭州', '上海', '南京'],
-					leavedDates: ['10月1日', '10月2日', '10月3日'],
-
-					//默认不选中
-					selectedGroupSizeIndex: -1, // 0:6-9人, 1:10-12人, 2:12-15人
-					selectedOriginPlaceIndex: -1, // hz:杭州, sh:上海, nj:南京
-					selectedLeavedDateIndex: -1, //1001, 1002, 1003
-					canSelect: true,
-					leaveDays: 3
-				},
+			entityData: {
+				basicInfo: this.props.form,
 				personInfo: {
 					adult : {
 						count: 2,
@@ -71,86 +43,85 @@ export default class InfoForm extends Component {
 					plain: true,
 					ensurance: true
 				},
+				feeList: [
+					{"label":"左口乡民宿3选1", "price":"门市价¥850/晚", "extra":""},
+					{"label":"文渊狮城铂瑞酒店", "price":"门市价¥2800/晚", "extra":"五星"},
+					{"label":"西南湖区（龙川湾）", "price":"门市价¥160/人", "extra":""},
+					{"label":"九龙溪漂流", "price":"门市价¥110/人", "extra":""},
+					{"label":"文渊狮城度假区", "price":"门市价¥100/人", "extra":""},
+					{"label":"古街景点门票（3选1）", "price":"免费", "extra":""},
+				],
 				price: {
 					adult: 899.00,
 					kid: 270.00,
 					payPrice: 0
 				}
-			},
-            isGroup: Util.isGroup(),
-            isFirst: true, // 第一次加载的标志位
+			}
+		}
+		this.state = {
+			info: this.props.info || defaults,
+			form: this.props.form || {},
+			isGroup: Util.isGroup(),
+            isFirstLoaded: true, // 第一次加载的标志位
 			enter: false,
 			isJoined: false,
 			maxAdultValue: 15,
 			canSubmit: false,
 			message: ''
-		}
-		this.state = this.props.data || defaults;
-		
+		};
 	}
 
 	componentDidMount() {
 		let that = this;
-		if (!!this.props.data) {
-
-		} else if (Util.isJoinedUser()) {
+		if (Util.isJoinedUser()) {
 			// 如果是参团的用户，需要初始化选择状态，并且不能修改
-			let getGroupInfoParam = {
+			let getBasicInfoParam = {
 				url: 'joingroup/query',
 				method: 'get',
 				data: {
-					id: Util.fetchGroupId()
+					id: Util.fetchGroupId() || 290
 				},
 				successFn :function(result) {
-					if (Util.isResultSuccessful(result)) {
+					if (Util.isResultSuccessful(result)) {	
 						let json = result.data;
-
-						let selectedGroupSizeIndex = selectedIndexMap['groupSize'][''+json.userMinAmount];
-						let selectedOriginPlaceIndex = selectedIndexMap['travelAddress'][''+json.travelAddress];
-						let selectedLeavedDateIndex = selectedIndexMap['travelTime'][''+json.travelTime];
-						let info = that.state.info;
-						let group = info.group;
+						let info = that.state.info; 
+						let entityData = info.entityData; 
+						let {basicInfo, personInfo, services, price} = entityData;
 
 						that.setState({
 							isJoined: true,
 							info: {
-								group: {
-									groupSizes: group.groupSizes, 
-									originPlaces: group.originPlaces,
-									leavedDates: group.leavedDates,
-
-									//默认不选中
-									selectedGroupSizeIndex: selectedGroupSizeIndex, // 0:6-9人, 1:10-12人, 2:12-15人
-									selectedOriginPlaceIndex: selectedOriginPlaceIndex, // hz:杭州, sh:上海, nj:南京
-									selectedLeavedDateIndex: selectedLeavedDateIndex, // 1001, 1002, 1003
-									canSelect: false,
-									leaveDays: 3
-								},
-								personInfo: info.personInfo,
-								services: info.services,
-								price: info.price
+								entityData: {
+									basicInfo: InfoAdaptor.buildJoinedBasicInfoFromHistorialData(json, basicInfo.form),
+									personInfo: personInfo,
+									services: services,
+									price: price
+								}
 							},
 							maxAdultValue: json['remainAmount']
 						}, () => {
-							let personInfo = that.refs['personInfo'];
-							personInfo.refs['adultCounter'].updateMaxValue(json['remainAmount']);
+							let personInfoRef = that.refs['personInfo'];
+							let adultCounterRef = personInfoRef.refs['adultCounter'];
+							adultCounterRef.updateMaxValue(json['remainAmount']);
+
 							that.setState({
-								isFirst: false
+								isFirstLoaded: false
 							}, ()=>{
+								//　这里可以做一些首次加载成功的功能
 								that.initInfo();
 							});
 						});
 					}
 				},
 				errorFn : function () {
-					console.error(arguments);
+					console.error.apply(null, [...arguments]);
 				}
 			}
-			Util.fetchData(getGroupInfoParam);
+			Util.fetchData(getBasicInfoParam);
+		} else {	
+			this.initInfo();
+			this.initShare();
 		}
-
-		this.initInfo();
-		this.initShare();
 	}
 
 	initInfo () {
@@ -165,9 +136,10 @@ export default class InfoForm extends Component {
 	}
 
 	validateForm () {
-		let {group, personInfo} = this.state.info;
+
+		let {basicInfo, personInfo} = this.state.info.entityData;
 		let infoValidator = new InfoValidator({
-			group: group,
+			basicInfo: basicInfo,
 			personInfo: personInfo
 		});	
 
@@ -177,34 +149,41 @@ export default class InfoForm extends Component {
 	handleMemberAmountChange (state) {
 		// 1. fixed person numberCount
 
-		let info = this.state.info;
+		let entityData = this.state.info.entityData;
 		let that = this;
 		this.setState({
 			info : {
-				group: info.group,
-				personInfo : state,
-				services: info.services,
-				price: info.price
+				entityData: {
+					basicInfo: entityData.basicInfo,
+					personInfo: state,
+					services: entityData.services,
+					price: entityData.price
+				}
 			}
 		}, () => {
-			console.log('handleMemberAmountChange', state)
-			this.refs['personInfo'].updateExtraList(state);
-			// 2. recal price
 			that.reCalculatePrice();
 			that.validateAndResetSumbitButton();
 		});
 		
 	}
 
+	/**
+	 * [handleServiceChange 控制目的地服务改变的控制器，一期不做]
+	 * @param  {[type]} state [description]
+	 * @return {[type]}       [description]
+	 */
 	handleServiceChange (state) {
-		let info = this.state.info;
+		let entityData = this.state.info.entityData;
 		let that = this;
 		this.setState({
-			info : {
-				group: info.group,
-				personInfo : info.personInfo,
-				services: state,
-				price: info.price
+			info: {
+				entityData: {
+					basicInfo: entityData.basicInfo,
+					personInfo : entityData.personInfo,
+					services: state,
+					price: entityData.price
+				}
+				
 			}
 		}, () => {
 			that.reCalculatePrice();
@@ -221,11 +200,14 @@ export default class InfoForm extends Component {
 	 * @return   {[type]}                     [description]
 	 */
 	reCalculatePrice () {
-		let info = this.state.info;
-		let personInfo = info.personInfo;
-		let group = info.group;
-		let isInside69Group = function () { return group.selectedGroupSizeIndex == 0;}; // 6-9人的团，拼团价*1.1
-		let price = info.price;
+		let entityData = this.state.info.entityData;
+		let {basicInfo, personInfo} = entityData;
+		let isInside69Group = function () { 
+			// 6-9人的团，拼团价*1.1
+			//return group.selectedGroupSizeIndex == 0;
+			return false; // testing
+		}; 
+		let price = entityData.price;
 		let overflowRate = 1.10;
 
 		// 修正单独购买的价格
@@ -261,18 +243,18 @@ export default class InfoForm extends Component {
 
 		if (Util.isGroup()) {
 			this.setState({
-				info : {
-					group: info.group,
-					personInfo: info.personInfo,
-					services: info.services,
-					price : {
-						adult: groupAdultAveragePrice,
-						kid: new Number(kidPrice).toFixed(2),
-						payPrice: groupAdultOrderPrice
+				info: {
+					entityData: {
+						basicInfo: entityData.basicInfo,
+						personInfo: entityData.personInfo,
+						services: entityData.services,
+						price : {
+							adult: groupAdultAveragePrice,
+							kid: new Number(kidPrice).toFixed(2),
+							payPrice: groupAdultOrderPrice
+						}
 					}
 				}
-			},  () => {
-				console.log('group recalc price successfully');
 			});
 		} else {
 			if (Util.isSingleBuy() && personInfo.adult.extra.length > 9) {
@@ -282,20 +264,44 @@ export default class InfoForm extends Component {
 			}	
 
 			this.setState({
-				info : {
-					group: info.group,
-					personInfo: info.personInfo,
-					services: info.services,
-					price : {
-						adult: singleAdultAveragePrice,
-						kid: new Number(kidPrice).toFixed(2),
-						payPrice: singleAdultOrderPrice
+				info: {
+					entityData: {
+						basicInfo: entityData.basicInfo,
+						personInfo: entityData.personInfo,
+						services: entityData.services,
+						price : {
+							adult: singleAdultAveragePrice,
+							kid: new Number(kidPrice).toFixed(2),
+							payPrice: singleAdultOrderPrice
+						}
 					}
 				}
-			},  () => {
-				console.log('single recalc price successfully');
 			});
 		}
+	}
+
+	priceCalc (personCount,singlePrice,roomPrice) {
+		let isArray = function (obj) {
+			if (typeof Array.isArray == 'function') return Array.isArray(obj);
+			return obj instanceof Array || Object.prototype.toString.call(obj) == '[object Array]';
+		}
+		//如果房费是数组，则计算总房费
+		let roomSum = 0;
+		if (isArray(roomPrice)) {
+			for (var i = 0, l = roomPrice.length; i<l; i++) {
+				roomSum += roomPrice[i];
+			}
+		}else{
+			roomSum = roomPrice;
+		}
+
+		let family = parseInt(personCount/3),		//家庭数
+			halfRoomSum = (roomSum/2).toFixed(2);	//房差
+
+		let priceSum = personCount*singlePrice - family*halfRoomSum;
+		(personCount%3 == 1) && (priceSum += halfRoomSum);
+
+		return new Number(priceSum).toFixed(2);
 	}
 
 	/**
@@ -307,159 +313,158 @@ export default class InfoForm extends Component {
 	 * @return   {[type]}                     [description]
 	 */
 	buildFormEntity () {
-         /*id|该拼团的id|否|null
-            userAmount|该拼团的人数|否|无 eg:6-9
-            userId|该用户的id|是|无
-            travelAddress|旅游出发城市|否|无
-            travelTime|旅游时间|否|无
-            userNum|用户出行人数|是|无
-            normalNum|成人人数|否|无
-            specialNum|儿童人数|否|无
-            type|类型{拼团购买，还是个人购买}|是|无
-            userDetail|用户信息详情|是|[{username:llm,cardNo:32324120032988},{username:llm,cardNo:32324120032988}]
-            phone|联系电话|是|无
-            guideService|全程导游服务|否|否
-            carService|用车服务|否|否
-            meetAirport|接机服务|否|否
-            secure|保险|否|否
-            payPrice|付款金额|是|无*/
-        
-         let userAmountArray = ['6-9', '10-12', '12-15'];
-         let leavedDatesArray = ['2016-10-01', '2016-10-02', '2016-10-03']
-         
-         let that = this,
-             info = that.state.info,
-             group = info.group,
-             personInfo = info.personInfo,
-             services = info.services,
-             adult = personInfo.adult,
-             kid = personInfo.kid;
-         
-         let userId = Util.getCurrentUserId(); //Util.getCurrentUserId();
-         let type = this.state.isGroup ? 1 : 2; // 1拼团  /  2个人购买
-         
-         let userAmount = userAmountArray[group.selectedGroupSizeIndex];
-         let travelAddress = group.originPlaces[group.selectedOriginPlaceIndex];
-         let travelTime = leavedDatesArray[group.selectedLeavedDateIndex];
-         
-         let userNum = adult.count + kid.count;
-         let normalNum = adult.count;
-         let specialNum = kid.count;
-         
-         let userDetail = adult.extra.map(function(item, index){
-                return {
-                    username: item.name,
-                    cardNo: item.id
-                };
-         });
-         
-         userDetail.unshift({
-                name: adult.main.name,
-                cardNo: adult.main.id
-         });
-         let phone = adult.main.phone;
-         
-         // 服务费用
-         let guideService = services.guide,
-             carService = services.car,
-             meetAirport = services.plain,
-             secure = services.ensurance;
-         
-         // 总价格
-         let payPrice = that.calcTotalPrice(that.state);
-         
-         // 从分享出去的页面点击过来的groupId
-         let sharedGroupId = Util.fetchGroupId();
-         
-         return {
-           id: +sharedGroupId,
-           userAmount: userAmount,
-           userId: +userId,
-           travelAddress: travelAddress,
-           travelTime: travelTime,
-           userNum: userNum,
-           normalNum: normalNum,
-           specialNum: specialNum,
-           type: type,
-           userDetail: userDetail,
-           phone: phone,
-           guideService: guideService,
-           carSevice: carService,
-           meetAirport: meetAirport,
-           secure: secure,
-           payPrice: payPrice
-         };
+        let that = this;
+        let entityData = that.state.info.entityData;
+        let {basicInfo, personInfo, services} = entityData;         
+        let {adult,kid} = personInfo;
+		let userId = Util.getCurrentUserId(); //Util.getCurrentUserId();
+		let type = this.state.isGroup ? 1 : 2; // 1拼团  /  2个人购买
+		let formData = basicInfo.form;
+		
+		// 线路的可选参数，这个可以抽出去
+		let userAmount = formData[0].currentValue;
+		let travelAddress = formData[1].currentValue;
+		let travelTime = formData[2].currentValue;
+
+		// 服务费用
+		let {guide, car, plain, ensurance} = services;
+		// 总价格
+		let payPrice = that.calcTotalPrice(that.state);
+		// 从分享出去的页面点击过来的groupId
+		let sharedGroupId = Util.fetchGroupId();
+
+		// 构建人员信息的实体，单独抽出另外的方法进行实现
+		let personInfoEntity = this.buildPersonInfoEntity(personInfo);
+
+		return {
+			id: +sharedGroupId,
+			userId: +userId,
+			userAmount: userAmount,
+			travelAddress: travelAddress,
+			travelTime: travelTime,
+			type: type,
+			userNum: personInfoEntity.userNum,
+			normalNum: personInfoEntity.normalNum,
+			specialNum: personInfoEntity.specialNum,
+			userDetail: personInfoEntity.userDetail,
+			phone: personInfoEntity.phone,
+			guideService: guide,
+			carSevice: car,
+			meetAirport: plain,
+			secure: ensurance,
+			payPrice: payPrice
+		};
+	}
+
+	/**
+	 * [buildPersonInfoEntity 构建人员信息实体的方法]
+	 * @param  {[type]} personInfo [description]
+	 * @return {[type]}            [description]
+	 */
+	buildPersonInfoEntity (personInfo) {
+		let {adult, kid} = personInfo; 
+		// 修正用户信息的数据结构
+		let userDetail = adult.extra.map(function(item, index){
+		    return {
+		        username: item.name,
+		        cardNo: item.id
+		    };
+		});
+		// 在人员队列中插入主要联系人的信息
+		userDetail.unshift({
+			name: adult.main.name,
+			cardNo: adult.main.id
+		});
+
+		return {
+			phone: adult.main.phone,
+			userNum: adult.count + kid.count,
+			normalNum: adult.count,
+			specialNum: kid.count,
+			userDetail: userDetail
+		}
 	}
     
     calcTotalPrice (state) {
         // 根据当前的状态计算总价格
-        let price = this.state.info.price;
+        let price = this.state.info.entityData.price;
         return price.payPrice;
         return 0.1;
     }
 
-	handleToPay () {
-		let that = this;
-		let validResult = this.validateForm();
-		if (!validResult.success) {
-			let errorMessage = '信息填写错误，请检查';
-			this.setState({
-				enter: true,
-				canSubmit: false,
-				message: validResult.message
-			}, () => {
-				setTimeout(function () {
-					this.setState({
-						enter: false
-					});
-				}.bind(this), 3000);
-			});
-		} else {
+    /**
+     * [tryRecirecting2Pay 根据表单的校验结果尝试重定向到支付页面]
+     * @param  {[type]} validResult [description]
+     * @return {[type]}             [description]
+     */
+    tryRecirecting2Pay (validResult) {
+    	let redirect2PayStrategy = {
+    		'success': function (result) {
+    			this.setState({
+					canSubmit: true
+				}, ()=>{
+					this.reCalculatePrice();
+		        	// 构造向后台提交的数据结构
+					let json = this.buildFormEntity();
+			        let param = {
+			                url : 'joingroup/add',
+			                method : 'POST',
+			                data : json,
+			                successFn : function (result){
+			                    if (Util.isResultSuccessful(result.success)) {
+			                    	Util.leavePage(function () {
+			                    		let payHref = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Pay/index.html?detailId='+result.data;
+			                    		if (Util.isGroup()) {
+			                    			payHref += '&isGroup=true';
+			                    		}
+			                    		location.href = payHref;
+			                    	});   
+			                    } else {
+			                        let errorMessage = '' + result.errorMSG;
+			                        that.setState({
+			                        	message: errorMessage,
+			                        	canSubmit: false,
+			                        	enter: true
+			                        }, () => {
+			                        	setTimeout(function (){
+			                        		that.setState({
+			                        			enter: false
+			                        		})
+			                        	}, 3000);
+			                        });
+			                    }
+			                },
+			                errorFn : function () {
+			                    console.error(arguments);
+			                }
+			        };
+			        
+			        Util.fetchData(param);
+				});
+    		},
+    		'fail': function (result) {
+    			let errorMessage = '信息填写错误，请检查';
+				this.setState({
+					enter: true,
+					canSubmit: false,
+					message: validResult.message
+				}, () => {
+					setTimeout(function () {
+						this.setState({
+							enter: false
+						});
+					}.bind(this), 3000);
+				});
+    		}
+    	};
 
-			this.setState({
-				canSubmit: true
-			});
-			this.reCalculatePrice();
-        	
-        	// 构造向后台提交的数据结构
-			let json = this.buildFormEntity();
-			// console.log('buildFormEntity', json);
-	        let param = {
-	                url : 'joingroup/add',
-	                method : 'POST',
-	                data : json,
-	                successFn : function (result){
-	                    // console.log('success in handleToPay', result);
-	                    if (result.success) {
-	                    	Util.leavePage(function () {
-	                    		let payHref = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Pay/index.html?detailId='+result.data;
-	                    		if (Util.isGroup()) {
-	                    			payHref += '&isGroup=true';
-	                    		}
-	                    		location.href = payHref;
-	                    	});   
-	                    } else {
-	                        let errorMessage = '' + result.errorMSG;
-	                        that.setState({
-	                        	message: errorMessage,
-	                        	canSubmit: false,
-	                        	enter: true
-	                        }, () => {
-	                        	setTimeout(function (){
-	                        		that.setState({
-	                        			enter: false
-	                        		})
-	                        	}, 3000);
-	                        });
-	                    }
-	                },
-	                errorFn : function () {
-	                    console.error(arguments);
-	                }
-	         };
-	        
-	        Util.fetchData(param);
-		}
+    	// 调用
+    	redirect2PayStrategy[validResult.success?'success':'fail'].call(this, validResult);
+
+    }
+
+	handleNextStep () {
+		this.tryRecirecting2Pay(this.validateForm());
 	}
 
 	/**
@@ -482,23 +487,20 @@ export default class InfoForm extends Component {
 		});
 	}
 
-    handleGroupStateChange (groupState) {
-    	
+    handleBasicInfoStateChange (basicInfo) {
     	let that = this;
-        let info = this.state.info;
-        let maxAmount = Util.isJoinedUser() ? this.state.maxAdultValue : adultMaxValueLimitArray[groupState['selectedGroupSizeIndex']];
-        // console.log('groupState', adultMaxValueLimitArray[groupState['selectedGroupSizeIndex']]);
+        let entityData = this.state.info.entityData;
+        //let maxAmount = Util.isJoinedUser() ? this.state.maxAdultValue : adultMaxValueLimitArray[groupState['selectedGroupSizeIndex']];
 		this.setState({
-			info : {
-				personInfo: info.personInfo,
-                group: groupState,
-				services: info.services,
-				price: info.price
-			},
-			maxAdultValue: maxAmount
+			info: {
+				entityData: {
+					basicInfo: basicInfo,
+					personInfo: entityData.personInfo,
+					services: entityData.services,
+					price: entityData.price
+				}
+			}
 		}, () => {
-			//console.log('this.refs.personInfo', this.refs.personInfo);
-			//console.log('new state after setting state in handleGroupStateChange', this.state);
 			that.reCalculatePrice();
 			that.validateAndResetSumbitButton();
 		});
@@ -507,40 +509,35 @@ export default class InfoForm extends Component {
 	validateAndResetSumbitButton () {
 		let that = this;
 		let validResult = that.validateForm();
-			//console.log('validResult', validResult);
-			if (validResult.success == true) {
-				that.setState({
-					canSubmit: true
-				});
-			} else {
-				//console.log('!canSubmit');
-				that.setState({
-					canSubmit: false
-				}, ()=>{
-				//console.log('!canSubmit', that.state);
+		if (validResult.success == true) {
+			that.setState({
+				canSubmit: true
+			});
+		} else {
+			that.setState({
+				canSubmit: false
+			}, ()=>{
 				let personInfo = that.refs['personInfo'];
-				//console.log(personInfo.refs['adultCounter']);
-				//console.log(personInfo.refs['adultCounter'].props);
-
-				personInfo.refs['adultCounter'].updateMaxValue(that.state.maxAdultValue);
+				let adultCounter = personInfo.refs['adultCounter'];
+				adultCounter.updateMaxValue(that.state.maxAdultValue);
 			});
 		}
 	}
 
 	handleMainInfoChange (state) {
-		let info = this.state.info;
-		let personInfo = info.personInfo;
+		let entityData = this.state.info.entityData;
+		let personInfo = entityData.personInfo;
 		let that = this;
 		this.setState({
 			info : {
-				personInfo: state,
-                group: info.group,
-				services: info.services,
-				price: info.price
+				entityData: {
+					basicInfo: entityData.basicInfo,
+					personInfo: state,
+					services: entityData.services,
+					price: entityData.price
+				}
 			}
 		}, () => {
-			//console.log('new state after setting state in handleMainInfoChange', this.state);
-			that.noticeExtraListUpdated(personInfo.adult.extra);
 			that.validateAndResetSumbitButton();
 		});
 	}
@@ -562,114 +559,89 @@ export default class InfoForm extends Component {
 		}
 	}
 
-	noticeExtraListUpdated (list) {
-		let info = this.state.info;
-		let personInfo = info.personInfo;
-		let that = this;
-		this.setState({
-			info: {
-				group: info.group,
-				personInfo: {
-					adult : {
-						count: personInfo.adult.count,
-						main: personInfo.adult.main,
-						extra: list
-					},
-					kid: personInfo.kid
-				},
-				services: info.services,
-				price: info.price
-			}
-		}, ()=> {
-			// that.refs['personInfo'].resetExtraInfoList(list);
-		});
-	}
-
 	render () {
+		let priceSum = this.priceCalc(5,800,600);
+		// console.log('priceSum', priceSum);
+
 		let that = this;
-
-		let priceInfo = this.state.info.price;
-
-		let personInfo = this.state.info.personInfo;
+		let currentState = this.state;
+		let entityData = currentState.info.entityData;
+		let {
+			price,
+			basicInfo,
+			personInfo,
+			services
+		} = entityData;
 
 		let reCalculatePrice = function () {
 			that.reCalculatePrice();
 		};
 
-		let handleToPay = function () {
-			that.handleToPay();
+		let handleNextStep = function () {
+			that.handleNextStep();
 		};
 
 		let handleMemberAmountChange = function (state) {
 			that.handleMemberAmountChange(state);
 		};
 
-		let handleGroupStateChange = function (state) {
-             that.handleGroupStateChange(state);
+		let handleBasicInfoStateChange = function (state) {
+             that.handleBasicInfoStateChange(state);
 		};
-
 
 		let handleMainInfoChange = function (state) {
 			that.handleMainInfoChange(state);
 		};
 
-		let noticeExtraListUpdated = function (list) {
-			that.noticeExtraListUpdated(list);
-		};
 		let handleServiceChange = function (state) {
 			that.handleServiceChange(state);
 		};
 
 		let showErrorMessage = () => {
 			that.showErrorMessage();
-		}
+		};
     
-        let isGroup = !!this.state.isGroup;
-        let maxAdultValue = this.state.maxAdultValue;
-        let canSelect = !this.state.isJoined;
-        let canSubmit = this.state.canSubmit;
+        let {maxAdultValue, isJoined, canSubmit, isGroup} = currentState;
+        let canSelect = !isJoined;
         let defaultAdultValue = personInfo.adult.count;
-
-        // console.log('personInfo', personInfo);
+        let feeList = currentState.info.entityData.feeList;
 
 		return (
 			<div className="m-fill-form">
 				<section className="info-item">
-					<GroupInfo 
+					<BasicInfo 
+						info={basicInfo}
 						canSelect={canSelect}
                         isGroup={isGroup}
-						info={this.state.info.group}
-						handleGroupStateChange={handleGroupStateChange}/>
+						handleBasicInfoStateChange={handleBasicInfoStateChange}/>
 					<PersonInfo
 					   ref="personInfo"
 					   maxAdultValue={maxAdultValue}
 					   defaultAdultValue={defaultAdultValue}
-					   noticeExtraListUpdated={noticeExtraListUpdated}
                        isGroup={isGroup}
-					 personInfo={personInfo}
-					 handleMainInfoChange={handleMainInfoChange}
-					 handleMemberAmountChange={handleMemberAmountChange}/>
+					   personInfo={personInfo}
+					   handleMainInfoChange={handleMainInfoChange}
+					   handleMemberAmountChange={handleMemberAmountChange}/>
 				</section>
 				
 				<section className="info-item">
-					<FeeList />
+					<FeeList info={feeList}/>
 				</section>
 				
 				<section className="info-item">
 					<DistServices 
-					info={this.state.info.services} 
+					info={services} 
 					handleServiceChange={handleServiceChange} 
 					/>
 				</section>
 
 				<ReadyPayInfo 
-					price={priceInfo} 
+					price={price} 
 					canSubmit={canSubmit} 
 					showErrorMessage={showErrorMessage}
-					handleNextStep={handleToPay}/>
+					handleNextStep={handleNextStep}/>
 
-				<Notification enter={this.state.enter} leave={this.leave.bind(this)}>{this.state.message}</Notification>
-				
+				<Notification enter={this.state.enter} leave={this.leave.bind(this)}>{this.state.message}</Notification>	
 			</div>
 		)
 	}

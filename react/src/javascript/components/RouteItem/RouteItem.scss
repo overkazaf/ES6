@@ -86,6 +86,12 @@
 				background-size: contain;
 				background-repeat: no-repeat;
 			}
+
+			&.pending {
+				background-image: url(../../../../res/images/RouteList/3x/waiting@3x.png);
+				background-size: contain;
+				background-repeat: no-repeat;
+			}
 		}
 
 		.item-status-text {

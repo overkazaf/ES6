@@ -5,7 +5,7 @@ export default class Header extends Component {
 	render () {
 		return (
 			<div className="m-header">
-				<img className="status-img"/>
+				<span className="status-img"></span>
 				<div className="status-text">
 					用户已付款
 				</div>

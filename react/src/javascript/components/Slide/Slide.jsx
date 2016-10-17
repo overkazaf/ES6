@@ -1,6 +1,6 @@
 import React from 'react';
 import Hammer from 'lib/hammer.min.js';
-import Util from 'lib/util';
+import Util from 'extend/util';
 import className from 'classnames'
 import "./Slider.scss"
 

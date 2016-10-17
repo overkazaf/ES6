@@ -97,18 +97,20 @@
 		display: block;
 		
 		.feature-bg {
-			background-image: url(../../../../../res/images/RouteDetail/featureNew1@3x.jpg);
+			img {
+				width: 100%;
+				height: 100%;
+			}
 			height: 12.4rem;
-	    	background-repeat: no-repeat;
-	    	background-size: contain;
 		}
 		
 		.fee-bg {
-			background-image: url(../../../../../res/images/RouteDetail/feeNew1@3x.jpg);
+			img {
+				width: 100%;
+				height: 100%;
+			}
 			width: 100%;
 			height: 20rem;
-	    	background-repeat: no-repeat;
-	    	background-size: contain;
 		}
 	}
 }

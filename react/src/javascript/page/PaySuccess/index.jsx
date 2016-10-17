@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Util from "lib/util";
+import Util from "extend/util";
 import PayStatusHeader from 'components/PayStatus/Header/Header';
 import PayStatusBody from 'components/PayStatus/Body/Body';
 import PayStatusFooter from 'components/PayStatus/Footer/Footer';

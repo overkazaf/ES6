@@ -1,6 +1,6 @@
 ﻿import React, {Component} from 'react';
-import Util from 'lib/util';
-import Status from 'lib/status';
+import Util from 'extend/util';
+import Status from 'extend/status';
 import 'scss/base.scss';
 import './RouteItem.scss';
 
@@ -100,9 +100,12 @@ export default class RouteItem extends Component {
 					statusDiv = (<div className="item-seal fail"></div>);
 					break;
 				case codes.PENDING:
-					statusDiv = (<div className="item-status-text">等待支付</div>);
+					statusDiv = (<div className="item-seal pending"></div>);
 					break;
 			}
+
+			console.log('status', status);
+
 		}
 		return statusDiv;
 	}
@@ -141,17 +144,17 @@ export default class RouteItem extends Component {
 			travelAddress,
 			price,
 			status,
+			payStatus,
 			type // 类型，１为拼团，２为单独购买
 		} = this.state;
 
-		console.log('type', type);
 		let statusCodes = Status.getStatusCodes();
-		let statusDiv = this.getStatusDivByStatus(type, status, statusCodes);
+		let statusDiv = this.getStatusDivByStatus(type, payStatus, statusCodes);
 		let detailId = id;
 
 		// 根据status, groupId, detailId生成行程链接
 		// 因为新加了预支付状态，预支付状态点击以后要跳转到相应的支付页面
-		let itemHref = this.generateItemHrefByStatusInfo(type, status, statusCodes, groupId, detailId);
+		let itemHref = this.generateItemHrefByStatusInfo(type, payStatus, statusCodes, groupId, detailId);
 		// console.log('itemHref', itemHref);
 		return (
 			<a href={itemHref} className="u-route-item">

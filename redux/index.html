@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="//cdn.bootcss.com/redux/3.5.2/redux.min.js"></script>
+</head>
+
+<body>
+    <div id="log"></div>
+    <script>
+      // action creator
+      function add (text) {
+        return {
+          type: 'add',
+          payload: text
+        }
+      }
+
+      function remove () {
+        return {
+          type: 'remove'
+        }
+      }
+
+      function clear () {
+        return {
+          type: 'clear'
+        }
+      }
+
+      function isType (obj, type) {
+        return Object.prototype.toString.call(obj) == '[object '+ type+']';
+      }
+
+      function isArray (obj) {
+        return isType(obj, 'Array');
+      }
+
+      function deepClone (obj) {
+        if (obj == null || typeof obj != 'object') return obj;
+        var result = new obj.constructor();
+
+        if (isArray(result)) {
+          for (var i=0,item; item = obj[i++];) {
+            result[i] = deepClone(item);
+          }
+        } else {
+          for (var attr in obj) {
+            if (typeof obj[attr] != 'function') {
+              if (obj.hasOwnProperty(attr)) {
+                result[attr] = deepClone(obj[attr]);
+              }
+            }
+          }
+        }
+
+        return result;
+      }
+
+      function reducer (state, action) {
+        state = state || {todoList: []};
+        var clonedState = deepClone(state);
+        switch (action.type) {
+          case 'add':
+            clonedState.todoList.push(action.payload)
+            return {todoList: clonedState.todoList.slice(0)}
+          case 'remove':
+            if (clonedState.todoList.length) {
+              clonedState.todoList.pop();
+            }
+            return {todoList: clonedState.todoList.slice(0)};
+          case 'clear':
+            return {todoList: []};
+          default:
+            return state;
+        }
+      }
+
+      var store = Redux.createStore(reducer, {'todoList':[]});
+      log(store.getState());
+
+      store.dispatch(add('finish shell script learning'));
+      store.dispatch(add('finish nodejs script learning'));
+      //store.dispatch(add('python script learning'));
+
+      log(store.getState());
+      //log(store.getState());
+      //log(store.getState());
+
+      // store.dispatch(remove());
+
+      // log(store.getState());
+
+      // store.dispatch(remove());
+
+      // log(store.getState());
+
+
+      function log(state){
+        var logger = document.getElementById('log');
+        var content = JSON.stringify(state);
+        logger.innerHTML += '<br />' +content+'<br />';
+      }
+    </script>
+</body>
+
+</html>

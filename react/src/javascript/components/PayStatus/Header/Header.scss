@@ -4,9 +4,14 @@
 	text-align: center;
 
 	.status-img {
+		display: inline-block;
 		margin-top: 0.3rem;
 		width: 0.66rem;
 		height: 0.66rem;
+		border: 0;
+		background-image: url(../../../../../res/images/PaySuccess/3x/pay_success@3x.png);
+		background-size: contain;
+		background-repeat: no-repeat;
 	}
 
 	.status-text {

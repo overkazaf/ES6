@@ -1,8 +1,8 @@
 ﻿import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Hammer from 'lib/hammer.min.js';
-import Util from 'lib/util';
-import WeixinUtil from 'lib/WeixinUtil';
+import Util from 'extend/util';
+import WeixinUtil from 'extend/WeixinUtil';
 import RouteItemList from 'components/RouteItemList/RouteItemList';
 import Tab from 'components/Tab/Tab';
 import 'scss/base.scss';

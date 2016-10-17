@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import RouteItem from 'components/RouteItem/RouteItem';
 import GroupCountDown from 'components/GroupCountDown/GroupCountDown';
 import GroupList from 'components/GroupList/GroupList';
-import Util from 'lib/util';
-import Status from 'lib/status';
+import Util from 'extend/util';
+import Status from 'extend/status';
 import './GroupStatus.scss';
 
 export default 

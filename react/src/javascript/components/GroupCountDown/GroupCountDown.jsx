@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import CountDown from 'components/CountDown/CountDown'
-import Util from 'lib/util.jsx'
+import Util from 'extend/util';
 import './GroupCountDown.scss'
 
 export default 

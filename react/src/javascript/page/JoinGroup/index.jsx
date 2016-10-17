@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Gallery from 'components/Gallery/Gallery';
-import Util from 'lib/util';
-import WeixinUtil from 'lib/WeixinUtil';
-import ShareConfig from 'lib/share/config.js';
+import Util from 'extend/util';
+import WeixinUtil from 'extend/WeixinUtil';
+import ShareConfig from "extend/WeixinUtil";
 import RouteDetailHeader from 'components/RouteDetail/RouteDetailHeader';
 import RouteDetailInfo from 'components/RouteDetail/RouteDetailInfo';
 import RouteDetailFooter from 'components/RouteDetail/RouteDetailFooter';

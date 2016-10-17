@@ -27,7 +27,9 @@ class Counter extends Component {
   }
 
   handleNumChange() {
-    this.props.numChange(this.state.curVal);
+    if (this.props.numChange) {
+      this.props.numChange(this.state.curVal);
+    }
   }
 
   /**
@@ -46,7 +48,6 @@ class Counter extends Component {
       });
     }
 
-    console.log('componentWillReceiveProps(nextProps)', nextProps.maxVal);
     if (nextProps.maxVal) {
       this.setState({
         maxVal: nextProps.maxVal

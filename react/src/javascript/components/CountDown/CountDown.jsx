@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import Util from "lib/util";
+import Util from "extend/util";
 import './CountDown.scss'
-import Status from 'lib/status';
+import Status from 'extend/status';
 import Notification from 'components/Notification/Notification';
 
 

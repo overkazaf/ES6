@@ -19,13 +19,15 @@ export default class ExtendInfo extends Component {
 							if (index === 0) {
 								return that.buildScheduleList(item, index);
 							} else {
-								
+								let imageUrl = item.imageUrl;
 								if (index === 1) {
                                         return (
                                             <li className="extra-info-list-item">
                                                 
                                                 <a href={href} id={href} className="block-anchor">
-                                                    <div className="feature-bg"></div>
+                                                    <div className="feature-bg">
+            											<img data-src={imageUrl} />
+                                                    </div>
                                                 </a>
                                             </li>
                                         )
@@ -35,7 +37,9 @@ export default class ExtendInfo extends Component {
                                             <li className="extra-info-list-item">
                                                 
                                                 <a href={href} id={href} className="block-anchor">
-                                                    <div className="fee-bg"></div>
+                                                    <div className="fee-bg">
+            											<img data-src={imageUrl} />
+            										</div>
                                                 </a>
                                             </li>
                                         )

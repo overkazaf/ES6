@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Slide from 'components/Slide/Slide';
-import Util from 'lib/util';
+import Util from 'extend/util';
 import 'scss/base.scss';
 import './RouteDetailHeader.scss';
 

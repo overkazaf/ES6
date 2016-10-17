@@ -13,33 +13,36 @@ export default class PersonInfo extends Component {
 		let adultCount = this.props.defaultAdultValue;
 		let adultExtra = adultCount == 1 ? [] : [{name:'', id:''}];
 
-		this.state = this.props.personInfo || {
-			adult : {
-				count: adultCount,
-				main: {
-					name: '',
-					id: '',
-					phone: ''
+		this.state = {
+			data: this.props.personInfo || {
+				adult : {
+					count: adultCount,
+					main: {
+						name: '',
+						id: '',
+						phone: ''
+					},
+					extra: adultExtra
 				},
-				extra: adultExtra
+				kid: {
+					count: 0
+				}
 			},
-			kid: {
-				count: 0
-			},
-			maxAdultValue: this.props.maxAdultValue
+			maxAdultValue: this.props.maxAdultValue || 15
 		};
 	}
 
 	componentWillReceieveProps (nextProps) {
 		if (nextProps.personInfo) {
 			this.setState({
-				adult: nextProps.personInfo.adult,
-				kid: nextProps.personInfo.kid
+				data: {
+					adult: nextProps.personInfo.adult,
+					kid: nextProps.personInfo.kid
+				}
 			});
 		}
 
-		if (nextProps.maxAdultValue) {
-			
+		if (nextProps.maxAdultValue) {		
 			this.setState({
 				maxAdultValue: nextProps.maxAdultValue
 			});
@@ -48,26 +51,30 @@ export default class PersonInfo extends Component {
 
 
 	handleAdultNumChange (n) {
-		let main = this.state.adult.main;
-		let extra = this.state.adult.extra;
-		let count = this.state.adult.count;
+		let currentData = this.state.data;
+		let {adult, kid} = currentData;
+		let {main, extra, count} = adult;
 		let that = this;
+
 		if (n > count) {
+			// 成人数增加
 			extra.push(PersonFactory.create());
 			this.setState({
-				adult : {
-					count: extra.length+1,
-					main: main,
-					extra: extra
+				data: {
+					adult : {
+						count: extra.length+1,
+						main: main,
+						extra: extra
+					},
+					kid: kid
 				}
 			}, () => {
-				if (this.props.handleMemberAmountChange) {
-					this.props.handleMemberAmountChange(this.state)
+				if (that.props.handleMemberAmountChange) {
+					that.props.handleMemberAmountChange(that.state.data)
 				}
-				return true;
 			});
 		} else if (n == count - 1) {
-			let adult = this.state.adult;
+			let adult = currentData.adult;
 
 			let confirmBox = this.refs.confirmBox;
 			confirmBox.showConfirmBox(
@@ -77,17 +84,18 @@ export default class PersonInfo extends Component {
 				adult.extra.pop();
 
 				that.setState({
-					adult: {
-						count: adult.count - 1,
-						main: adult.main,
-						extra: adult.extra
+					data: {
+						adult: {
+							count: adult.count - 1,
+							main: adult.main,
+							extra: adult.extra
+						},
+						kid: kid
 					}
 				}, () => {
-					
-					that.updateExtraList(adult.extra);
 
 					if (that.props.handleMemberAmountChange) {
-						that.props.handleMemberAmountChange(that.state);
+						that.props.handleMemberAmountChange(that.state.data);
 					}
 				});
 			}, 
@@ -98,21 +106,26 @@ export default class PersonInfo extends Component {
 	}
 
 	handleKidNumChange (n) {
+		let that = this;
+		let currentState = this.state;
 		this.setState({
-			kid: {
-				count: n
+			data: {
+				adult: currentState.data.adult,
+				kid: {
+					count: n
+				}
 			}
 		}, () => {
-			if (this.props.handleMemberAmountChange) {
-				this.props.handleMemberAmountChange(this.state)
+			if (that.props.handleMemberAmountChange) {
+				that.props.handleMemberAmountChange(that.state.data)
 			}
-			return true;
 		});
 	}
 
 	handleAdultDelete (index) {
 		let that = this;
-		let adult = this.state.adult;
+		let currentData = this.state.data;
+		let {adult, kid} = currentData;
 		let count = adult.count;
 		let confirmBox = this.refs.confirmBox;
 			confirmBox.showConfirmBox(
@@ -120,24 +133,24 @@ export default class PersonInfo extends Component {
 			'确认要继续删除联系人信息？', 
 			function () {
 				adult.extra.splice(index, 1);
-
 				const newExtraCount = adult.extra.length + 1;
+
 				let updatedState = {
-					adult: {
-						count: newExtraCount,
-						main: adult.main,
-						extra: adult.extra
-					},
-					kid: that.state.kid
+					data: {
+						adult: {
+							count: newExtraCount,
+							main: adult.main,
+							extra: adult.extra
+						},
+						kid: kid
+					}
 				};
 				
 				that.setState(updatedState, () => {
-					
-					that.updateExtraList(adult.extra);
 
 					if (that.props.handleMemberAmountChange) {
-						that.props.handleMemberAmountChange(that.state);
-						// 先这样处理，这样才能通知子组件更新自己的状态
+						that.props.handleMemberAmountChange(that.state.data);
+						//通知子组件更新自己的状态
 						that.refs.adultCounter.setCurrentValue(newExtraCount);
 					}
 				});
@@ -147,37 +160,10 @@ export default class PersonInfo extends Component {
 	}
 
 
-
-	/**
-	 * [updateExtraList ]
-	 * @return {[type]} [description]
-	 */
-	updateExtraList () {
-		// let refUl = this.refs['appendedList'];
-		
-		// let $names = $(refUl).find('input.person-name');
-		// let $ids = $(refUl).find('input.person-id');
-		// let that = this;
-		// let extra = this.state.adult.extra;
-		
-		//this is a piece of hacking code, should change it!
-		// setTimeout(function (){
-		// 	$names.each(function (index, item){
-		// 		$(item).val(extra[index].name)
-		// 	});
-
-		// 	$ids.each(function (index, item){
-		// 		$(item).val(extra[index].id)
-		// 	});
-
-		// 	// 通知父级要更新列表
-		// 	that.props.noticeExtraListUpdated && that.props.noticeExtraListUpdated(extra);
-		// 	console.log('that.state', that.state);
-		// }, 500);	
-	}
-
 	updateMainInfoValue () {
-		let adult = this.state.adult;
+		let currentState = this.state;
+		let currentData = currentState.data;
+		let {adult, kid} = currentData;
 		let mainName = this.refs.mainName;
 		let mainID = this.refs.mainID;
 		let mainPhone = this.refs.mainPhone;
@@ -189,23 +175,27 @@ export default class PersonInfo extends Component {
 		}
 
 		this.setState({
-			adult: {
-				count: adult.count,
-				main:{
-					name: mainName.value,
-					id: mainID.value,
-					phone: mainPhone.value
+			data: {
+				adult: {
+					count: adult.count,
+					main:{
+						name: mainName.value,
+						id: mainID.value,
+						phone: mainPhone.value
+					},
+					extra: adult.extra
 				},
-				extra: adult.extra
+				kid: kid
 			}
 		}, () => {
-			this.props.handleMainInfoChange(this.state);
+			this.props.handleMainInfoChange(this.state.data);
 		});
 	}
 
 
 	updatePersonInfo (index, name, id) {
-		let adult = this.state.adult;
+		let currentData = this.state.data;
+		let adult = currentData.adult;
 		let extra = adult.extra;
 
 		if (index < extra.length) {
@@ -215,32 +205,39 @@ export default class PersonInfo extends Component {
 			};
 
 			this.setState({
-				adult : {
-					count: adult.count,
-					main: adult.main,
-					extra: extra
+				data: {
+					adult : {
+						count: adult.count,
+						main: adult.main,
+						extra: extra
+					},
+					kid: currentData.kid
 				}
-			})
+			}, () => {
+				if (this.props.handleMainInfoChange) {
+					this.props.handleMainInfoChange(this.state.data);
+				}
+			});
 		}
 	}
 
 	render () {
 		let that = this;
 		let maxAdultValue = this.state.maxAdultValue,
-			  maxKidValue = 10,
-			  maxNameLength = 4,
-			  maxPhoneLength = 11,
-			  maxIDLength = 18,
-			  adult = this.state.adult,
-			  mainPhone = adult.main.phone,
-			  mainId = adult.main.id,
-			  mainName = adult.main.name,
-			  curAdultCount = this.state.adult.count,
-			  curKidCount = this.state.kid.count || 0,
-			  keyPrefix = '' + (new Date().getTime());
-		console.log(this.state);
+			maxKidValue = 10,
+			maxNameLength = 4,
+			maxPhoneLength = 11,
+			maxIDLength = 18,
+			currentData = this.state.data,
+			{adult, kid} = currentData,
+			mainPhone = adult.main.phone,
+			mainId = adult.main.id,
+			mainName = adult.main.name,
+			curAdultCount = adult.count,
+			curKidCount = kid.count || 0;
 
 		let appendedList = adult.extra.map(function (item, index) {
+			//　tips：这里如果没有为每个li加上key值，在更新的时候，React就会忽略掉这个组件
 			let liKey = adult.extra.length + '-li-' + index;
 			let appendedPersonKey = adult.extra.length + '-ap-' + index;
 			return (
@@ -256,14 +253,12 @@ export default class PersonInfo extends Component {
 			)
 		});
 
-		console.log('appendedList', appendedList);
-
 		let handleAdultNumChange = function () {
-			that.handleAdultNumChange.apply(that, Array.prototype.slice.call(arguments));
+			that.handleAdultNumChange.apply(that, [...arguments]);
 		};
 
 		let handleKidNumChange = function () {
-			that.handleKidNumChange.apply(that, Array.prototype.slice.call(arguments));
+			that.handleKidNumChange.apply(that, [...arguments]);
 		};
         
         let personCounterContainerClazz = this.props.isGroup ? 'row' : 'row hide';
@@ -290,7 +285,11 @@ export default class PersonInfo extends Component {
 									<span>儿童</span>
 								</li>
 								<li className="amount-ctrl-list-item">
-									<Counter minVal={0} numChange={handleKidNumChange} maxVal={maxKidValue} curVal={curKidCount}/>
+									<Counter 
+										minVal={0} 
+										numChange={handleKidNumChange} 
+										maxVal={maxKidValue} 
+										curVal={curKidCount}/>
 								</li>
 							</ul>
 						</div>
@@ -345,10 +344,6 @@ class AppendedPerson extends Component {
   		let {index, name, id} = state;
   		this.props.handleChange(index, name, id);
   	}
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-   	return true;     
   }
 
   render() {

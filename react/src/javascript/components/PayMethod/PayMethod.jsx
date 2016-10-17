@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Util from 'lib/util';
+import Util from 'extend/util';
 import 'scss/base.scss';
 import './PayMethod.scss';
 
@@ -25,7 +25,8 @@ export default class PayMethod extends Component {
 			startTime : this.props.startTime,
 			hasCountDown: !!this.props.hasCountDown,
 			countDownMessage: null,
-			payPrice: this.props.payPrice || '00.00'
+			payPrice: this.props.payPrice || '00.00',
+			canModifyInvoiceTitle: true
 		};
 	}
 
@@ -73,6 +74,12 @@ export default class PayMethod extends Component {
 	    	});
 	    }
 
+	    if (nextProps.canModifyInvoiceTitle) {
+	    	this.setState({
+	    		canModifyInvoiceTitle: nextProps.canModifyInvoiceTitle
+	    	});
+	    }
+
 	    if (nextProps.startTime) {
 	    	this.setState({
 	    		startTime: nextProps.startTime,
@@ -80,13 +87,16 @@ export default class PayMethod extends Component {
 	    		countDownMessage: that.buildCountDownMessage(that.calcCountDown())
 	    	}, ()=>{
 	    		let fn = function(){
+
 	    			let countDown = that.calcCountDown();
     				if (that.noCountDown(countDown)) {
     					
     					that.setState({
+    						hasCountDown: false,
 		    				cannotPay: true,
 		    				countDownMessage: ''
 		    			}, ()=>{
+		    				that.timer = null;
 		    				clearInterval(that.timer);
 		    			});
     				} else {
@@ -94,10 +104,15 @@ export default class PayMethod extends Component {
 		    				countDownMessage: that.buildCountDownMessage(countDown)
 		    			});
     				}
+
+    				if (!that.state.hasCountDown) {
+    					that.timer = null;
+    					clearInterval(that.timer);
+    				}
 	    		};
 
 	    		fn();
-	    		if (!that.timer) {
+	    		if (!that.timer && that.state.hasCountDown) {
 	    			that.timer = setInterval(fn, 1000);
 	    		}
 	    		
@@ -127,7 +142,7 @@ export default class PayMethod extends Component {
 			},
 			successFn : function (result) {
 
-				if (result.success || result.success == 'true') {
+				if (Util.isResultSuccessful(result.success)) {
 					let json = result.data.data;
 					let onBridgeReady = function (){
 					   WeixinJSBridge.invoke(
@@ -243,11 +258,17 @@ export default class PayMethod extends Component {
 		let countDown, countDownMessage;
 
 		if (startTime) {
-			let endTime = 1 * 60 * 60 * 1000 + new Date("2016-10-13 20:04:24").getTime();
+			//　结束时间为当前时间加1小时
+			let endTime = 1 * 60 * 60 * 1000 + new Date("2016-10-14 13:43:24").getTime();
 			let currentTime = new Date().getTime();
-			let leftTime = Math.floor((endTime - currentTime)/1000);
+			let leftTime = Math.floor(~~(endTime - currentTime)/1000);
 			if (leftTime > 0) {
 				countDown = Util.calcCountDownByLeftTime(leftTime);
+			} else {
+				// 剩余时间为负数，不可支付
+				this.setState({
+					cannotPay: true
+				});
 			}
 		}
 		return countDown;
@@ -295,13 +316,20 @@ export default class PayMethod extends Component {
 			isInvoiceDisabled = true,
 			payBtn,
 			invoiceTitleValue = this.state.invoiceTitleValue,
+			canModifyInvoiceTitle = this.state.canModifyInvoiceTitle,
 			countDownMessage = this.state.hasCountDown? this.state.countDownMessage : '';
 
-		if (this.state.invoice.checked) {
-			isInvoiceDisabled = false;
-			invoiceTitle = <i className="chk-component checked"  onClick={this.changeInvoice.bind(this)}></i>;
+		// console.log('canModifyInvoiceTitle', canModifyInvoiceTitle);
+
+		if (canModifyInvoiceTitle) {
+			if (this.state.invoice.checked) {
+				isInvoiceDisabled = false;
+				invoiceTitle = <i className="chk-component checked"  onClick={this.changeInvoice.bind(this)}></i>;
+			} else {
+				invoiceTitle = <i className="chk-component unchecked" onClick={this.changeInvoice.bind(this)}></i>;
+			}
 		} else {
-			invoiceTitle = <i className="chk-component unchecked" onClick={this.changeInvoice.bind(this)}></i>;
+			invoiceTitle = <i className="chk-component unchecked"></i>;
 		}
 
 

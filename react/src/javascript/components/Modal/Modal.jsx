@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Util from 'lib/util';
+import Util from 'extend/util';
 import './Modal.scss';
 
 

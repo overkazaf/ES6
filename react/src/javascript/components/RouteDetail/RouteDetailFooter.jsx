@@ -1,5 +1,5 @@
 ﻿import React, {Component} from 'react';
-import Status from 'lib/status';
+import Status from 'extend/status';
 import './RouteDetailFooter.scss';
 
 
@@ -81,7 +81,7 @@ export default class RouteDetailFooter extends Component {
 								<span>联系电话</span>
 							</a>
 							<div onClick={that.handleClick.bind(that, 'single')} className="btn-buy-single hide">
-								<span>￥1550起/人</span>
+								<span>￥{that.props.singlePrice}起/人</span>
 								<span className="font-sm">单独购买</span>
 							</div>
 

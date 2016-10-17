@@ -11,18 +11,53 @@ $main-gray-color: #e2e7ea;
 
 		.desc {
 			color: #8d919c;
-			.desc-detail {
-
+			padding: 0.2rem;
+			
+			.route-title {
+				font-size: 0.15rem;
+				color: #41444e;
 			}
-			.desc-price {
+
+			.route-summary {
+				margin-top: 0.1rem;
+				font-size: 0.13rem;
+				color: #8d919c;
+				line-height: 0.2rem;
+			}
+
+			.route-info {
+				.info-table {
+					font-size: 0.12rem;
+					color: #8d919c;
+
+					.row {
+						margin-top: 0.05rem;
+
+						.row-label {
+							margin-right: 0.05rem;
+						}
+					}
+				}
+			}
+			
+			.price {
+				margin-top: 0.2rem;
+				margin-bottom: 0.3rem;
+
 				.price-label {
+					font-size: 0.12rem;
+					color: 54575f;
+					margin-top: 0.15rem;
 					
 					.price-sign {
-
+						margin-left: 0.05rem;
+						font-size: 0.13rem;
+						color: #ff3600;
 					}
 					
 					.price-value {
-
+						font-size: 0.16rem;
+						color: #ff3600;
 					}
 				}
 			}

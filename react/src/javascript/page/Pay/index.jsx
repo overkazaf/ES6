@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import RouteItem from 'components/RouteItem/RouteItem';
 import PayMethod from 'components/PayMethod/PayMethod';
-import Util from 'lib/util';
-import WeixinUtil from 'lib/WeixinUtil';
+import Util from 'extend/util';
+import WeixinUtil from 'extend/WeixinUtil';
 import 'scss/base.scss';
 import 'scss/Pay/index.scss';
 
@@ -20,7 +20,7 @@ class MyComponent extends Component {
 
 	componentDidMount () {
 		let that = this;
-		let detailId = Util.parseQueryString(location.href)['detailId'];
+		let detailId = fetchParamValueByCurrentURL('detailId');
 		if (detailId) {
 			let groupStatusParam = {
 				url: 'tour/tourMessage',
@@ -29,7 +29,7 @@ class MyComponent extends Component {
 					id : detailId
 				},
 				successFn: function (result) {
-					if (result.success || result.success == 'true') {
+					if (Util.isResultSuccessful(result.success)) {
 						let newState = Util.rebuildItemState(result.data);
 						that.setState({
 							item: newState,
@@ -46,7 +46,6 @@ class MyComponent extends Component {
 			Util.fetchData(groupStatusParam);
 
 			this.addHistoryBackListener(detailId);
-
 		}
 		WeixinUtil.hideWeixinMenu();  
 	}
@@ -80,8 +79,6 @@ class MyComponent extends Component {
 		
 		this.setState({
 			payPrice: state.price
-		}, () => {
-			console.log('this.statethis.state', this.state);
 		})
 	}
 

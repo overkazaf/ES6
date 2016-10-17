@@ -59,7 +59,7 @@ export default class Accordion extends Component {
 					return (
 						<div className="row" key={keyValue}>
 							<span className="row-key">
-								{key}{quote}
+								{key}
 							</span>
 							<span className="row-value">
 								 {item[key]}
@@ -97,7 +97,7 @@ export default class Accordion extends Component {
 	getAccordionContent (info) {
 		let that = this;
 		let hotelContent = info && info.hotel ? that.buildInfoContent(info.hotel,'酒店名称', 'hotel') : null;
-		let userContent = info && info.user ? that.buildInfoContent(info.hotel,'出行人信息', 'user') : null;
+		let userContent = info && info.user ? that.buildInfoContent(info.user,'出行人信息', 'user') : null;
 		let trafficContent = that.buildInfoContent([{}], '交通信息', 'traffic');
 
 		return (

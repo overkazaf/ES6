@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import RouteItem from 'components/RouteItem/RouteItem';
 import PayMethod from 'components/PayMethod/PayMethod';
 import ReactDOM from 'react-dom';
-import Util from "lib/util";
-import WeixinUtil from 'lib/WeixinUtil';
+import Status from 'extend/status';
+import Util from "extend/util";
+import WeixinUtil from 'extend/WeixinUtil';
 import 'scss/base.scss';
 import 'scss/OrderDetail/index.scss';
 import Accordion from 'components/Accordion/Accordion';
@@ -94,17 +95,16 @@ class MyComponent extends Component {
 	render () {
 		let that = this;
 		let routeItemInfo = this.state.item;
-		let data = this.state.data;
+		let data = this.state.entityData;
 		let payPrice;
 		let groupId = this.state.groupId;
 		let invoiceTitle = this.state.invoiceTitle;
 		let startTime = routeItemInfo.groupStartTime;
+		let statusCodes = Status.getStatusCodes();
+		let canModInvoiceTitle =  (Object.keys(routeItemInfo).length > 0 && routeItemInfo.status == statusCodes[routeItemInfo.type]['PENDING']) ? true : false;
 		if (this.state.payPrice) {
 			payPrice = new Number(this.state.payPrice).toFixed(2);
 		}
-
-		console.log('routeItemInfo', routeItemInfo);
-		console.log('startTime', startTime);
 		
 		return (
 			<div className="m-orderdetail">
@@ -117,6 +117,7 @@ class MyComponent extends Component {
 				<PayMethod 
 					groupId={groupId} 
 					payPrice={payPrice}
+					canModInvoiceTitle={canModInvoiceTitle}
 					invoiceTitle={invoiceTitle}
 					hasCountDown={true}
 					startTime={startTime}

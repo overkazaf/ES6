@@ -1,7 +1,7 @@
 ﻿import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import Modal from 'components/Modal/Modal'
-import Util from 'lib/util'
+import Util from 'extend/util'
 import 'scss/base.scss'
 import 'scss/Test/index.scss'
 

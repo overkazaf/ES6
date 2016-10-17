@@ -1,6 +1,6 @@
 import React from 'react';
 import Slider from 'components/Slide/Slide.jsx';
-import Util from 'lib/util';
+import Util from 'extend/util';
 import className from 'classnames';
 import './Gallery.scss'
 import PinchZoom from 'components/PinchZoom/PinchZoom'
