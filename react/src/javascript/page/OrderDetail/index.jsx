@@ -15,7 +15,7 @@ class MyComponent extends Component {
 
 		this.state = {
 			groupId: null,
-			item: this.props.info || {},
+			item: null,
 			data: null,
 			invoiceTitle: null
 		};
@@ -40,8 +40,6 @@ class MyComponent extends Component {
 							groupId : newState.groupId,
 							data: res.data,
 							invoiceTitle: res.data.invoiceTitle
-						}, ()=>{
-							console.log('res', res);
 						});
 					}
 					
@@ -87,28 +85,56 @@ class MyComponent extends Component {
 		
 		this.setState({
 			payPrice: state.price
-		}, () => {
-			console.log('this.statethis.state', this.state);
 		})
 	}
 
+	handleCountDownFinished () {
+		this.refs['routeItem'].handleItemStatusChange({
+			type: 'COUNT_DOWN_FINISHED',
+			payStatus: 4
+		});
+	}
+
+
+	checkIfCanModInvoiceTitle (routeItemInfo, statusCodes) {
+		if (!routeItemInfo || Object.keys(routeItemInfo).length == 0) {
+			return false;
+		}
+
+		return routeItemInfo.payStatus == statusCodes[routeItemInfo.type]['PENDING'];
+	}
+
 	render () {
+
+		if (!this.state.item) {
+			return (
+				<div></div>
+			)
+		}
+
 		let that = this;
 		let routeItemInfo = this.state.item;
-		let data = this.state.entityData;
+		let data = this.state.data;
 		let payPrice;
 		let groupId = this.state.groupId;
 		let invoiceTitle = this.state.invoiceTitle;
 		let startTime = routeItemInfo.groupStartTime;
 		let statusCodes = Status.getStatusCodes();
-		let canModInvoiceTitle =  (Object.keys(routeItemInfo).length > 0 && routeItemInfo.status == statusCodes[routeItemInfo.type]['PENDING']) ? true : false;
+		let canModInvoiceTitle =  this.checkIfCanModInvoiceTitle(routeItemInfo, statusCodes);
+		let hasCountDown = canModInvoiceTitle && (1 * 60 * 60 * 1000 + (+new Date(startTime).getTime()) - (+new Date().getTime()) > 0)
 		if (this.state.payPrice) {
 			payPrice = new Number(this.state.payPrice).toFixed(2);
 		}
-		
+		let cannotPay = !canModInvoiceTitle;
+
+		// console.log('1 * 60 * 60 * 1000 + startTime', 1 * 60 * 60 * 1000 + (+new Date(startTime).getTime()));
+		// console.log('(new Date().getTime())', (new Date().getTime()));
+		// console.log('canModInvoiceTitle', canModInvoiceTitle);
+		// console.log('hasCountDown', hasCountDown);
 		return (
 			<div className="m-orderdetail">
-				<RouteItem 
+				<RouteItem
+					ref="routeItem"
 					parentContext={that} 
 					handleInfoChange={that.handleInfoChange} 
 					info={routeItemInfo}
@@ -117,9 +143,11 @@ class MyComponent extends Component {
 				<PayMethod 
 					groupId={groupId} 
 					payPrice={payPrice}
+					cannotPay={cannotPay}
 					canModInvoiceTitle={canModInvoiceTitle}
 					invoiceTitle={invoiceTitle}
-					hasCountDown={true}
+					hasCountDown={hasCountDown}
+					handleCountDownFinished={this.handleCountDownFinished.bind(this)}
 					startTime={startTime}
 				/>
 				<Accordion info={data}/>

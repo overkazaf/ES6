@@ -22,8 +22,7 @@ export default class ExtendInfo extends Component {
 								let imageUrl = item.imageUrl;
 								if (index === 1) {
                                         return (
-                                            <li className="extra-info-list-item">
-                                                
+                                            <li key={index} className="extra-info-list-item">                                     
                                                 <a href={href} id={href} className="block-anchor">
                                                     <div className="feature-bg">
             											<img data-src={imageUrl} />
@@ -33,9 +32,9 @@ export default class ExtendInfo extends Component {
                                         )
 
                                    } else {
+                                   		// 这块后边要用文字去做，前端处理排版
                                         return (
-                                            <li className="extra-info-list-item">
-                                                
+                                            <li key={index} className="extra-info-list-item">                                        
                                                 <a href={href} id={href} className="block-anchor">
                                                     <div className="fee-bg">
             											<img data-src={imageUrl} />
@@ -45,7 +44,6 @@ export default class ExtendInfo extends Component {
                                         )
                                    }
 							}
-
 						}) : null;
 
 		return (
@@ -108,7 +106,6 @@ export default class ExtendInfo extends Component {
 			<li key={idx} className="extra-info-list-item">
 				<a href={href} id={href}>
 					<div className="head-image">
-						
 					</div>
 					{contents}
 				</a>

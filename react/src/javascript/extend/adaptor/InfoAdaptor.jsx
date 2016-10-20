@@ -135,7 +135,7 @@ export class RouteInfoAdaptor {
 
 	transform (data) {
 		let routeDetailInfo = {
-			banner: data.banner,
+			banner: data.description.banner,
 			detailInfo: data.route,
 			extendInfo: this.buildExtendInfo(data.description)
 		}
@@ -145,15 +145,15 @@ export class RouteInfoAdaptor {
 	buildExtendInfo (data) {
 		//获取'行程安排', '产品特色', '费用说明'具体信息
 		let buildTabItems = function (data) {
+			console.log('data', data);
 			let  tmpScheduleList= [];
-
 			data.routing.scheduleDescriptions.map(function (item,index) {
 				tmpScheduleList.push({
 					dayName: item.dayName,
 					id: item.id,
 					placeList: item.placeDescriptions
 				});
-			})
+			});
 			let tmpRouting = {
 				name: data.routing.name,
 				headImage : data.routing.headImage,

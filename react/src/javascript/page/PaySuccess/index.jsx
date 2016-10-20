@@ -10,8 +10,8 @@ import 'scss/PaySuccess/index.scss';
 class MyComponent extends Component {
 	constructor (props) {
 		super(props);
-
 		this.state = {
+			detailId: null,
 			data: null
 		};
 	}
@@ -19,7 +19,6 @@ class MyComponent extends Component {
 	componentDidMount() {
 		let that = this;
 		let detailId = Util.fetchParamValueByCurrentURL('detailId');
-		console.log('detailId', detailId);
 	 	if (detailId) {
 	 		let reqParam = {
 	 			url: 'tour/order',

@@ -7,7 +7,8 @@
     .opt-list-item {
         display: inline-block;
         margin-left: 0.15rem;
-        width: 0.72rem;
+        margin-bottom: 0.1rem;
+        width: 0.64rem;
         height: 0.32rem;
         line-height: 0.32rem;
         text-align: center;
@@ -15,8 +16,10 @@
         border: 1px solid #41444e;
         cursor: pointer;
         transition: all 0.3s ease-in-out;
+        box-sizing: border-box;
+
         &.active {
-            border: none;
+            border: 1px solid #2bc2bd;
             color: #fff;
             background: #2bc2bd;
         }

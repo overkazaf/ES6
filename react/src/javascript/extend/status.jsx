@@ -10,6 +10,7 @@ export default class Status {
 			},
 			'2' : { // 单独购买
 				'ALL': 0,　// 所有状态
+				'INIT': 1, // 初始化
 				'PENDING': 2, // 待支付
 				'SUCCESS': 3, //　成功
 				'CANCEL': 4 // 取消

@@ -40,7 +40,7 @@ export default class Accordion extends Component {
 				ret['性别'] = item.sex;
 				ret['证件类型'] = '身份证';
 				ret['证件号码'] = item.cardNo;
-				ret['出生日期'] = item.brith;
+				ret['出生日期'] = item.birth;
 				break;
 			case 'traffic':
 				ret['自驾前往']　= '';

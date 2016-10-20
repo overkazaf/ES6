@@ -30,6 +30,17 @@ export default class RouteItem extends Component {
         }
     }
 
+    handleItemStatusChange (statusObject) {
+  //   	let clonedState = Util.deepClone(this.state);
+  //   	if (statusObject.type == 'COUNT_DOWN_FINISHED') {
+  //   		clonedState.payStatus = statusObject.payStatus;
+  //   		this.setState({
+  //   			payStatus: statusObject.payStatus
+  //   		});
+		// }
+  
+    }
+
     componentDidMount () {
 		let that = this;
 		let detailId = Util.fetchParamValueByCurrentURL('detailId');
@@ -94,17 +105,15 @@ export default class RouteItem extends Component {
 			//　单独购买
 			switch (status) {
 				case codes.SUCCESS:
-					statusDiv = (<div className="item-seal success"></div>);
+					statusDiv = (<div className="item-seal"></div>);
 					break;
 				case codes.CANCEL:
-					statusDiv = (<div className="item-seal fail"></div>);
+					statusDiv = (<div className="item-seal"></div>);
 					break;
 				case codes.PENDING:
 					statusDiv = (<div className="item-seal pending"></div>);
 					break;
 			}
-
-			console.log('status', status);
 
 		}
 		return statusDiv;
@@ -137,6 +146,7 @@ export default class RouteItem extends Component {
 		let {
 			id,
 			groupId,
+			routeUrl,
 			name,
 			travelTime,
 			adult,
@@ -144,7 +154,7 @@ export default class RouteItem extends Component {
 			travelAddress,
 			price,
 			status,
-			payStatus,
+			payStatus, // 当前的支付状态
 			type // 类型，１为拼团，２为单独购买
 		} = this.state;
 
@@ -155,11 +165,21 @@ export default class RouteItem extends Component {
 		// 根据status, groupId, detailId生成行程链接
 		// 因为新加了预支付状态，预支付状态点击以后要跳转到相应的支付页面
 		let itemHref = this.generateItemHrefByStatusInfo(type, payStatus, statusCodes, groupId, detailId);
-		// console.log('itemHref', itemHref);
+
+		let itemImageStyleObj = {
+			backgroundImage: 'url('+ routeUrl +')',
+			width: '1.4rem',
+	    	height: '1.05rem',
+			backgroundSize: 'cover',
+			backgroundRepeat: 'no-repeat',
+			backgroundPosition: '50%',
+			display: 'block'
+		};
+
 		return (
 			<a href={itemHref} className="u-route-item">
 				<div className="column">
-					<a className="item-image"></a>
+					<a className="item-image" style={itemImageStyleObj}></a>
 				</div>
 				<div className="column item-detail">
 					<h2 className="item-name">{name}</h2>

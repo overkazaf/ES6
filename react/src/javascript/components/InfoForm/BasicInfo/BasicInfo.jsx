@@ -7,9 +7,28 @@ export default class BasicInfo extends Component {
 
 	constructor (props) {
 		super(props);
-		this.state = this.props.info;
+
+		this.state = this.hookAndFixGroupSize(this.props.info) || {
+			canSelect: false,
+			form: [],
+			isGroup: Util.isGroup()
+		};
 
 	}
+
+
+	hookAndFixGroupSize (info) {
+		if (!Util.isGroup()) return info;
+		info && info.form.map(function (item, index){
+			if (item.name == 'groupSize') {
+				item.display = true;
+				item.isRequired = true;
+			}
+			return item;
+		});
+
+		return info;
+	} 
 
 	componentWillReceiveProps(nextProps) {
 	    if (nextProps.form) {

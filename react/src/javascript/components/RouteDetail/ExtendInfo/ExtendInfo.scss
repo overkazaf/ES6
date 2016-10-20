@@ -3,6 +3,7 @@
 	position: relative;
 	padding: 0.05rem;
 	margin-top: 0.1rem;
+	min-height: 1rem;
 	background: #fff;
 
 	.day-section {
@@ -96,21 +97,12 @@
 	.block-anchor {
 		display: block;
 		
-		.feature-bg {
-			img {
-				width: 100%;
-				height: 100%;
-			}
-			height: 12.4rem;
-		}
-		
+		.feature-bg,
 		.fee-bg {
+			text-align: center;
 			img {
-				width: 100%;
-				height: 100%;
+				width: 96%;
 			}
-			width: 100%;
-			height: 20rem;
 		}
 	}
 }

@@ -32,9 +32,8 @@
         .item-group-members,
         .item-source-place
         {
-            margin: 0.02rem 0 0.02rem 0;
             color: #8d919c;
-            line-height: 0.18rem;
+            line-height: 0.2rem;
             display: -webkit-box;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -42,10 +41,15 @@
             -webkit-box-orient: vertical;
         }
 
+        .item-name {
+        	line-height: 0.16rem;
+        }
+
 		.item-name {
 			font-size: 0.15rem;
 			color: #41414e;
 			text-overflow: ellipsis;
+			width: 2rem;
 		}
 
 		.item-group-members {
@@ -56,8 +60,8 @@
 
 		.item-price {
 			position: absolute;
-			left: 0.04rem;
-			bottom: 0;
+    		bottom: 0;
+			margin-top: 0.1rem;
 			font-size: 0.13rem;
 			font-weight: bold;
 			color: #fe3600;
@@ -70,27 +74,34 @@
 
 		.item-seal {
 			position: absolute;
-			right: 0rem;
-			bottom: 0;
+		    right: 0;
+		    bottom: 0;
+			margin-top: 0.08rem;
 			width: 0.8rem;
 			height: 0.8rem;
-
+	
 			&.success {
 				background-image: url(../../../../res/images/RouteList/group_success@3x.png);
 				background-size: contain;
 				background-repeat: no-repeat;
+				opacity: 0.7;
+				filter: alpha(opacity=70);
 			}
 
 			&.fail {
 				background-image: url(../../../../res/images/RouteList/group_fail@3x.png);
 				background-size: contain;
 				background-repeat: no-repeat;
+				opacity: 0.7;
+				filter: alpha(opacity=70);
 			}
 
 			&.pending {
 				background-image: url(../../../../res/images/RouteList/3x/waiting@3x.png);
 				background-size: contain;
 				background-repeat: no-repeat;
+				opacity: 0.7;
+				filter: alpha(opacity=70);
 			}
 		}
 
@@ -108,11 +119,6 @@
 	}
 
 	.item-image {
-		background-image: url(../../../../res/images/RouteList/my_route@3x.png);
-		width: 1.4rem;
-    	height: 1.05rem;
-		background-size: cover;
-		background-repeat: no-repeat;
-		display: block;
+		
 	}
 }

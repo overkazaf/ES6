@@ -20,7 +20,7 @@ export default class Body extends Component {
 	}
 
 	render () {
-		let data = this.state.entityData;
+		let data = this.state.data;
 		return (
 			<div className="m-body">
 				<RouteDesc info={data}/>
@@ -104,7 +104,7 @@ class RouteDesc extends Component {
 	}
 
 	render () {
-		let desc = this.buildRouteDesc(this.state.entityData);
+		let desc = this.buildRouteDesc(this.state.data);
 		return (
 			<div className="u-route-desc">
 				{desc}

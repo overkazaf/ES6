@@ -39,11 +39,19 @@ export default class Slider extends React.Component {
     hammer.on('swiperight', function () {
       this.previousSlide();
     }.bind(this));
+  }
 
-    setTimeout(function (){
-      let $images = $('img');
-      Util.lazyLoadImages($images, 2, 400);
-    }, 50);     
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.imageList) {
+      this.setState({
+        imageList: nextProps.imageList
+      }, () => {
+        setTimeout(function (){
+          let $images = $('img');
+          Util.lazyLoadImages($images, 2, 400);
+        }, 50);
+      });
+    }
   }
 
   render() {

@@ -11,7 +11,7 @@ export default class Hook {
             // dev
             // var prefix = 'http://localhost:8090/';
             // online
-            var prefix = 'http://yougo.xinguang.com/fightgroup-web/';
+            var prefix = 'http://yougo.xinguang.com/fightgroup-web/public/';
             
             if (target.indexOf(pattern) >= 0) {
                 var subfix = target.split(pattern)[1];

@@ -40,7 +40,7 @@ export default class RouteDetailFooter extends Component {
 		let footerBtns,
 			that = this,
 			{status} = this.state;
-		// console.log("Status.getStatusCodes().SUCCESS", this.state);
+
 		if (this.props.hasShareBtn) {
 			if (status == Status.getStatusCodes().SUCCESS || status == Status.getStatusCodes().FAIL) {
 				footerBtns = <div className="footer-buttons has-share">
@@ -72,26 +72,25 @@ export default class RouteDetailFooter extends Component {
 									<span>去开团</span>
 								</div>
 							</div>
-			}
-			
+			}		
 		} else {
 			
 			footerBtns = <div className="footer-buttons">
-							<a href="4001006560" className="btn-dial hide">
-								<span>联系电话</span>
+							<a href="tel:4001006560" className="btn-dial">
+								<span className="phone"></span>
+								<span className="font-sm">联系电话</span>
 							</a>
-							<div onClick={that.handleClick.bind(that, 'single')} className="btn-buy-single hide">
+							<div onClick={that.handleClick.bind(that, 'single')} className="btn-buy-single">
 								<span>￥{that.props.singlePrice}起/人</span>
 								<span className="font-sm">单独购买</span>
 							</div>
 
-							<div onClick={that.handleClick.bind(that, 'group')} className="btn-buy-group">
+							<div onClick={that.handleClick.bind(that, 'group')} className="btn-buy-group hide">
 								<span>￥998起/人</span>
 								<span className="font-sm">10人起团</span>
 							</div>
 						</div>
 		}
-
 
 		return (
 			<div className="m-route-footer">

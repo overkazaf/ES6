@@ -1,6 +1,7 @@
 {
 	"single": {
 		"ALL": 0,
+		"INIT": 1,
 		"PENDING": 2,
 		"SUCCESS": 3,
 		"CANCEL": 4

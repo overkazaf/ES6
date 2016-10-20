@@ -1,14 +1,20 @@
 import React, {Component} from 'react';
+import Util from 'extend/util';
 import './Footer.scss';
 
 export default class Footer extends Component {
 	handleClick (strategy) {
 		let strategies = {
 			'viewOrder' : function () {
-				console.log('viewOrder');
+				let detailId = Util.fetchParamValueByCurrentURL('detailId');
+				let targetUrl = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/OrderDetail/index.html';
+
+				targetUrl = Util.appendParam4Url(targetUrl, 'detailId', detailId);
+
+				location.href = targetUrl;
 			},
 			'back2List' : function () {
-				console.log('back2List');
+				location.href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/RouteThumbnail/index.html';
 			}
 		};
 

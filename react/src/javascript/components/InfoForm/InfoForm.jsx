@@ -19,7 +19,7 @@ export default class InfoForm extends Component {
 		super(props);
 		let defaults = {
 			entityData: {
-				basicInfo: this.props.form,
+				basicInfo: this.props.form || {},
 				personInfo: {
 					adult : {
 						count: 2,
@@ -43,14 +43,7 @@ export default class InfoForm extends Component {
 					plain: true,
 					ensurance: true
 				},
-				feeList: [
-					{"label":"左口乡民宿3选1", "price":"门市价¥850/晚", "extra":""},
-					{"label":"文渊狮城铂瑞酒店", "price":"门市价¥2800/晚", "extra":"五星"},
-					{"label":"西南湖区（龙川湾）", "price":"门市价¥160/人", "extra":""},
-					{"label":"九龙溪漂流", "price":"门市价¥110/人", "extra":""},
-					{"label":"文渊狮城度假区", "price":"门市价¥100/人", "extra":""},
-					{"label":"古街景点门票（3选1）", "price":"免费", "extra":""},
-				],
+				feeList: this.props.feeList || [],
 				price: {
 					adult: 899.00,
 					kid: 270.00,
@@ -61,6 +54,8 @@ export default class InfoForm extends Component {
 		this.state = {
 			info: this.props.info || defaults,
 			form: this.props.form || {},
+			ticket: this.props.ticket || {},
+			hotels: this.props.hotels || {},
 			isGroup: Util.isGroup(),
             isFirstLoaded: true, // 第一次加载的标志位
 			enter: false,
@@ -79,7 +74,7 @@ export default class InfoForm extends Component {
 				url: 'joingroup/query',
 				method: 'get',
 				data: {
-					id: Util.fetchGroupId() || 290
+					id: Util.fetchGroupId()
 				},
 				successFn :function(result) {
 					if (Util.isResultSuccessful(result)) {	
@@ -122,6 +117,26 @@ export default class InfoForm extends Component {
 			this.initInfo();
 			this.initShare();
 		}
+	}
+
+	componentWillReceiveProps(nextProps) {
+	 	if (nextProps.form) {
+	 		let oldState = this.state;
+	 		let entityData = oldState.info.entityData;
+	 		this.setState({
+	 			info: {
+	 				entityData: {
+	 					basicInfo: nextProps.form,
+	 					personInfo: entityData.personInfo,
+	 					feeList: entityData.feeList,
+	 					services: entityData.services,
+	 					price: entityData.price
+	 				}
+	 			},
+	 			form: nextProps.form
+
+	 		});
+	 	}     
 	}
 
 	initInfo () {
@@ -262,6 +277,16 @@ export default class InfoForm extends Component {
 				singleAdultAveragePrice = groupAdultAveragePrice;
 				singleAdultOrderPrice = groupAdultOrderPrice;
 			}	
+			let routeId = Util.fetchParamValueByCurrentURL("routeId");
+			if(!!routeId && routeId!='1'){
+				let ticket = this.state.ticket,
+					hotels = this.state.hotels;
+				
+				let familyPriceInfo = this.priceCalc(entityData.personInfo, ticket, hotels);
+				singleAdultOrderPrice = familyPriceInfo.payPrice;
+				singleAdultAveragePrice = familyPriceInfo.singleAdultAveragePrice;
+				kidPrice = familyPriceInfo.kidPrice;
+			}
 
 			this.setState({
 				info: {
@@ -280,7 +305,13 @@ export default class InfoForm extends Component {
 		}
 	}
 
-	priceCalc (personCount,singlePrice,roomPrice) {
+	priceCalc (personData, ticket, hotels) {
+		let personCount = personData.adult.count * 1 + personData.kid.count * 1,
+			singlePrice = ticket.singlePrice,
+			roomPrice = !!hotels[0] ? hotels.map(function(item,index){
+				return item.salePrice
+			}) : 0;
+
 		let isArray = function (obj) {
 			if (typeof Array.isArray == 'function') return Array.isArray(obj);
 			return obj instanceof Array || Object.prototype.toString.call(obj) == '[object Array]';
@@ -289,19 +320,30 @@ export default class InfoForm extends Component {
 		let roomSum = 0;
 		if (isArray(roomPrice)) {
 			for (var i = 0, l = roomPrice.length; i<l; i++) {
-				roomSum += roomPrice[i];
+				roomSum += roomPrice[i] * 1;
 			}
 		}else{
 			roomSum = roomPrice;
 		}
 
-		let family = parseInt(personCount/3),		//家庭数
-			halfRoomSum = (roomSum/2).toFixed(2);	//房差
+        let family = Math.ceil(personCount/3),      //房间数
+            halfRoomSum = Math.round(roomSum/2,-2);   //房差
+        let priceSum = 0;
 
-		let priceSum = personCount*singlePrice - family*halfRoomSum;
-		(personCount%3 == 1) && (priceSum += halfRoomSum);
-
-		return new Number(priceSum).toFixed(2);
+        switch(ticket.type){
+        	case 2:
+        		priceSum = (singlePrice - halfRoomSum) * personCount + roomSum * family;
+        		break;
+        	default:
+        		break;
+        }
+        let singleAdultAveragePrice = new Number(priceSum/personCount).toFixed(2),
+        	kidAveagePrice =  new Number(priceSum/personCount).toFixed(2);
+		return {
+			payPrice: new Number(priceSum).toFixed(2),
+			singleAdultAveragePrice:  singleAdultAveragePrice,
+			kidPrice:  kidAveagePrice
+		}
 	}
 
 	/**
@@ -312,8 +354,9 @@ export default class InfoForm extends Component {
 	 * @DateTime 2016-09-12T10:39:28+0800
 	 * @return   {[type]}                     [description]
 	 */
-	buildFormEntity () {
+	buildFormEntity (callback) {
         let that = this;
+        let routeId = Util.fetchParamValueByCurrentURL('routeId');
         let entityData = that.state.info.entityData;
         let {basicInfo, personInfo, services} = entityData;         
         let {adult,kid} = personInfo;
@@ -335,25 +378,47 @@ export default class InfoForm extends Component {
 
 		// 构建人员信息的实体，单独抽出另外的方法进行实现
 		let personInfoEntity = this.buildPersonInfoEntity(personInfo);
+		let {userNum, normalNum, specialNum, userDetail, phone} = personInfoEntity;
+		
+		let duplicateCodeParam = {
+			method: 'post',
+			url: 'duplicate/getDuplicateCode',
+			data: {
+				userId: Util.getCurrentUserId()
+			},
+			successFn: function (res){
 
-		return {
-			id: +sharedGroupId,
-			userId: +userId,
-			userAmount: userAmount,
-			travelAddress: travelAddress,
-			travelTime: travelTime,
-			type: type,
-			userNum: personInfoEntity.userNum,
-			normalNum: personInfoEntity.normalNum,
-			specialNum: personInfoEntity.specialNum,
-			userDetail: personInfoEntity.userDetail,
-			phone: personInfoEntity.phone,
-			guideService: guide,
-			carSevice: car,
-			meetAirport: plain,
-			secure: ensurance,
-			payPrice: payPrice
+				if (Util.isResultSuccessful(res.success)) {
+					let duplicateCode = res.data;
+					callback({
+						id: +sharedGroupId,
+						routeId: routeId,
+						userId: +userId,
+						duplicateCode: duplicateCode,
+						userAmount: userAmount,
+						travelAddress: travelAddress,
+						travelTime: travelTime,
+						type: type,
+						userNum: userNum,
+						normalNum: normalNum,
+						specialNum: specialNum,
+						userDetail: userDetail,
+						phone: phone,
+						guideService: guide,
+						carSevice: car,
+						meetAirport: plain,
+						secure: ensurance,
+						payPrice: payPrice
+					});
+				}
+			},
+			errorFn: function () {
+				console.error.apply(this, [...arguments]);
+			}
 		};
+
+		Util.fetchData(duplicateCodeParam);
+		
 	}
 
 	/**
@@ -366,7 +431,7 @@ export default class InfoForm extends Component {
 		// 修正用户信息的数据结构
 		let userDetail = adult.extra.map(function(item, index){
 		    return {
-		        username: item.name,
+		        name: item.name,
 		        cardNo: item.id
 		    };
 		});
@@ -397,7 +462,8 @@ export default class InfoForm extends Component {
      * @param  {[type]} validResult [description]
      * @return {[type]}             [description]
      */
-    tryRecirecting2Pay (validResult) {
+    tryRedirecting2Pay (validResult) {
+    	let that = this;
     	let redirect2PayStrategy = {
     		'success': function (result) {
     			this.setState({
@@ -405,15 +471,16 @@ export default class InfoForm extends Component {
 				}, ()=>{
 					this.reCalculatePrice();
 		        	// 构造向后台提交的数据结构
-					let json = this.buildFormEntity();
-			        let param = {
+					this.buildFormEntity(function(json){
+						let param = {
 			                url : 'joingroup/add',
 			                method : 'POST',
 			                data : json,
 			                successFn : function (result){
 			                    if (Util.isResultSuccessful(result.success)) {
 			                    	Util.leavePage(function () {
-			                    		let payHref = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Pay/index.html?detailId='+result.data;
+			                    		let nextPageName = Util.isSingleBuy() ? 'OrderDetail' : 'Pay';
+			                    		let payHref = `http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/${nextPageName}/index.html?detailId=${result.data}`;
 			                    		if (Util.isGroup()) {
 			                    			payHref += '&isGroup=true';
 			                    		}
@@ -437,9 +504,11 @@ export default class InfoForm extends Component {
 			                errorFn : function () {
 			                    console.error(arguments);
 			                }
-			        };
-			        
-			        Util.fetchData(param);
+				        };
+				        
+				        Util.fetchData(param);
+					});
+			       
 				});
     		},
     		'fail': function (result) {
@@ -464,7 +533,7 @@ export default class InfoForm extends Component {
     }
 
 	handleNextStep () {
-		this.tryRecirecting2Pay(this.validateForm());
+		this.tryRedirecting2Pay(this.validateForm());
 	}
 
 	/**
@@ -560,11 +629,9 @@ export default class InfoForm extends Component {
 	}
 
 	render () {
-		let priceSum = this.priceCalc(5,800,600);
-		// console.log('priceSum', priceSum);
-
 		let that = this;
 		let currentState = this.state;
+
 		let entityData = currentState.info.entityData;
 		let {
 			price,

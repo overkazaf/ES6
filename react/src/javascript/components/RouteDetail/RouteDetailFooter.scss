@@ -27,7 +27,8 @@
 
 		.btn-buy-single {
 			flex: 3;
-			background: #fff;
+			color: #fff;
+			background: #2ac1bc;
 
 			&.hide {
 				display: none;
@@ -35,6 +36,7 @@
 			span {
 				flex:1;
 				color: #888C8F;
+				color: #fff;
 
 				&.font-sm {
 					font-size: 0.12rem;
@@ -57,12 +59,23 @@
 
 		.btn-dial {
 			flex: 3;
+			background: #2ac1bc;
+			color: #fff;
 
 			span {
 				flex: 1;
-				color: #222;
-				line-height: 2;
-				
+				color: #fff;
+				&.font-sm {
+					font-size: 0.12rem;
+				}
+			}
+
+			.phone {
+				flex:2;
+				background-image: url(../../../../res/images/RouteDetail/phone@3x.png);
+				background-size: contain;
+				background-repeat: no-repeat;
+    			background-position-x: 50%;
 			}
 		}
 

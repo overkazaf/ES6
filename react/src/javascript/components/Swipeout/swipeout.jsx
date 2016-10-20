@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import Hammer from 'react-hammerjs';
-import './SwipeOut.scss';
+import './Swipeout.scss';
 
 class SwipeOut extends React.Component {
   static propTypes = {

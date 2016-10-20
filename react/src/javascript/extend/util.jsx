@@ -1,4 +1,5 @@
-﻿import urlConfig from './config/config.json';
+﻿import Hook from 'extend/hook';
+import urlConfig from './config/config.json';
 
 let currentUrlPrefix = urlConfig[urlConfig["current"]];
 let COOKIE_EXPIRE_SECONDS = 30 * 24 * 60 * 60; // 30 天 cookie 过期
@@ -158,8 +159,9 @@ export default class Util {
 				outTime: +pageTimeInfo['out']
 			},
 			successFn : function (result) {
+				callback && callback(result);
 				if (Util.isResultSuccessful(result.success)) {
-					callback && callback(result);
+					
 				} else {
 					console.error('Request is not successful in leavePage function', result);
 				}
@@ -203,25 +205,55 @@ export default class Util {
 		return typeof obj['isGroup'] == 'undefined';
 	}
 
+	static appendParam4Url (url, paramKey, paramValue) {
+		let obj = Util.parseQueryString(url);
+		let paramSubfix = paramKey + '=' + paramValue;
+		let targetUrl = url.indexOf('?') >= 0 ? url.split('?')[0] : url;
+		
+		if(!obj) obj = {};
+
+		obj[paramKey] = paramValue;
+		
+		if (targetUrl.indexOf('?') < 0) {
+			targetUrl += '?';
+		}
+
+		Object.keys(obj).map(function (key, index){
+			if (index > 0) targetUrl += '&';
+			targetUrl += key + '=' + obj[key];
+		});
+
+		return targetUrl;
+	}
+
 	static redirectPageByBuyType (buyType, href) {
 		let stretagy = {
 			'single' () {
 				let singleHref = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/FillInfo/index.html';
-				if (Util.parseQueryString(href)['groupId']) {
+				let routeId = Util.fetchParamValueByCurrentURL('routeId');
+				let groupId = Util.fetchParamValueByCurrentURL('groupId');
+				if (groupId) {
 					// 如果是分享过来的页面，要补上拼团ID，即groupId
-					singleHref = singleHref + "?groupId=" + Util.parseQueryString(href)['groupId'];
+					singleHref = Util.appendParam4Url(singleHref, 'groupId', groupId);
 				}
+
+				if (routeId) {
+					singleHref = Util.appendParam4Url(singleHref, 'routeId', routeId);
+				}
+
 				return singleHref;
 			},
 
 			'group' () {
 				let groupHref = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/FillInfo/index.html?isGroup=true';
-				if (Util.parseQueryString(href)['groupId']) {
+				let groupId = Util.fetchParamValueByCurrentURL('groupId');
+				let detailId = Util.fetchParamValueByCurrentURL('detailId');
+				if (groupId) {
 					// 如果是分享过来的页面，要补上拼团ID，即groupId
-					groupHref = groupHref + '&groupId=' + Util.parseQueryString(href)['groupId'];
+					groupHref = Util.appendParam4Url(groupHref, 'groupId', groupId);
 
-					if (Util.parseQueryString(href)['detailId']) {
-						groupHref = groupHref + '&detailId=' + Util.parseQueryString(href)['detailId'];
+					if (detailId) {
+						groupHref = Util.appendParam4Url(groupHref, 'detailId', detailId);
 					}
 				}
 				return groupHref;
@@ -236,11 +268,7 @@ export default class Util {
 			let userId = Util.getCurrentUserId();
 			if (!!userId) {
 				// 1. try if userId exists in cookie
-				if (redirect.indexOf('?') >= 0) {
-					redirect = redirect + '&user=' + userId;
-				} else {
-					redirect = redirect + '?user=' + userId;
-				}
+				redirect = Util.appendParam4Url(redirect, 'user', userId);
 				location.href = redirect;
 			} else {
 				// 授权
@@ -269,9 +297,9 @@ export default class Util {
 
 
     	return {
-    		hours: leftHours,
-    		minutes: leftMinutes,
-    		seconds: leftSeconds
+    		hours: ''+leftHours,
+    		minutes: ''+leftMinutes,
+    		seconds: ''+leftSeconds
     	};
     }
 
@@ -343,6 +371,10 @@ export default class Util {
 		}
     }
 
+    static getLoadingImageSRC () {
+    	return 'http://yougo.xinguang.com/fightgroup-web/public/res/imgs/loading@3x.png';
+    }
+
     /**
      * [lazyLoadeImages 图片懒加载函数]
      * @param  {[type]} $images [description]
@@ -368,7 +400,24 @@ export default class Util {
     				let $img = $(img);
 	    			let src = $img.attr('data-src');
 	    			if(src) {
-	    				$img.attr('src', src).removeAttr('data-src');
+
+		    			let $loadingImage = $('<div></div>').css({
+		    				width: $img.width() + 'px',
+		    				height: $img.height() + 'px',
+		    				backgroundImage: 'url('+ Util.getLoadingImageSRC() +')',
+		    				backgroundRepeat: 'no-repeat',
+		    				backgroundSize: '50%',
+						    backgroundPosition: '50% 50%'
+		    			});
+
+		    			$loadingImage.insertAfter($img);
+		    			
+		    			$img.hide()
+		    			$img.attr('src', src).on('load', function () {
+		    				$loadingImage.remove();
+		    				$img.show().removeAttr('data-src');
+		    			});
+	    				
 	    			}
 	    		})
     		}, index * timeout);
@@ -400,6 +449,7 @@ export default class Util {
     }
 
     static rebuildItemState (item) {
+    	item = Hook.hookAndFixUrlPrefix(item);
 		let kidCount = +item.specialNum;
         let adultCount = +item.normalNum;
         let totalCount = kidCount + adultCount;
@@ -407,7 +457,10 @@ export default class Util {
             "groupId": item.groupId,
             "id": item.id,
 			"price" : new Number(item.payPrice).toFixed(2),
-			"name" : "千岛湖国庆家庭3日游",
+			"routeId" : item.routeId,
+			"routeUrl" : item.routeUrl,
+			"name" : item.routeName,
+			"description" : item.routeDescription,
 			"groupMemberNumber" :  totalCount,
             "kid": kidCount,
             "adult": adultCount,

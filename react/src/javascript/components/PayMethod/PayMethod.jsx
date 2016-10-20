@@ -39,6 +39,13 @@ export default class PayMethod extends Component {
 		})
 	}
 
+	handleCountDownFinished () {
+		// console.log('handleCountDownFinished');
+		if (this.props.handleCountDownFinished) {
+			this.props.handleCountDownFinished();
+		}
+	}
+
 	changeProtocol () {
 		this.setState({
 			protocol : {
@@ -74,46 +81,53 @@ export default class PayMethod extends Component {
 	    	});
 	    }
 
-	    if (nextProps.canModifyInvoiceTitle) {
+	    if (typeof nextProps.canModInvoiceTitle != 'undefined') {
 	    	this.setState({
-	    		canModifyInvoiceTitle: nextProps.canModifyInvoiceTitle
+	    		canModifyInvoiceTitle: nextProps.canModInvoiceTitle
 	    	});
 	    }
 
-	    if (nextProps.startTime) {
+	    if (typeof nextProps.cannotPay != 'undefined') {
+	    	this.setState({
+	    		cannotPay: nextProps.cannotPay,
+	    	}, () => {
+	    		console.log('cannot pay', nextProps.cannotPay);
+	    	});
+	    }
+
+
+
+	    if (nextProps.startTime || typeof nextProps.hasCountDown != 'undefined') {
 	    	this.setState({
 	    		startTime: nextProps.startTime,
-	    		hasCountDown: true,
+	    		hasCountDown: nextProps.hasCountDown,
 	    		countDownMessage: that.buildCountDownMessage(that.calcCountDown())
 	    	}, ()=>{
 	    		let fn = function(){
 
 	    			let countDown = that.calcCountDown();
     				if (that.noCountDown(countDown)) {
-    					
     					that.setState({
     						hasCountDown: false,
 		    				cannotPay: true,
-		    				countDownMessage: ''
-		    			}, ()=>{
+		    				countDownMessage: '',
+		    				canModifyInvoiceTitle: false
+		    			}, () => {
 		    				that.timer = null;
 		    				clearInterval(that.timer);
+		    				that.handleCountDownFinished();
+		    				fn = null;
 		    			});
     				} else {
     					that.setState({
 		    				countDownMessage: that.buildCountDownMessage(countDown)
 		    			});
     				}
-
-    				if (!that.state.hasCountDown) {
-    					that.timer = null;
-    					clearInterval(that.timer);
-    				}
 	    		};
 
-	    		fn();
+	    		fn.call(that);
 	    		if (!that.timer && that.state.hasCountDown) {
-	    			that.timer = setInterval(fn, 1000);
+	    			that.timer = setInterval(fn.bind(that), 1000);
 	    		}
 	    		
 	    	});
@@ -163,7 +177,7 @@ export default class PayMethod extends Component {
 				           	  returnCode = 'SUCCESS';
 				           	  // alert('weixin支付成功, tradeSerialId::' + tradeSerialId);
 				           } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
-				           	  returnCode = 'FAILED';
+				           	  returnCode = 'CANCEL';
 				           }else {
 				           	  // alert('weixin支付失败');
 				           	  returnCode = 'FAILED';
@@ -180,18 +194,9 @@ export default class PayMethod extends Component {
 									returnCode: returnCode
 								},
 								successFn: function (result) {
-									if (result || result== 'true') {
+									if (Util.isResultSuccessful(result)) {
 										Util.leavePage(function () {
-											if (returnCode == 'SUCCESS') {
-												// 成功后跳转到分享页
-												location.href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Share/index.html?detailId='+ detailId +'&groupId=' + that.state.groupId;
-											} else {
-												// 失败后回到填写信息的页面
-												let fillInfoUrl = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/FillInfo/index.html';
-												fillInfoUrl += '?isGroup=true&detailId=' + detailId + "&groupId=" + that.state.groupId;
-												//alert('fail, and redirect to url:' + fillInfoUrl);
-												location.href = fillInfoUrl;
-											}
+											that.redirectPageAfterPayment(detailId, returnCode, that.state);
 										});
 									} else {
 										alert('支付失败:' + result.errorMSG);
@@ -205,7 +210,10 @@ export default class PayMethod extends Component {
 								}
 							};
 
-							Util.fetchData(afterPayParam);
+							if (returnCode != 'CANCEL') {
+								// 支付时候中途取消留在原页面
+								Util.fetchData(afterPayParam);
+							}
 
 				       })
 					}
@@ -236,15 +244,32 @@ export default class PayMethod extends Component {
 			}
 		};
 
-		//console.log('prePayParam', prePayParam);
 		Util.fetchData(prePayParam);
+	}
+
+	redirectPageAfterPayment (detailId, returnCode, currentState) {
+		if (Util.isSingleBuy()) {
+			if (returnCode == 'SUCCESS') {
+				location.href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/PaySuccess/index.html?detailId='+ detailId +'&groupId=' + currentState.groupId;
+			} else if (returnCode == 'FAILED') {
+				alert('支付失败');
+			}
+		} else {
+			if (returnCode == 'SUCCESS') {
+				// 成功后跳转到分享页
+				location.href = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/Share/index.html?detailId='+ detailId +'&groupId=' + currentState.groupId;
+			} else {
+				// 失败后回到填写信息的页面
+				let fillInfoUrl = 'http://yougo.xinguang.com/fightgroup-web/public/build/wxPages/FillInfo/index.html';
+				fillInfoUrl += '?isGroup=true&detailId=' + detailId + "&groupId=" + currentState.groupId;
+				location.href = fillInfoUrl;
+			}
+		}
 	}
 
 	handleInvoiceTitleChange (ev) {
 		this.setState({
 			invoiceTitleValue: ev.target.value
-		}, () => {
-			//console.log('invoiceTitle change', this.state);
 		});
 	}
 
@@ -255,20 +280,20 @@ export default class PayMethod extends Component {
 
 	calcCountDown () {
 		let startTime = this.state.startTime;
-		let countDown, countDownMessage;
+		let countDown = {
+			hours: 0,
+			minutes: 0,
+			seconds: 0
+		}, countDownMessage;
+		let that = this;
 
 		if (startTime) {
 			//　结束时间为当前时间加1小时
-			let endTime = 1 * 60 * 60 * 1000 + new Date("2016-10-14 13:43:24").getTime();
+			let endTime = 1 * 60 * 60 * 1000 + new Date(startTime).getTime();
 			let currentTime = new Date().getTime();
 			let leftTime = Math.floor(~~(endTime - currentTime)/1000);
 			if (leftTime > 0) {
 				countDown = Util.calcCountDownByLeftTime(leftTime);
-			} else {
-				// 剩余时间为负数，不可支付
-				this.setState({
-					cannotPay: true
-				});
 			}
 		}
 		return countDown;
@@ -293,6 +318,7 @@ export default class PayMethod extends Component {
 						 </div>
 			}
 		} else {
+			console.log('|| this.state.cannotPay', this.state.cannotPay);
 			if (!this.state.protocol.checked || this.state.cannotPay) {
 				payBtn = <div className="pay-btn disabled">
 							立即支付
@@ -340,7 +366,7 @@ export default class PayMethod extends Component {
 		}
 
 
-		payBtn = this.buildPayButtonByCurrentStatus();
+		payBtn = this.buildPayButtonByCurrentStatus.call(this);
 
 
 

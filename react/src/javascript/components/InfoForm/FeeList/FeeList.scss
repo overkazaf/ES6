@@ -11,17 +11,29 @@
 		margin: .2rem 0 0 .12rem;
 		border: none;
 		font-size: 0.14rem;
-		tr {
-			height: 0.32rem;
 
-			td {
-				padding: 0.05rem;
-
-				&.desc {
-					color: #ccc;
-					font-size: 0.12rem;
+		.fee-detail-table {
+			th {
+				td {
+					font-size: 0.14rem;
+					font-weight: bold;
 				}
 			}
+
+			tr {
+				height: 0.32rem;
+
+				td {
+					padding: 0.05rem;
+
+					&.desc {
+						color: #ccc;
+						font-size: 0.12rem;
+					}
+				}
+			}
+
+			margin-bottom: 0.2rem;
 		}
 	}
 }
