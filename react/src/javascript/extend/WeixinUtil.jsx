@@ -197,4 +197,36 @@ export default class WeixinUtil {
 			});
 		});
 	}
+
+	static genLink (pageName, link, routeId, detailId, ...others) {
+		let config = require('extend/config/config.json');
+		let currentEnv = config.current;
+		let urlPrefix = config[currentEnv];
+		let linkUrlPrefix = `${urlPrefix}public/build/wxPages/${pageName}/index.html`;
+		let targetUrl = linkUrlPrefix;
+
+		targetUrl = Util.appendParam4Url(targetUrl, 'routeId', routeId);
+		targetUrl = Util.appendParam4Url(targetUrl, 'detailId', detailId);
+
+		return targetUrl;
+	}
+
+	static getWXShareOptionFromRemote (option) {
+		let {pageId, pageName, link, routeId, detailId, callback, ...others} = option;
+		let targetLink = WeixinUtil.genLink(pageName, link, routeId, detailId,  ...others);
+		let param = {
+			pageId: pageId,
+			linkUrl: targetLink,
+			routeId: routeId,
+			detailId: detailId,
+			successFn: function (result) {
+				callback(result);
+			},
+			errorFn: function (){
+				callback(arguments);
+			}
+		};
+		Util.fetchData(param);
+	}
+
 }
