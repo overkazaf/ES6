@@ -1,4 +1,5 @@
 export default class Compiler {
+	
 	tokenize (str) {
 		let openTag = '{{';
 		let closeTag = '}}';
@@ -45,7 +46,6 @@ export default class Compiler {
 			}
 		}
 	}
-
 
 	test () {
 		console.log(tokenize(tpl));
