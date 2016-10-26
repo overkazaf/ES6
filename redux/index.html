@@ -29,7 +29,8 @@
       }
 
       function isType (obj, type) {
-        return Object.prototype.toString.call(obj) == '[object '+ type+']';
+        var ots = Object.prototype.toString;
+        return ots.call(obj) === '[object '+ type+']';
       }
 
       function isArray (obj) {
@@ -37,11 +38,11 @@
       }
 
       function deepClone (obj) {
-        if (obj == null || typeof obj != 'object') return obj;
+        if (obj === null || typeof obj !== 'object') return obj;
         var result = new obj.constructor();
 
         if (isArray(result)) {
-          for (var i=0,item; item = obj[i++];) {
+          for (var i = 0, item; item = obj[i++];) {
             result[i] = deepClone(item);
           }
         } else {
