@@ -1,0 +1,66 @@
+{"data":
+	{"conditions": 
+		[
+			{"id": 0,"title": "团大小","type": "select","name": "groupSize",
+				"paramList": [
+					{"label": "6-9","value": "6-9","index": 0},
+					{"label": "9-12","value": "9-12","index": 1},
+					{"label": "13-15","value": "12-15","index": 2}
+				], 
+				"display": false,
+				"isRequired": false,
+				"ref": "","defaultValue": "","currentValue": "", "validateRules":[
+					{
+						"rule": "notNull",
+						"param": {},
+						"errorMessage": "团大小不能为空"
+					}
+				]
+			},
+			{"id": 1,"title": "出发地","type": "select","name": "travelPlace", 
+				"paramList": [
+					{"label": "杭州","value": "杭州","index": 0},
+					{"label": "上海","value": "上海","index": 1},
+					{"label": "南京","value": "南京","index": 2}
+				],
+				"display": true,
+				"isRequired": true,
+				"ref": "","defaultValue": "","currentValue": "", "validateRules":[
+					{
+						"rule": "notNull",
+						"param": {},
+						"errorMessage": "出发地不能为空"
+					}
+				]
+			},
+			{"id": 2,"title": "出行日期","type": "select","name": "travelDate",
+				"paramList": [
+					{"label": "9月30日","value": "2016-09-30","index": 0},
+					{"label": "10月2日","value": "2016-10-02","index": 1},
+					{"label": "10月3日","value": "2016-10-03","index": 2}
+				],
+				"display": true,
+				"isRequired": true,
+				"ref": "","defaultValue": "","currentValue": "", "validateRules":[
+					{
+						"rule": "notNull",
+						"param": {},
+						"errorMessage": "出行日期不能为空"
+					}
+				]
+			}
+		],
+	 "includes": [
+			{"item":"左口乡民宿3选1", "desc":"门市价¥850/晚", "extra":""},
+			{"item":"文渊狮城铂瑞酒店", "desc":"门市价¥2800/晚", "extra":"五星"},
+			{"item":"西南湖区（龙川湾）", "desc":"门市价¥160/人", "extra":""},
+			{"item":"九龙溪漂流", "desc":"门市价¥110/人", "extra":""},
+			{"item":"文渊狮城度假区", "desc":"门市价¥100/人", "extra":""},
+			{"item":"古街景点门票（3选1）", "desc":"免费", "extra":""}
+		],
+	 "excludes":[
+			{"item":"费用包含以外的个人消费", "desc":"", "extra":""}
+		 ]
+	},
+	"result": true
+}

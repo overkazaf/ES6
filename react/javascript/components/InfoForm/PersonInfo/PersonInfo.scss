@@ -1,0 +1,78 @@
+.amount-group {
+	padding: 0.1rem 0 0.1rem 0;
+
+	.amount-ctrl-list {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		width: 100%;
+
+		.amount-ctrl-list-item {
+			flex: 3;
+			-webkit-flex: 3;
+			-moz-flex: 3;
+			-ms-flex: 3;
+
+			line-height: 0.3rem;
+
+			&.adult,
+			&.child {
+				flex: 1;
+				-webkit-flex: 1;
+				-moz-flex: 1;
+				-ms-flex: 1;
+				text-align: right;
+			}
+		}
+	}
+}
+
+.line {
+	margin-bottom: 0.1rem;
+}
+
+.appended-person-list {
+	.appended-person-list-item {
+		margin-bottom: 0.1rem;
+	}
+}
+
+.u-info-item {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	width: 100%;
+	height: 0.50rem;
+	line-height: 0.50rem;
+	
+	.info-label,
+	.info-value {
+		border: none;
+		border-radius: 0;
+		font-size: 0.14rem;
+		padding: 0.2rem 0 0.2rem 0;
+		line-height: .30rem;
+		background: #f8f8f8;
+	}
+
+	.info-label {
+		text-indent: 0.2rem;
+		flex:1;
+		-webkit-flex:1;
+		-ms-flex:1;
+		-moz-flex:1;
+		width: 1rem!important;
+
+		&:disabled {
+			color: #000;
+			background: #f8f8f8;
+		}
+	}
+
+	.info-value {
+		flex: 5;
+		-webkit-flex:5;
+		-ms-flex:5;
+		-moz-flex:5;
+	}
+}

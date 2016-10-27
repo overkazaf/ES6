@@ -1,0 +1,9 @@
+@import '../../../scss/_config.scss';
+
+.m-route-list {
+	margin-top: 0.1rem;
+	.route-list-item {
+		height: 0.92rem;
+		border-bottom: 1px solid #ccc;
+	}
+}

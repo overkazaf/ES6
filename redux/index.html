@@ -42,7 +42,7 @@
         var result = new obj.constructor();
 
         if (isArray(result)) {
-          for (var i = 0, item; item = obj[i++];) {
+          for (var i = 0, item; item = obj[i]; i++) {
             result[i] = deepClone(item);
           }
         } else {
@@ -58,18 +58,18 @@
         return result;
       }
 
-      function reducer (state, action) {
-        state = state || {todoList: []};
+      function reducer (state = {todoList: []}, action) {
         var clonedState = deepClone(state);
+        console.log('state', state);
         switch (action.type) {
           case 'add':
             clonedState.todoList.push(action.payload)
-            return {todoList: clonedState.todoList.slice(0)}
+            return {todoList: [...clonedState.todoList]}
           case 'remove':
             if (clonedState.todoList.length) {
               clonedState.todoList.pop();
             }
-            return {todoList: clonedState.todoList.slice(0)};
+            return {todoList: [...clonedState.todoList]};
           case 'clear':
             return {todoList: []};
           default:
@@ -77,24 +77,24 @@
         }
       }
 
-      var store = Redux.createStore(reducer, {'todoList':[]});
+      var store = Redux.createStore(reducer);
       log(store.getState());
 
       store.dispatch(add('finish shell script learning'));
       store.dispatch(add('finish nodejs script learning'));
-      //store.dispatch(add('python script learning'));
+      store.dispatch(add('python script learning'));
 
       log(store.getState());
       //log(store.getState());
       //log(store.getState());
 
-      // store.dispatch(remove());
+      store.dispatch(remove());
 
-      // log(store.getState());
+      log(store.getState());
 
-      // store.dispatch(remove());
+      store.dispatch(remove());
 
-      // log(store.getState());
+      log(store.getState());
 
 
       function log(state){

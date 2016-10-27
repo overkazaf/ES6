@@ -1,0 +1,56 @@
+@import '../../../scss/_config.scss';
+
+.m-counter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 0.15rem;
+  line-height: 0.2rem;
+  font-size: $font-size-lg;
+
+  .icon-less, 
+  .icon-more {
+  	width: 0.24rem;
+  	height: 0.24rem;
+  	display: inline-block;
+  	text-align: center;
+  }
+
+  .icon-less {
+    &.enabled {
+      background-image: url(../../../../res/images/FillInfo/minus_btn_enabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &.disabled {
+      background-image: url(../../../../res/images/FillInfo/minus_btn_disabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+  }
+
+  .icon-more {
+    &.enabled {
+      background-image: url(../../../../res/images/FillInfo/plus_btn_enabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    &.disabled {
+      background-image: url(../../../../res/images/FillInfo/plus_btn_disabled@3x.png);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+  }
+
+  .num {
+  	margin: 0 0.03rem 0 0.03rem;
+    width: 0.4rem;
+    height: 0.28rem;
+    line-height: 0.28rem;
+    border-radius: 0.02rem;
+    text-align: center;
+    border: 1px solid #41444e;
+  }
+}
