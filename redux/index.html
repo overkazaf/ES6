@@ -28,16 +28,16 @@
         }
       }
 
-      function isType (obj, type) {
+      function isType(obj, type) {
         var ots = Object.prototype.toString;
         return ots.call(obj) === '[object '+ type+']';
       }
 
-      function isArray (obj) {
+      function isArray(obj) {
         return isType(obj, 'Array');
       }
 
-      function deepClone (obj) {
+      function deepClone(obj) {
         if (obj === null || typeof obj !== 'object') return obj;
         var result = new obj.constructor();
 
@@ -58,7 +58,7 @@
         return result;
       }
 
-      function reducer (state = {todoList: []}, action) {
+      function reducer(state = {todoList: []}, action) {
         var clonedState = deepClone(state);
         console.log('state', state);
         switch (action.type) {
