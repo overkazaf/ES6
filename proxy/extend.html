@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Vue</title>
+  <script src="https://unpkg.com/vue"></script>
+  <style type="text/css">
+    #app {
+      margin: 20px auto;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app">
+    
+  </div>
+
+  <script>
+
+    let App = Vue.extend({
+      template: '<h1>{{ name }}</h1>',
+      data() {
+        return {
+          name: 'demo case for Vue.extend',
+        };
+      },
+    });
+
+    new App().$mount('#app');
+  </script>
+</body>
+</html>
